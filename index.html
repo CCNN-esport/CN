@@ -982,12 +982,12 @@
         </div>
       </div>
 
-      <!-- PERFORMANCE-BASED WINNING PREDICTION GRAPH -->
+      <!-- PERFORMANCE & HISTORICAL TITLE WIN PROBABILITY GRAPH -->
       <div class="prediction-card">
         <div class="prediction-header">
           <div>
             <div class="prediction-title">📊 Title Win Probability</div>
-            <div class="prediction-subtext">Live form & performance analytics</div>
+            <div class="prediction-subtext">Form, Standings & Historical Trophies</div>
           </div>
           <span style="font-size:11px; color:var(--accent); font-weight:800;">100% TOTAL</span>
         </div>
@@ -1638,6 +1638,8 @@
         id: t.id,
         name: t.name,
         logo: t.logo || '',
+        leagueTitles: t.leagueTitles || 0,
+        uclTitles: t.uclTitles || 0,
         p: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, gd: 0, pts: 0,
         form: [],
         streak: 0
@@ -1661,7 +1663,7 @@
           home.form.push('W'); away.form.push('L');
         } else if (r.hScore < r.aScore) {
           away.w++; away.pts += 3; home.l++;
-          away.form.push('W'); home.form.push('L');
+          home.form.push('W'); home.form.push('L');
         } else {
           home.d++; away.d++; home.pts += 1; away.pts += 1;
           home.form.push('D'); away.form.push('D');
@@ -1680,27 +1682,40 @@
       return standings.sort((a, b) => b.pts - a.pts || b.gd - a.gd || b.gf - a.gf);
     }
 
-    /* PERFORMANCE-BASED TITLE WIN PROBABILITY ALGORITHM */
+    /* ENHANCED TITLE WIN PROBABILITY ALGORITHM (FACTORING CURRENT FORM, STANDINGS & HISTORICAL TROPHIES) */
     function calculateTitleProbabilities(leagueStandings) {
       if (!leagueStandings || leagueStandings.length === 0) return [];
       
       const totalPlayed = leagueStandings.reduce((sum, t) => sum + t.p, 0);
-      if (totalPlayed === 0) {
-        const equalPct = Math.round(100 / leagueStandings.length);
-        return leagueStandings.map(t => ({ ...t, probability: equalPct }));
-      }
 
-      // Performance weights: Base (10) + PTS*4 + GD*1.5 + Form bonus (W=3, D=1, L=-2) + Win streak*3
       const scoredTeams = leagueStandings.map(t => {
         let formScore = 0;
-        t.form.forEach(f => {
+        (t.form || []).forEach(f => {
           if (f === 'W') formScore += 3;
           else if (f === 'D') formScore += 1;
           else if (f === 'L') formScore -= 2;
         });
 
-        let rawPower = 10 + (t.pts * 4) + (t.gd * 1.5) + formScore + (t.streak * 3);
-        if (rawPower < 2) rawPower = 2; // Keep positive minimum floor
+        // Historical pedigree & trophy weights
+        const totalTrophies = t.leagueTitles + t.uclTitles;
+        let pedigreeBonus = (t.leagueTitles * 6) + (t.uclTitles * 4) + (totalTrophies * 2);
+
+        if (state.lastLeagueChamp && state.lastLeagueChamp.toLowerCase() === t.name.toLowerCase()) {
+          pedigreeBonus += 12; // defending league champion bonus
+        }
+        if (state.lastUclChamp && state.lastUclChamp.toLowerCase() === t.name.toLowerCase()) {
+          pedigreeBonus += 8;  // defending ucl champion bonus
+        }
+
+        if (totalPlayed === 0) {
+          // If no matches played yet, heavily weight historical trophies and pedigree
+          let rawPower = 15 + pedigreeBonus;
+          return { ...t, rawPower };
+        }
+
+        // Combined current season performance + historical pedigree
+        let rawPower = 8 + (t.pts * 4) + (t.gd * 1.5) + formScore + (t.streak * 3) + pedigreeBonus;
+        if (rawPower < 2) rawPower = 2;
         return { ...t, rawPower };
       });
 
@@ -1710,7 +1725,7 @@
       const probabilities = scoredTeams.map((t, idx) => {
         let pct = Math.round((t.rawPower / totalPower) * 100);
         if (idx === scoredTeams.length - 1) {
-          pct = Math.max(1, 100 - sumPct); // Ensure clean 100% total
+          pct = Math.max(1, 100 - sumPct); // Ensure clean 100% sum
         } else {
           sumPct += pct;
         }
@@ -1741,7 +1756,7 @@
       document.getElementById('homeLastLeagueChamp').textContent = state.lastLeagueChamp || '--';
       document.getElementById('homeLastUclChamp').textContent = state.lastUclChamp || '--';
 
-      // RENDER WIN PROBABILITY GRAPH IN HOME TAB
+      // RENDER WIN PROBABILITY GRAPH IN HOME TAB (FORM + HISTORY + TROPHIES)
       const predictions = calculateTitleProbabilities(leagueTable);
       const graphContainer = document.getElementById('predictionGraphContainer');
       if (predictions.length > 0) {
@@ -1857,7 +1872,7 @@
         `;
       }).join('') || '<p style="text-align:center; color:var(--muted); padding:20px;">No upcoming fixtures.</p>';
 
-      // Results
+      // Results (SHOWING FULL TIME INSTEAD OF UPCOMING)
       const resContainer = document.getElementById('sub-results');
       resContainer.innerHTML = (state.results || []).map(r => {
         const isUcl = r.comp === 'ucl';
@@ -1865,7 +1880,7 @@
         const aTeam = getTeam(r.awayId);
         return `
           <div class="match-date-header">
-            <span style="color:var(--win);">${r.time}</span>
+            <span style="color:var(--win); font-weight:800; letter-spacing:0.5px;">FULL TIME</span>
             <span class="comp-pill ${isUcl ? 'comp-ucl' : 'comp-league'}">${isUcl ? 'UCL' : 'League'}</span>
           </div>
           <div class="match-glass-card">
