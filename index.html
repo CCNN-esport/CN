@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>CCNN Esport</title>
 
+  <!-- Google Font for Official UCL Champions Badge Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
+
   <!-- Firebase App & Realtime Database SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -751,8 +756,8 @@
 
     .ucl-trophy-podium {
       text-align: center;
-      padding: 28px 16px 20px 16px;
-      background: radial-gradient(circle at center, rgba(59, 130, 246, 0.22) 0%, rgba(10, 16, 32, 0.95) 75%);
+      padding: 28px 16px 22px 16px;
+      background: radial-gradient(circle at center, rgba(59, 130, 246, 0.25) 0%, rgba(10, 16, 32, 0.95) 75%);
       border: 1px solid rgba(59, 130, 246, 0.55);
       border-radius: 20px;
       margin-top: 20px;
@@ -765,20 +770,25 @@
       color: #ffffff;
       text-transform: uppercase;
       letter-spacing: 1px;
-      margin-top: 12px;
+      margin-top: 14px;
     }
 
+    /* OFFICIAL UCL THEME CHAMPIONS TYPOGRAPHY */
     .podium-champion-badge {
       display: inline-block;
-      margin-top: 5px;
-      padding: 4px 14px;
-      border-radius: 20px;
-      background: linear-gradient(135deg, var(--gold), #f59e0b);
-      color: #040812;
+      margin-top: 8px;
+      padding: 5px 22px;
+      border-radius: 24px;
+      font-family: 'Montserrat', 'Cinzel', serif;
       font-weight: 900;
-      font-size: 11px;
-      letter-spacing: 1.5px;
+      font-size: 12px;
+      letter-spacing: 4px;
       text-transform: uppercase;
+      background: linear-gradient(135deg, #0b1536 0%, #1e3a8a 50%, #0d1b46 100%);
+      color: #ffd700;
+      border: 1.5px solid rgba(255, 215, 0, 0.65);
+      box-shadow: 0 0 16px rgba(255, 215, 0, 0.4), inset 0 0 8px rgba(0, 229, 255, 0.3);
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
     }
 
     .admin-accordion {
@@ -1440,7 +1450,8 @@
     const db = firebase.database();
     const stateRef = db.ref('esport_state');
 
-    let isAdminUnlocked = false;
+    // ONE-TIME PERMANENT LOGIN FOR THIS DEVICE
+    let isAdminUnlocked = localStorage.getItem('ccnn_admin_logged_in') === 'true';
 
     let defaultState = {
       leagueName: 'CCNN Super League',
@@ -1544,6 +1555,7 @@
         const pass = prompt("🔒 Enter Admin Password:");
         if (pass === "batman67") {
           isAdminUnlocked = true;
+          localStorage.setItem('ccnn_admin_logged_in', 'true'); // Persisted forever on this device
         } else {
           if (pass !== null) alert("Incorrect Admin Password!");
           return;
@@ -1591,6 +1603,7 @@
 
     function lockAdmin() {
       isAdminUnlocked = false;
+      localStorage.removeItem('ccnn_admin_logged_in');
       alert("Admin locked!");
       switchTab('home');
     }
@@ -1617,7 +1630,7 @@
       return state.teams.find(t => t.id === id) || { name: 'Unknown Club', logo: '' };
     }
 
-    // ACCURATE CHRONOLOGICAL STANDINGS & FORM ENGINE
+    // ACCURATE FORM CALCULATION (CHRONOLOGICAL SEQUENCING)
     function calculateStandingsForComp(compType, filterTeams = null) {
       const baseTeams = filterTeams || state.teams;
       const standings = baseTeams.map(t => ({
@@ -1631,7 +1644,7 @@
         streak: 0
       }));
 
-      // Sort results chronologically (oldest to newest) to maintain accurate sequence
+      // Sort chronological (oldest to newest)
       const chronologicalResults = [...(state.results || [])].sort((a, b) => {
         return (parseInt(a.id) || 0) - (parseInt(b.id) || 0);
       });
@@ -1652,11 +1665,11 @@
         if (r.hScore > r.aScore) {
           home.w++; home.pts += 3; away.l++;
           home.form.push('W');
-          away.form.push('L'); // Correctly record loss to away
+          away.form.push('L');
         } else if (r.hScore < r.aScore) {
           away.w++; away.pts += 3; home.l++;
-          home.form.push('L'); // Correctly record loss to home
-          away.form.push('W'); // Correctly record win to away
+          home.form.push('L');
+          away.form.push('W');
         } else {
           home.d++; away.d++; home.pts += 1; away.pts += 1;
           home.form.push('D');
@@ -1736,6 +1749,7 @@
 
       const leagueTable = calculateStandingsForComp('league');
 
+      // Home Leader Card
       const leader = leagueTable[0] || { name: 'No Team', logo: '', pts: 0, streak: 0 };
       document.getElementById('heroLeaderName').textContent = leader.name;
       document.getElementById('heroLeaderBadge').innerHTML = renderTeamBadge(leader);
@@ -1769,12 +1783,15 @@
         graphContainer.innerHTML = `<div style="color:var(--muted); font-size:12px; margin:auto;">Add teams to generate predictions</div>`;
       }
 
-      // League Table: Precise 5-match window render
+      // League Table: CORRECT CHRONOLOGICAL ORDER (1st match -> 2nd match -> 3rd match...)
       const tbody = document.getElementById('leagueTableBody');
       tbody.innerHTML = leagueTable.map((t, idx) => {
         const isUcl = idx < state.uclSpots;
-        const formHtml = [0,1,2,3,4].map(i => {
-          const outcome = t.form[t.form.length - 1 - i];
+
+        // Take up to 5 most recent matches, rendered chronologically left-to-right
+        const last5 = t.form.slice(-5);
+        const formHtml = [0, 1, 2, 3, 4].map(i => {
+          const outcome = last5[i];
           if (outcome === 'W') return `<span class="status-badge badge-win"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></span>`;
           if (outcome === 'D') return `<span class="status-badge badge-draw"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>`;
           if (outcome === 'L') return `<span class="status-badge badge-loss"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></span>`;
@@ -1838,7 +1855,9 @@
         document.getElementById('finalHomeScore').textContent = state.ucl.finalHScore;
         document.getElementById('finalAwayName').textContent = state.ucl.finalAway;
         document.getElementById('finalAwayScore').textContent = state.ucl.finalAScore;
-        document.getElementById('uclWinnerName').textContent = state.ucl.champion;
+        
+        // Blank / None support on UCL champion podium
+        document.getElementById('uclWinnerName').textContent = state.ucl.champion || 'TBD';
       }
 
       // Fixtures
@@ -1860,7 +1879,7 @@
         `;
       }).join('') || '<p style="text-align:center; color:var(--muted); padding:20px;">No upcoming fixtures.</p>';
 
-      // Results: strictly displays FULL TIME
+      // Results
       const resContainer = document.getElementById('sub-results');
       resContainer.innerHTML = (state.results || []).map(r => {
         const isUcl = r.comp === 'ucl';
@@ -1906,13 +1925,16 @@
         </tr>
       `).join('');
 
-      // Admin select options
+      // Admin Select & Inputs Populating
       const teamOptions = state.teams.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
       document.getElementById('fixtureHomeTeam').innerHTML = teamOptions;
       document.getElementById('fixtureAwayTeam').innerHTML = teamOptions;
       document.getElementById('adminDeleteTeamSelect').innerHTML = teamOptions;
       document.getElementById('adminEditLogoTeamSelect').innerHTML = teamOptions;
-      document.getElementById('setUclChampSelect').innerHTML = teamOptions;
+      
+      // Included None / Blank option in UCL Champion selection
+      document.getElementById('setUclChampSelect').innerHTML = `<option value="">-- None / Blank --</option>` + teamOptions;
+      
       document.getElementById('trophyEditTeamSelect').innerHTML = teamOptions;
 
       document.getElementById('adminUclSpotsSelect').value = state.uclSpots;
@@ -1933,6 +1955,9 @@
         document.getElementById('setFinalHScore').value = state.ucl.finalHScore;
         document.getElementById('setFinalAway').value = state.ucl.finalAway;
         document.getElementById('setFinalAScore').value = state.ucl.finalAScore;
+
+        const matchedChamp = state.teams.find(t => t.name === state.ucl.champion);
+        document.getElementById('setUclChampSelect').value = matchedChamp ? matchedChamp.id : "";
       }
 
       const adminFixList = document.getElementById('adminFixtureUpdateList');
@@ -2072,7 +2097,7 @@
 
       if (!state.results) state.results = [];
       const f = state.fixtures[index];
-      state.results.unshift({
+      state.results.push({
         id: Date.now().toString(),
         comp: f.comp,
         homeId: f.homeId,
@@ -2100,14 +2125,18 @@
       state.ucl.finalAScore = parseInt(document.getElementById('setFinalAScore').value) || 0;
 
       const champId = document.getElementById('setUclChampSelect').value;
-      const champTeam = state.teams.find(t => t.id === champId);
-      if (champTeam) {
-        champTeam.uclTitles++;
-        state.ucl.champion = champTeam.name;
+      if (champId) {
+        const champTeam = state.teams.find(t => t.id === champId);
+        if (champTeam) {
+          champTeam.uclTitles++;
+          state.ucl.champion = champTeam.name;
+        }
+      } else {
+        state.ucl.champion = ""; // None / Blank
       }
 
       saveState();
-      alert(`UCL Trophy crowned to ${state.ucl.champion} and synced live!`);
+      alert(`UCL settings updated and synced live!`);
     }
 
     function finishCurrentSeason() {
