@@ -102,7 +102,6 @@
       box-shadow: 0 0 8px var(--win);
     }
 
-    /* TOP RIGHT UCL MUSIC TOGGLE BUTTON */
     .ucl-music-toggle-btn {
       display: none;
       position: absolute;
@@ -134,7 +133,6 @@
     .view-card { display: none; }
     .view-card.active { display: block; }
 
-    /* UCL TAB CUSTOM WALLPAPER BACKGROUND */
     #page-ucl {
       position: relative;
       background: 
@@ -191,7 +189,6 @@
       text-transform: uppercase;
     }
 
-    /* HOME HERO WIDGETS */
     .hero-leader-card {
       background: var(--glass-card);
       backdrop-filter: blur(16px);
@@ -291,13 +288,8 @@
       justify-content: space-between;
     }
 
-    .champ-card-league {
-      border-color: rgba(255, 215, 0, 0.3);
-    }
-
-    .champ-card-ucl {
-      border-color: rgba(59, 130, 246, 0.4);
-    }
+    .champ-card-league { border-color: rgba(255, 215, 0, 0.3); }
+    .champ-card-ucl { border-color: rgba(59, 130, 246, 0.4); }
 
     .champ-sub-title {
       font-size: 11px;
@@ -324,7 +316,6 @@
       margin-top: 6px;
     }
 
-    /* WIN PROBABILITY PREDICTION GRAPH CARD */
     .prediction-card {
       background: var(--glass-card);
       backdrop-filter: blur(16px);
@@ -708,7 +699,6 @@
       align-self: center;
     }
 
-    /* UCL KNOCKOUT CONTAINER */
     .ucl-knockout-wrapper {
       margin-top: 24px;
       padding: 4px 0;
@@ -916,7 +906,6 @@
 </head>
 <body>
 
-  <!-- UCL Anthem Audio Player -->
   <audio id="uclAnthemAudio" preload="auto">
     <source src="anthem.mp3" type="audio/mpeg">
     <source src="https://ia800902.us.archive.org/27/items/uefa-champions-league-anthem/uefa-champions-league-anthem.mp3" type="audio/mpeg">
@@ -926,7 +915,6 @@
     <div class="website-name">CCNN Esport</div>
     <div class="live-indicator"><span class="live-dot"></span> LIVE SYNC</div>
 
-    <!-- Play/Pause Button on Top Right (Only shown in UCL tab) -->
     <button id="uclMusicBtn" class="ucl-music-toggle-btn" onclick="toggleUclMusic()">
       <span id="musicBtnIcon">⏸</span>
       <span id="musicBtnText">Pause</span>
@@ -982,7 +970,6 @@
         </div>
       </div>
 
-      <!-- PERFORMANCE & HISTORICAL TITLE WIN PROBABILITY GRAPH -->
       <div class="prediction-card">
         <div class="prediction-header">
           <div>
@@ -1062,7 +1049,7 @@
       <div id="sub-results" style="display:none;"></div>
     </div>
 
-    <!-- UCL TAB (WITH WALLPAPER BACKGROUND) -->
+    <!-- UCL TAB -->
     <div id="page-ucl" class="view-card">
       <div class="league-banner">
         <div>
@@ -1100,7 +1087,6 @@
         </div>
       </div>
 
-      <!-- UCL KNOCKOUT STAGE -->
       <div class="ucl-knockout-wrapper">
         <div class="league-title-label" style="color:var(--ucl-blue); margin-bottom:14px; font-size:13px;">🏆 UCL KNOCKOUT STAGE</div>
         
@@ -1520,7 +1506,6 @@
       return `<span class="team-badge" style="${extraStyle}">${initial}</span>`;
     }
 
-    // MUSIC CONTROL LOGIC
     const uclAudio = document.getElementById('uclAnthemAudio');
     const uclMusicBtn = document.getElementById('uclMusicBtn');
     const musicBtnIcon = document.getElementById('musicBtnIcon');
@@ -1632,6 +1617,7 @@
       return state.teams.find(t => t.id === id) || { name: 'Unknown Club', logo: '' };
     }
 
+    // ACCURATE CHRONOLOGICAL STANDINGS & FORM ENGINE
     function calculateStandingsForComp(compType, filterTeams = null) {
       const baseTeams = filterTeams || state.teams;
       const standings = baseTeams.map(t => ({
@@ -1645,7 +1631,12 @@
         streak: 0
       }));
 
-      (state.results || []).forEach(r => {
+      // Sort results chronologically (oldest to newest) to maintain accurate sequence
+      const chronologicalResults = [...(state.results || [])].sort((a, b) => {
+        return (parseInt(a.id) || 0) - (parseInt(b.id) || 0);
+      });
+
+      chronologicalResults.forEach(r => {
         if (r.comp !== compType) return;
 
         const home = standings.find(t => t.id === r.homeId);
@@ -1660,13 +1651,16 @@
 
         if (r.hScore > r.aScore) {
           home.w++; home.pts += 3; away.l++;
-          home.form.push('W'); away.form.push('L');
+          home.form.push('W');
+          away.form.push('L'); // Correctly record loss to away
         } else if (r.hScore < r.aScore) {
           away.w++; away.pts += 3; home.l++;
-          home.form.push('W'); home.form.push('L');
+          home.form.push('L'); // Correctly record loss to home
+          away.form.push('W'); // Correctly record win to away
         } else {
           home.d++; away.d++; home.pts += 1; away.pts += 1;
-          home.form.push('D'); away.form.push('D');
+          home.form.push('D');
+          away.form.push('D');
         }
       });
 
@@ -1682,7 +1676,6 @@
       return standings.sort((a, b) => b.pts - a.pts || b.gd - a.gd || b.gf - a.gf);
     }
 
-    /* ENHANCED TITLE WIN PROBABILITY ALGORITHM (FACTORING CURRENT FORM, STANDINGS & HISTORICAL TROPHIES) */
     function calculateTitleProbabilities(leagueStandings) {
       if (!leagueStandings || leagueStandings.length === 0) return [];
       
@@ -1696,24 +1689,21 @@
           else if (f === 'L') formScore -= 2;
         });
 
-        // Historical pedigree & trophy weights
         const totalTrophies = t.leagueTitles + t.uclTitles;
         let pedigreeBonus = (t.leagueTitles * 6) + (t.uclTitles * 4) + (totalTrophies * 2);
 
         if (state.lastLeagueChamp && state.lastLeagueChamp.toLowerCase() === t.name.toLowerCase()) {
-          pedigreeBonus += 12; // defending league champion bonus
+          pedigreeBonus += 12;
         }
         if (state.lastUclChamp && state.lastUclChamp.toLowerCase() === t.name.toLowerCase()) {
-          pedigreeBonus += 8;  // defending ucl champion bonus
+          pedigreeBonus += 8;
         }
 
         if (totalPlayed === 0) {
-          // If no matches played yet, heavily weight historical trophies and pedigree
           let rawPower = 15 + pedigreeBonus;
           return { ...t, rawPower };
         }
 
-        // Combined current season performance + historical pedigree
         let rawPower = 8 + (t.pts * 4) + (t.gd * 1.5) + formScore + (t.streak * 3) + pedigreeBonus;
         if (rawPower < 2) rawPower = 2;
         return { ...t, rawPower };
@@ -1725,7 +1715,7 @@
       const probabilities = scoredTeams.map((t, idx) => {
         let pct = Math.round((t.rawPower / totalPower) * 100);
         if (idx === scoredTeams.length - 1) {
-          pct = Math.max(1, 100 - sumPct); // Ensure clean 100% sum
+          pct = Math.max(1, 100 - sumPct);
         } else {
           sumPct += pct;
         }
@@ -1746,7 +1736,6 @@
 
       const leagueTable = calculateStandingsForComp('league');
 
-      // Home Leader Card
       const leader = leagueTable[0] || { name: 'No Team', logo: '', pts: 0, streak: 0 };
       document.getElementById('heroLeaderName').textContent = leader.name;
       document.getElementById('heroLeaderBadge').innerHTML = renderTeamBadge(leader);
@@ -1756,7 +1745,6 @@
       document.getElementById('homeLastLeagueChamp').textContent = state.lastLeagueChamp || '--';
       document.getElementById('homeLastUclChamp').textContent = state.lastUclChamp || '--';
 
-      // RENDER WIN PROBABILITY GRAPH IN HOME TAB (FORM + HISTORY + TROPHIES)
       const predictions = calculateTitleProbabilities(leagueTable);
       const graphContainer = document.getElementById('predictionGraphContainer');
       if (predictions.length > 0) {
@@ -1781,7 +1769,7 @@
         graphContainer.innerHTML = `<div style="color:var(--muted); font-size:12px; margin:auto;">Add teams to generate predictions</div>`;
       }
 
-      // League Table
+      // League Table: Precise 5-match window render
       const tbody = document.getElementById('leagueTableBody');
       tbody.innerHTML = leagueTable.map((t, idx) => {
         const isUcl = idx < state.uclSpots;
@@ -1872,7 +1860,7 @@
         `;
       }).join('') || '<p style="text-align:center; color:var(--muted); padding:20px;">No upcoming fixtures.</p>';
 
-      // Results (SHOWING FULL TIME INSTEAD OF UPCOMING)
+      // Results: strictly displays FULL TIME
       const resContainer = document.getElementById('sub-results');
       resContainer.innerHTML = (state.results || []).map(r => {
         const isUcl = r.comp === 'ucl';
@@ -1918,7 +1906,7 @@
         </tr>
       `).join('');
 
-      // Admin Select & Inputs Populating
+      // Admin select options
       const teamOptions = state.teams.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
       document.getElementById('fixtureHomeTeam').innerHTML = teamOptions;
       document.getElementById('fixtureAwayTeam').innerHTML = teamOptions;
