@@ -10,8 +10,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
 
-  <!-- 3D Model Viewer Library for ucl-trophy.glb -->
+  <!-- 3D Model Viewer Library for UCL Tab -->
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+
+  <!-- Three.js + GLTFLoader for the Real 3D Studio Room -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 
   <!-- Firebase App & Realtime Database SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -787,7 +791,6 @@
       margin-top: 14px;
     }
 
-    /* OFFICIAL UCL THEME CHAMPIONS TYPOGRAPHY */
     .podium-champion-badge {
       display: inline-block;
       margin-top: 8px;
@@ -805,7 +808,7 @@
       text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
     }
 
-    /* MANAGERS 3D TROPHY ROOM & SHOWCASE STYLES (MATCHING REFERENCE IMAGE) */
+    /* MANAGERS PROFILE HEADER */
     .manager-profile-card {
       background: var(--glass-card);
       backdrop-filter: blur(16px);
@@ -845,9 +848,7 @@
       stroke: var(--muted);
     }
 
-    .manager-info-meta {
-      flex: 1;
-    }
+    .manager-info-meta { flex: 1; }
 
     .manager-sub-label {
       font-size: 10px;
@@ -877,159 +878,77 @@
       color: var(--muted);
     }
 
-    /* CINEMATIC TROPHY ROOM */
-    .trophy-room-3d {
+    /* REAL 3D WEBGL STUDIO ROOM CONTAINER */
+    .trophy-room-canvas-container {
       position: relative;
-      background: radial-gradient(circle at 50% 40%, #0c1830 0%, #050b17 55%, #020409 100%);
-      border: 1px solid rgba(0, 229, 255, 0.2);
+      width: 100%;
+      height: 380px;
+      background: #020409;
+      border: 1px solid rgba(0, 229, 255, 0.35);
       border-radius: 24px;
-      padding: 24px 14px 28px 14px;
-      box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.95), 0 15px 40px rgba(0, 0, 0, 0.7);
       overflow: hidden;
+      box-shadow: 0 15px 45px rgba(0, 0, 0, 0.8), inset 0 0 40px rgba(0, 0, 0, 0.9);
     }
 
-    /* CURVED NEON ENERGY LIGHT RIBBONS IN BACKGROUND */
-    .trophy-room-3d::before {
-      content: "";
+    #trophyRoomCanvas {
+      width: 100% !important;
+      height: 100% !important;
+      display: block;
+      outline: none;
+    }
+
+    .canvas-overlay-header {
       position: absolute;
-      top: 32%;
-      left: -20%;
-      width: 140%;
-      height: 90px;
-      background: repeating-linear-gradient(
-        -12deg,
-        transparent,
-        transparent 7px,
-        rgba(0, 229, 255, 0.85) 8px,
-        rgba(0, 229, 255, 0.85) 12px,
-        transparent 13px,
-        transparent 20px
-      );
-      filter: drop-shadow(0 0 14px rgba(0, 229, 255, 0.9)) blur(0.4px);
-      opacity: 0.85;
-      transform: rotate(-6deg);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* TOP OVERHEAD SPOTLIGHT */
-    .trophy-room-3d::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 20%;
-      width: 60%;
-      height: 180px;
-      background: radial-gradient(ellipse at top, rgba(255, 255, 255, 0.18), transparent 70%);
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    .room-header-title {
+      top: 14px;
+      left: 0;
+      right: 0;
+      text-align: center;
       font-size: 11px;
       font-weight: 900;
       text-transform: uppercase;
       letter-spacing: 2px;
       color: var(--accent);
-      text-align: center;
-      margin-bottom: 24px;
-      position: relative;
-      z-index: 2;
       text-shadow: 0 0 12px var(--accent-glow);
+      pointer-events: none;
+      z-index: 5;
     }
 
-    .trophy-pedestals-grid {
-      display: flex;
-      justify-content: center;
-      align-items: flex-end;
-      gap: 20px;
-      position: relative;
-      z-index: 2;
-    }
-
-    .trophy-stand-column {
-      flex: 1;
-      max-width: 165px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      position: relative;
-    }
-
-    .stand-trophy-viewer-box {
-      width: 100%;
-      height: 190px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: -10px;
-      z-index: 3;
-    }
-
-    .stand-trophy-viewer-box model-viewer {
-      width: 100%;
-      height: 100%;
-      outline: none;
-      --poster-color: transparent;
-      filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.7));
-    }
-
-    .stand-trophy-img {
-      max-height: 130px;
-      width: auto;
-      object-fit: contain;
-      filter: drop-shadow(0 10px 16px rgba(0, 0, 0, 0.75));
-    }
-
-    /* SLEEK MINIMAL DARK MONOLITH PEDESTAL */
-    .pedestal-base {
-      width: 100%;
-      height: 90px;
-      background: linear-gradient(180deg, #111a2e 0%, #090e1a 45%, #04070d 100%);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-top: 2px solid rgba(255, 255, 255, 0.6);
-      border-radius: 6px;
-      box-shadow: 
-        0 16px 30px rgba(0, 0, 0, 0.9),
-        0 0 20px rgba(0, 229, 255, 0.15),
-        inset 0 1px 2px rgba(255, 255, 255, 0.3);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      z-index: 2;
-    }
-
-    .pedestal-glow-top {
+    /* TROPHY COUNTS FLOATING OVER PEDESTALS IN 3D ROOM */
+    .pedestal-stats-row {
       position: absolute;
-      top: -1px;
+      bottom: 12px;
       left: 0;
-      width: 100%;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, #ffffff 50%, transparent);
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+      right: 0;
+      display: flex;
+      justify-content: space-around;
+      padding: 0 20px;
+      pointer-events: none;
+      z-index: 5;
     }
 
-    .pedestal-trophy-name {
-      font-size: 10px;
+    .pedestal-stat-chip {
+      background: rgba(7, 12, 24, 0.85);
+      border: 1px solid rgba(255, 215, 0, 0.4);
+      box-shadow: 0 0 14px rgba(0, 0, 0, 0.8);
+      border-radius: 10px;
+      padding: 6px 14px;
+      text-align: center;
+      backdrop-filter: blur(8px);
+    }
+
+    .stat-chip-label {
+      font-size: 9px;
       font-weight: 800;
-      color: #94a3b8;
       text-transform: uppercase;
-      letter-spacing: 1.2px;
+      letter-spacing: 1px;
+      display: block;
     }
 
-    .pedestal-count-badge {
+    .stat-chip-num {
       font-size: 15px;
       font-weight: 900;
       color: var(--gold);
-      background: rgba(4, 7, 13, 0.8);
-      border: 1px solid rgba(255, 215, 0, 0.4);
-      padding: 3px 14px;
-      border-radius: 6px;
-      margin-top: 6px;
       letter-spacing: 1px;
-      box-shadow: 0 0 12px rgba(255, 215, 0, 0.2);
     }
 
     .admin-accordion {
@@ -1395,7 +1314,7 @@
       </div>
     </div>
 
-    <!-- MANAGERS TAB (3D TROPHY ROOM) -->
+    <!-- MANAGERS TAB (CODED 3D TROPHY ROOM WITH THREE.JS) -->
     <div id="page-managers" class="view-card">
       <div class="league-banner">
         <div>
@@ -1419,46 +1338,20 @@
         </div>
       </div>
 
-      <!-- 3D Realistic Trophy Showcase Room -->
-      <div class="trophy-room-3d">
-        <div class="room-header-title">🏛️ Trophy Showcase Cabinet</div>
+      <!-- CODED 3D TROPHY ROOM CANVAS CONTAINER -->
+      <div class="trophy-room-canvas-container" id="trophyRoomContainer">
+        <div class="canvas-overlay-header">🏛️ 3D Trophy Room Showcase</div>
+        <canvas id="trophyRoomCanvas"></canvas>
         
-        <div class="trophy-pedestals-grid">
-          
-          <!-- Pedestal 1: UEFA Champions League 3D Trophy -->
-          <div class="trophy-stand-column">
-            <div class="stand-trophy-viewer-box">
-              <model-viewer 
-                src="ucl-trophy.glb" 
-                alt="3D UCL Trophy"
-                auto-rotate 
-                rotation-per-second="20deg"
-                camera-controls 
-                interaction-prompt="none"
-                environment-image="neutral"
-                exposure="1.35"
-                style="width: 100%; height: 100%;">
-              </model-viewer>
-            </div>
-            <div class="pedestal-base">
-              <div class="pedestal-glow-top"></div>
-              <span class="pedestal-trophy-name" style="color: var(--ucl-blue);">UCL Trophy</span>
-              <span class="pedestal-count-badge" id="roomUclCount">x0</span>
-            </div>
+        <div class="pedestal-stats-row">
+          <div class="pedestal-stat-chip" style="border-color: rgba(59, 130, 246, 0.6);">
+            <span class="stat-chip-label" style="color: var(--ucl-blue);">UCL Titles</span>
+            <span class="stat-chip-num" id="roomUclCount">x0</span>
           </div>
-
-          <!-- Pedestal 2: League Champions Trophy -->
-          <div class="trophy-stand-column">
-            <div class="stand-trophy-viewer-box">
-              <img src="ucl-trophy.png" alt="League Trophy" class="stand-trophy-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/861/861512.png'">
-            </div>
-            <div class="pedestal-base">
-              <div class="pedestal-glow-top"></div>
-              <span class="pedestal-trophy-name" style="color: var(--gold);">League Title</span>
-              <span class="pedestal-count-badge" id="roomLeagueCount">x0</span>
-            </div>
+          <div class="pedestal-stat-chip" style="border-color: rgba(255, 215, 0, 0.6);">
+            <span class="stat-chip-label" style="color: var(--gold);">League Titles</span>
+            <span class="stat-chip-num" id="roomLeagueCount">x0</span>
           </div>
-
         </div>
       </div>
     </div>
@@ -1659,7 +1552,7 @@
 
   </main>
 
-  <!-- BOTTOM NAVIGATION WITH MANAGERS TAB -->
+  <!-- BOTTOM NAVIGATION -->
   <nav class="bottom-nav">
     <button class="nav-item active" onclick="switchTab('home')">
       <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1800,7 +1693,7 @@
       return `<span class="team-badge" style="${extraStyle}">${initial}</span>`;
     }
 
-    // 3D TROPHY SHADER
+    // 3D TROPHY SHADER FOR UCL TAB
     const trophyViewer = document.getElementById('uclTrophyModel');
     if (trophyViewer) {
       trophyViewer.addEventListener('load', () => {
@@ -1850,6 +1743,235 @@
       });
     }
 
+    // ==========================================================
+    // THREE.JS 3D ROOM SCENE ENGINE
+    // ==========================================================
+    let threeScene, threeCamera, threeRenderer;
+    let ucl3DModel = null;
+    let leagueTrophyMesh = null;
+    let isThreeInitialized = false;
+
+    function initThreeDStudioRoom() {
+      const container = document.getElementById('trophyRoomContainer');
+      const canvas = document.getElementById('trophyRoomCanvas');
+      if (!container || !canvas || isThreeInitialized) return;
+
+      const width = container.clientWidth || 340;
+      const height = container.clientHeight || 380;
+
+      // 1. Scene & Perspective Camera
+      threeScene = new THREE.Scene();
+      threeScene.background = new THREE.Color(0x030712);
+      threeScene.fog = new THREE.FogExp2(0x030712, 0.04);
+
+      threeCamera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+      threeCamera.position.set(0, 1.5, 6.2);
+      threeCamera.lookAt(0, 0.5, 0);
+
+      // 2. WebGL Renderer with Shadows
+      threeRenderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+      threeRenderer.setSize(width, height);
+      threeRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      threeRenderer.shadowMap.enabled = true;
+      threeRenderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+      // 3. Studio Room Box Geometry (Floor & Walls)
+      // Floor (Reflective dark tiles)
+      const floorGeo = new THREE.PlaneGeometry(16, 16);
+      const floorMat = new THREE.MeshStandardMaterial({
+        color: 0x050a17,
+        roughness: 0.25,
+        metalness: 0.8
+      });
+      const floor = new THREE.Mesh(floorGeo, floorMat);
+      floor.rotation.x = -Math.PI / 2;
+      floor.position.y = -1.2;
+      floor.receiveShadow = true;
+      threeScene.add(floor);
+
+      // Back Wall
+      const wallGeo = new THREE.PlaneGeometry(16, 10);
+      const wallMat = new THREE.MeshStandardMaterial({
+        color: 0x070e1c,
+        roughness: 0.7,
+        metalness: 0.2
+      });
+      const backWall = new THREE.Mesh(wallGeo, wallMat);
+      backWall.position.set(0, 3.5, -4);
+      threeScene.add(backWall);
+
+      // 4. Curved Glowing Neon Ribbons (From Reference Picture)
+      createNeonEnergyRibbon(-1.8, 0x00e5ff);
+      createNeonEnergyRibbon(-1.2, 0x00a2ff);
+      createNeonEnergyRibbon(-0.6, 0x3b82f6);
+
+      // 5. 3D Pedestals
+      // Left Pedestal (UCL)
+      create3DPedestal(-1.5, 0x00e5ff);
+      // Right Pedestal (League)
+      create3DPedestal(1.5, 0xffd700);
+
+      // 6. Realistic Lighting
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.45);
+      threeScene.add(ambientLight);
+
+      // Spotlight for UCL Pedestal
+      const spotLeft = new THREE.SpotLight(0x00e5ff, 2.5);
+      spotLeft.position.set(-1.5, 5, 2);
+      spotLeft.angle = 0.45;
+      spotLeft.penumbra = 0.6;
+      spotLeft.castShadow = true;
+      threeScene.add(spotLeft);
+
+      // Spotlight for League Pedestal
+      const spotRight = new THREE.SpotLight(0xffd700, 2.5);
+      spotRight.position.set(1.5, 5, 2);
+      spotRight.angle = 0.45;
+      spotRight.penumbra = 0.6;
+      spotRight.castShadow = true;
+      threeScene.add(spotRight);
+
+      // 7. Load UCL .GLB Trophy into Left Pedestal
+      const gltfLoader = new THREE.GLTFLoader();
+      gltfLoader.load('ucl-trophy.glb', (gltf) => {
+        ucl3DModel = gltf.scene;
+        ucl3DModel.position.set(-1.5, 0.05, 0);
+
+        // Compute auto-scale for perfect stand placement
+        const box = new THREE.Box3().setFromObject(ucl3DModel);
+        const size = new THREE.Vector3();
+        box.getSize(size);
+        const scaleFactor = 1.35 / (size.y || 1);
+        ucl3DModel.scale.set(scaleFactor, scaleFactor, scaleFactor);
+
+        ucl3DModel.traverse((child) => {
+          if (child.isMesh) {
+            child.castShadow = true;
+            child.receiveShadow = true;
+            if (child.material) {
+              child.material.metalness = 0.95;
+              child.material.roughness = 0.15;
+              child.material.color = new THREE.Color(0xf0f5ff);
+            }
+          }
+        });
+
+        threeScene.add(ucl3DModel);
+      }, undefined, (err) => {
+        console.log('Falling back to geometric trophy on pedestal:', err);
+      });
+
+      // 8. 3D Golden League Trophy on Right Pedestal
+      leagueTrophyMesh = createLeagueCupMesh();
+      leagueTrophyMesh.position.set(1.5, 0.72, 0);
+      threeScene.add(leagueTrophyMesh);
+
+      isThreeInitialized = true;
+      animateThreeRoom();
+    }
+
+    function createNeonEnergyRibbon(yOffset, hexColor) {
+      const curve = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(-8, yOffset + 0.5, -3.2),
+        new THREE.Vector3(-3, yOffset + 1.2, -2.8),
+        new THREE.Vector3(2, yOffset + 1.8, -2.9),
+        new THREE.Vector3(8, yOffset + 2.5, -3.2)
+      ]);
+
+      const tubeGeo = new THREE.TubeGeometry(curve, 64, 0.04, 8, false);
+      const tubeMat = new THREE.MeshBasicMaterial({ color: hexColor });
+      const ribbon = new THREE.Mesh(tubeGeo, tubeMat);
+      threeScene.add(ribbon);
+    }
+
+    function create3DPedestal(xPos, rimColor) {
+      const group = new THREE.Group();
+      group.position.set(xPos, -0.6, 0);
+
+      // Base Pillar
+      const pillarGeo = new THREE.BoxGeometry(1.4, 1.2, 1.4);
+      const pillarMat = new THREE.MeshStandardMaterial({
+        color: 0x090e1a,
+        metalness: 0.85,
+        roughness: 0.25
+      });
+      const pillar = new THREE.Mesh(pillarGeo, pillarMat);
+      pillar.castShadow = true;
+      pillar.receiveShadow = true;
+      group.add(pillar);
+
+      // Glowing Top Rim
+      const rimGeo = new THREE.BoxGeometry(1.42, 0.03, 1.42);
+      const rimMat = new THREE.MeshBasicMaterial({ color: rimColor });
+      const rim = new THREE.Mesh(rimGeo, rimMat);
+      rim.position.y = 0.6;
+      group.add(rim);
+
+      threeScene.add(group);
+    }
+
+    function createLeagueCupMesh() {
+      const cupGroup = new THREE.Group();
+      const goldMat = new THREE.MeshStandardMaterial({
+        color: 0xffd700,
+        metalness: 0.95,
+        roughness: 0.18
+      });
+
+      // Cup Bowl
+      const bodyGeo = new THREE.CylinderGeometry(0.48, 0.25, 0.75, 24);
+      const body = new THREE.Mesh(bodyGeo, goldMat);
+      body.castShadow = true;
+      cupGroup.add(body);
+
+      // Stem
+      const stemGeo = new THREE.CylinderGeometry(0.12, 0.14, 0.35, 16);
+      const stem = new THREE.Mesh(stemGeo, goldMat);
+      stem.position.y = -0.48;
+      stem.castShadow = true;
+      cupGroup.add(stem);
+
+      // Base Foot
+      const footGeo = new THREE.CylinderGeometry(0.35, 0.4, 0.12, 24);
+      const foot = new THREE.Mesh(footGeo, goldMat);
+      foot.position.y = -0.68;
+      foot.castShadow = true;
+      cupGroup.add(foot);
+
+      return cupGroup;
+    }
+
+    function animateThreeRoom() {
+      requestAnimationFrame(animateThreeRoom);
+
+      // Locked auto-rotation for both 3D trophies
+      if (ucl3DModel) {
+        ucl3DModel.rotation.y += 0.012;
+      }
+      if (leagueTrophyMesh) {
+        leagueTrophyMesh.rotation.y += 0.012;
+      }
+
+      if (threeRenderer && threeScene && threeCamera) {
+        threeRenderer.render(threeScene, threeCamera);
+      }
+    }
+
+    function resizeThreeRoom() {
+      const container = document.getElementById('trophyRoomContainer');
+      if (!container || !threeRenderer || !threeCamera) return;
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+      threeCamera.aspect = width / height;
+      threeCamera.updateProjectionMatrix();
+      threeRenderer.setSize(width, height);
+    }
+
+    window.addEventListener('resize', resizeThreeRoom);
+
+    // ==========================================================
+    // TAB SWITCHING & AUTH
+    // ==========================================================
     function switchTab(tabKey) {
       if (tabKey === 'admin' && !isAdminUnlocked) {
         const pass = prompt("🔒 Enter Admin Password:");
@@ -1897,6 +2019,16 @@
           btn.classList.add('active');
         }
       });
+
+      if (tabKey === 'managers') {
+        setTimeout(() => {
+          if (!isThreeInitialized) {
+            initThreeDStudioRoom();
+          } else {
+            resizeThreeRoom();
+          }
+        }, 60);
+      }
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -2194,7 +2326,7 @@
         `;
       }).join('') || '<p style="text-align:center; color:var(--muted); padding:20px;">No results recorded.</p>';
 
-      // RENDER MANAGERS TAB & 3D TROPHY ROOM
+      // RENDER MANAGERS TAB DATA
       const currentMgr = state.manager || defaultState.manager;
       const mgrTeam = getTeam(currentMgr.teamId);
 
