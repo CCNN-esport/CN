@@ -767,7 +767,6 @@
       box-shadow: 0 0 35px var(--ucl-glow);
     }
 
-    /* 3D TROPHY VIEWER STYLING WITH SILVER METALLIC SHINE */
     .ucl-trophy-3d {
       width: 100%;
       max-width: 280px;
@@ -788,7 +787,6 @@
       margin-top: 14px;
     }
 
-    /* OFFICIAL UCL THEME CHAMPIONS TYPOGRAPHY */
     .podium-champion-badge {
       display: inline-block;
       margin-top: 8px;
@@ -804,6 +802,210 @@
       border: 1.5px solid rgba(255, 215, 0, 0.65);
       box-shadow: 0 0 16px rgba(255, 215, 0, 0.4), inset 0 0 8px rgba(0, 229, 255, 0.3);
       text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+    }
+
+    /* ==========================================================
+       MANAGERS 3D TROPHY ROOM & SHOWCASE STYLES
+       ========================================================== */
+    .manager-profile-card {
+      background: var(--glass-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 16px 20px;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .manager-avatar-box {
+      width: 68px;
+      height: 68px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      border: 2px solid var(--accent);
+      box-shadow: 0 0 16px var(--accent-glow);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .manager-avatar-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .manager-avatar-box svg {
+      width: 38px;
+      height: 38px;
+      stroke: var(--muted);
+    }
+
+    .manager-info-meta {
+      flex: 1;
+    }
+
+    .manager-sub-label {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent);
+      margin-bottom: 2px;
+    }
+
+    .manager-display-name {
+      font-size: 20px;
+      font-weight: 900;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      line-height: 1.2;
+    }
+
+    .manager-club-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    /* 3D TROPHY ROOM CABINET CONTAINER */
+    .trophy-room-3d {
+      position: relative;
+      background: radial-gradient(circle at 50% 25%, #182a4d 0%, #081124 55%, #03060d 100%);
+      border: 1px solid rgba(0, 229, 255, 0.25);
+      border-radius: 24px;
+      padding: 24px 16px 30px 16px;
+      box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.9), 0 15px 40px rgba(0, 0, 0, 0.6);
+      perspective: 1200px;
+      overflow: hidden;
+    }
+
+    /* CEILING SPOTLIGHT BEAMS */
+    .trophy-room-3d::before {
+      content: "";
+      position: absolute;
+      top: -20px;
+      left: 15%;
+      width: 70%;
+      height: 140px;
+      background: radial-gradient(ellipse at top, rgba(0, 229, 255, 0.25), transparent 70%);
+      pointer-events: none;
+    }
+
+    .room-header-title {
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--accent);
+      text-align: center;
+      margin-bottom: 22px;
+      text-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .trophy-pedestals-grid {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 16px;
+      margin-top: 10px;
+      transform-style: preserve-3d;
+    }
+
+    /* INDIVIDUAL TROPHY SHOWCASE STAND */
+    .trophy-stand-column {
+      flex: 1;
+      max-width: 175px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    .stand-trophy-viewer-box {
+      width: 100%;
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      margin-bottom: -15px;
+      z-index: 2;
+    }
+
+    .stand-trophy-viewer-box model-viewer {
+      width: 100%;
+      height: 100%;
+      outline: none;
+      --poster-color: transparent;
+      filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.7));
+    }
+
+    .stand-trophy-img {
+      max-height: 130px;
+      width: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 10px 16px rgba(0, 0, 0, 0.75));
+    }
+
+    /* 3D ILLUMINATED PEDESTAL BASE */
+    .pedestal-base {
+      width: 100%;
+      height: 78px;
+      background: linear-gradient(180deg, #1f3358 0%, #0d172e 60%, #070d1a 100%);
+      border: 1px solid rgba(0, 229, 255, 0.35);
+      border-radius: 12px;
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+      transform: rotateX(8deg);
+    }
+
+    .pedestal-glow-top {
+      position: absolute;
+      top: 0;
+      left: 10%;
+      width: 80%;
+      height: 3px;
+      background: var(--accent);
+      box-shadow: 0 0 10px var(--accent);
+      border-radius: 50%;
+    }
+
+    .pedestal-trophy-name {
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* COUNT OF TROPHIES PLAQUE */
+    .pedestal-count-badge {
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--gold);
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 215, 0, 0.4);
+      padding: 3px 12px;
+      border-radius: 8px;
+      margin-top: 4px;
+      letter-spacing: 1px;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.25);
     }
 
     .admin-accordion {
@@ -1147,7 +1349,6 @@
           </div>
         </div>
 
-        <!-- 3D UCL TROPHY PODIUM (SILVER CHROME SHINE & REALISTIC LIGHTING) -->
         <div class="ucl-trophy-podium">
           <model-viewer 
             id="uclTrophyModel"
@@ -1170,61 +1371,71 @@
       </div>
     </div>
 
-    <!-- TROPHIES TAB -->
-    <div id="page-trophies" class="view-card">
+    <!-- MANAGERS TAB (3D TROPHY ROOM) -->
+    <div id="page-managers" class="view-card">
       <div class="league-banner">
         <div>
           <div class="league-title-label current-league-tag">🏆 CCNN SUPER LEAGUE</div>
-          <div class="league-title-name">Trophy Cabinets</div>
+          <div class="league-title-name">Manager Trophy Room</div>
         </div>
       </div>
 
-      <div class="table-card">
-        <div style="padding: 8px 12px; font-size:12px; font-weight:800; color:var(--accent); text-transform:uppercase;">
-          1. Total Trophies Titles
+      <!-- Manager Profile Header -->
+      <div class="manager-profile-card">
+        <div class="manager-avatar-box" id="managerAvatarContainer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
         </div>
-        <table>
-          <thead>
-            <tr>
-              <th style="width:36px;">Pos</th>
-              <th style="text-align:left;">Club</th>
-              <th style="color:var(--accent);">Total Trophies</th>
-            </tr>
-          </thead>
-          <tbody id="totalTrophiesBody"></tbody>
-        </table>
+        <div class="manager-info-meta">
+          <div class="manager-sub-label">Head Coach</div>
+          <div class="manager-display-name" id="managerDisplayName">Haris</div>
+          <div class="manager-club-badge" id="managerClubBadge">
+            <span class="team-badge" id="managerTeamLogo">R</span>
+            <span id="managerClubName">Real Madrid</span>
+          </div>
+        </div>
       </div>
 
-      <div class="table-card">
-        <div style="padding: 8px 12px; font-size:12px; font-weight:800; color:var(--gold); text-transform:uppercase;">
-          2. League Titles
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th style="width:36px;">Pos</th>
-              <th style="text-align:left;">Club</th>
-              <th style="color:var(--gold);">League Titles</th>
-            </tr>
-          </thead>
-          <tbody id="leagueTitlesBody"></tbody>
-        </table>
-      </div>
+      <!-- 3D Realistic Trophy Showcase Room -->
+      <div class="trophy-room-3d">
+        <div class="room-header-title">🏛️ Trophy Showcase Cabinet</div>
+        
+        <div class="trophy-pedestals-grid">
+          
+          <!-- Pedestal 1: UEFA Champions League 3D Trophy -->
+          <div class="trophy-stand-column">
+            <div class="stand-trophy-viewer-box">
+              <model-viewer 
+                src="ucl-trophy.glb" 
+                alt="3D UCL Trophy"
+                auto-rotate 
+                rotation-per-second="20deg"
+                camera-controls 
+                interaction-prompt="none"
+                environment-image="neutral"
+                exposure="1.3"
+                style="width: 100%; height: 100%;">
+              </model-viewer>
+            </div>
+            <div class="pedestal-base">
+              <div class="pedestal-glow-top" style="background: var(--ucl-blue); box-shadow: 0 0 10px var(--ucl-blue);"></div>
+              <span class="pedestal-trophy-name" style="color: var(--ucl-blue);">UCL Trophy</span>
+              <span class="pedestal-count-badge" id="roomUclCount">x0</span>
+            </div>
+          </div>
 
-      <div class="table-card">
-        <div style="padding: 8px 12px; font-size:12px; font-weight:800; color:var(--ucl-blue); text-transform:uppercase;">
-          3. UCL Titles
+          <!-- Pedestal 2: League Champions Trophy -->
+          <div class="trophy-stand-column">
+            <div class="stand-trophy-viewer-box">
+              <img src="ucl-trophy.png" alt="League Trophy" class="stand-trophy-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/861/861512.png'">
+            </div>
+            <div class="pedestal-base">
+              <div class="pedestal-glow-top" style="background: var(--gold); box-shadow: 0 0 10px var(--gold);"></div>
+              <span class="pedestal-trophy-name" style="color: var(--gold);">League Title</span>
+              <span class="pedestal-count-badge" id="roomLeagueCount">x0</span>
+            </div>
+          </div>
+
         </div>
-        <table>
-          <thead>
-            <tr>
-              <th style="width:36px;">Pos</th>
-              <th style="text-align:left;">Club</th>
-              <th style="color:var(--ucl-blue);">UCL Titles</th>
-            </tr>
-          </thead>
-          <tbody id="uclTitlesBody"></tbody>
-        </table>
       </div>
     </div>
 
@@ -1364,15 +1575,29 @@
         </div>
       </div>
 
-      <!-- 5. TROPHY -->
+      <!-- 5. MANAGERS & TROPHY ROOM SETTINGS -->
       <div class="admin-accordion">
         <div class="admin-accordion-header" onclick="toggleAccordion(this)">
-          <span>5. Trophy</span>
+          <span>5. Managers & Trophy Room</span>
           <span>▾</span>
         </div>
         <div class="admin-accordion-body">
           <div class="form-group">
-            <label>Select Team</label>
+            <label>Manager Name</label>
+            <input type="text" id="adminManagerNameInput" placeholder="e.g. Haris">
+          </div>
+          <div class="form-group">
+            <label>Manager Photo (URL or file name, e.g. manager.png)</label>
+            <input type="text" id="adminManagerPhotoInput" placeholder="e.g. manager.png">
+          </div>
+          <div class="form-group">
+            <label>Managing Team</label>
+            <select id="adminManagerTeamSelect"></select>
+            <button class="btn" onclick="saveManagerProfile()">Save Manager Profile</button>
+          </div>
+
+          <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.08); padding-top:10px;">
+            <label>Select Team for Trophy Room Counts</label>
             <select id="trophyEditTeamSelect" onchange="loadTrophyCountsForSelectedTeam()"></select>
           </div>
           <div class="form-group">
@@ -1382,7 +1607,7 @@
           <div class="form-group">
             <label>UCL Titles Count</label>
             <input type="number" id="editUclTitlesCount" min="0">
-            <button class="btn btn-gold" onclick="saveCustomTrophyCounts()">Save Trophy Counts 🏆</button>
+            <button class="btn btn-gold" onclick="saveCustomTrophyCounts()">Save Showcase Trophy Counts 🏆</button>
           </div>
         </div>
       </div>
@@ -1410,6 +1635,7 @@
 
   </main>
 
+  <!-- BOTTOM NAVIGATION WITH MANAGERS TAB -->
   <nav class="bottom-nav">
     <button class="nav-item active" onclick="switchTab('home')">
       <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1445,15 +1671,12 @@
       <span>UCL</span>
     </button>
 
-    <button class="nav-item" onclick="switchTab('trophies')">
+    <button class="nav-item" onclick="switchTab('managers')">
       <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M6 9H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h2"></path>
-        <path d="M18 9h2a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-2"></path>
-        <path d="M4 22h16"></path>
-        <path d="M10 14.66V17c0 .55-.45 1-1 1H7v4h10v-4h-2c-.55 0-1-.45-1-1v-2.34"></path>
-        <path d="M18 2H6v7a6 6 0 0 0 12 0V2z"></path>
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+        <circle cx="12" cy="7" r="4"></circle>
       </svg>
-      <span>Trophies</span>
+      <span>Managers</span>
     </button>
 
     <button class="nav-item" onclick="switchTab('admin')">
@@ -1489,6 +1712,11 @@
       lastLeagueChamp: 'Real Madrid',
       lastUclChamp: 'Real Madrid',
       uclSpots: 4,
+      manager: {
+        name: 'Haris',
+        photo: '',
+        teamId: '3'
+      },
       teams: [
         { id: '1', name: 'Sparta FC', logo: '', leagueTitles: 0, uclTitles: 0 },
         { id: '2', name: 'Titan SC', logo: '', leagueTitles: 0, uclTitles: 0 },
@@ -1521,6 +1749,7 @@
         if (!state.fixtures) state.fixtures = [];
         if (!state.results) state.results = [];
         if (!state.ucl) state.ucl = defaultState.ucl;
+        if (!state.manager) state.manager = defaultState.manager;
 
         state.teams.forEach(t => {
           if (!t.logo) {
@@ -1547,7 +1776,7 @@
       return `<span class="team-badge" style="${extraStyle}">${initial}</span>`;
     }
 
-    // 3D TROPHY SHADER: Forces high-gloss silver mirror chrome on load
+    // 3D TROPHY SHADER
     const trophyViewer = document.getElementById('uclTrophyModel');
     if (trophyViewer) {
       trophyViewer.addEventListener('load', () => {
@@ -1691,7 +1920,6 @@
         streak: 0
       }));
 
-      // Sort chronological (oldest to newest)
       const chronologicalResults = [...(state.results || [])].sort((a, b) => {
         return (parseInt(a.id) || 0) - (parseInt(b.id) || 0);
       });
@@ -1830,7 +2058,7 @@
         graphContainer.innerHTML = `<div style="color:var(--muted); font-size:12px; margin:auto;">Add teams to generate predictions</div>`;
       }
 
-      // League Table: Precise chronological sequence
+      // League Table
       const tbody = document.getElementById('leagueTableBody');
       tbody.innerHTML = leagueTable.map((t, idx) => {
         const isUcl = idx < state.uclSpots;
@@ -1942,33 +2170,23 @@
         `;
       }).join('') || '<p style="text-align:center; color:var(--muted); padding:20px;">No results recorded.</p>';
 
-      // Trophies
-      const totalSorted = [...state.teams].sort((a,b) => (b.leagueTitles + b.uclTitles) - (a.leagueTitles + a.uclTitles));
-      document.getElementById('totalTrophiesBody').innerHTML = totalSorted.map((t, idx) => `
-        <tr>
-          <td>${idx + 1}</td>
-          <td class="team-col">${renderTeamBadge(t)}<span>${t.name}</span></td>
-          <td style="color:var(--accent); font-weight:900; font-size:14px;">🏆 ${t.leagueTitles + t.uclTitles}</td>
-        </tr>
-      `).join('');
+      // RENDER MANAGERS TAB & 3D TROPHY ROOM
+      const currentMgr = state.manager || defaultState.manager;
+      const mgrTeam = getTeam(currentMgr.teamId);
 
-      const leagueSorted = [...state.teams].sort((a,b) => b.leagueTitles - a.leagueTitles);
-      document.getElementById('leagueTitlesBody').innerHTML = leagueSorted.map((t, idx) => `
-        <tr>
-          <td>${idx + 1}</td>
-          <td class="team-col">${renderTeamBadge(t)}<span>${t.name}</span></td>
-          <td style="color:var(--gold); font-weight:900; font-size:14px;">🥇 ${t.leagueTitles}</td>
-        </tr>
-      `).join('');
+      document.getElementById('managerDisplayName').textContent = currentMgr.name || 'Manager';
+      document.getElementById('managerClubName').textContent = mgrTeam.name;
+      document.getElementById('managerTeamLogo').outerHTML = renderTeamBadge(mgrTeam, 'id="managerTeamLogo"');
 
-      const uclSorted = [...state.teams].sort((a,b) => b.uclTitles - a.uclTitles);
-      document.getElementById('uclTitlesBody').innerHTML = uclSorted.map((t, idx) => `
-        <tr>
-          <td>${idx + 1}</td>
-          <td class="team-col">${renderTeamBadge(t, 'border-color:var(--ucl-blue);')}<span>${t.name}</span></td>
-          <td style="color:var(--ucl-blue); font-weight:900; font-size:14px;">⭐ ${t.uclTitles}</td>
-        </tr>
-      `).join('');
+      const avatarBox = document.getElementById('managerAvatarContainer');
+      if (currentMgr.photo) {
+        avatarBox.innerHTML = `<img src="${currentMgr.photo}" alt="${currentMgr.name}" onerror="this.outerHTML='<svg viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'2\\'><path d=\\'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2\\'></path><circle cx=\\'12\\' cy=\\'7\\' r=\\'4\\'></circle></svg>'">`;
+      } else {
+        avatarBox.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`;
+      }
+
+      document.getElementById('roomUclCount').textContent = 'x' + (mgrTeam.uclTitles || 0);
+      document.getElementById('roomLeagueCount').textContent = 'x' + (mgrTeam.leagueTitles || 0);
 
       // Admin Select & Inputs Populating
       const teamOptions = state.teams.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
@@ -1976,10 +2194,8 @@
       document.getElementById('fixtureAwayTeam').innerHTML = teamOptions;
       document.getElementById('adminDeleteTeamSelect').innerHTML = teamOptions;
       document.getElementById('adminEditLogoTeamSelect').innerHTML = teamOptions;
-      
-      // Blank / None support in Admin
+      document.getElementById('adminManagerTeamSelect').innerHTML = teamOptions;
       document.getElementById('setUclChampSelect').innerHTML = `<option value="">-- None / Blank --</option>` + teamOptions;
-      
       document.getElementById('trophyEditTeamSelect').innerHTML = teamOptions;
 
       document.getElementById('adminUclSpotsSelect').value = state.uclSpots;
@@ -1987,6 +2203,10 @@
       document.getElementById('adminSeasonInput').value = state.season;
       document.getElementById('adminLastLeagueChampInput').value = state.lastLeagueChamp;
       document.getElementById('adminLastUclChampInput').value = state.lastUclChamp;
+
+      document.getElementById('adminManagerNameInput').value = currentMgr.name || '';
+      document.getElementById('adminManagerPhotoInput').value = currentMgr.photo || '';
+      document.getElementById('adminManagerTeamSelect').value = currentMgr.teamId || '';
 
       loadLogoForSelectedTeam();
       loadTrophyCountsForSelectedTeam();
@@ -2020,6 +2240,21 @@
           </div>
         </div>
       `).join('') || '<div style="color:var(--muted); font-size:12px;">No matches awaiting score entry.</div>';
+    }
+
+    function saveManagerProfile() {
+      const name = document.getElementById('adminManagerNameInput').value.trim();
+      const photo = document.getElementById('adminManagerPhotoInput').value.trim();
+      const teamId = document.getElementById('adminManagerTeamSelect').value;
+
+      state.manager = {
+        name: name || 'Manager',
+        photo: photo || '',
+        teamId: teamId
+      };
+
+      saveState();
+      alert('Manager Profile updated live!');
     }
 
     function updateLeagueName() {
@@ -2067,8 +2302,8 @@
       const selId = document.getElementById('trophyEditTeamSelect').value;
       const team = state.teams.find(t => t.id === selId);
       if (team) {
-        document.getElementById('editLeagueTitlesCount').value = team.leagueTitles;
-        document.getElementById('editUclTitlesCount').value = team.uclTitles;
+        document.getElementById('editLeagueTitlesCount').value = team.leagueTitles || 0;
+        document.getElementById('editUclTitlesCount').value = team.uclTitles || 0;
       }
     }
 
@@ -2177,7 +2412,7 @@
           state.ucl.champion = champTeam.name;
         }
       } else {
-        state.ucl.champion = ""; // Blank / None selected
+        state.ucl.champion = "";
       }
 
       saveState();
