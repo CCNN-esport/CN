@@ -787,6 +787,7 @@
       margin-top: 14px;
     }
 
+    /* OFFICIAL UCL THEME CHAMPIONS TYPOGRAPHY */
     .podium-champion-badge {
       display: inline-block;
       margin-top: 8px;
@@ -804,7 +805,7 @@
       text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
     }
 
-    /* MANAGERS 3D TROPHY ROOM & SHOWCASE STYLES */
+    /* MANAGERS 3D TROPHY ROOM & SHOWCASE STYLES (MATCHING REFERENCE IMAGE) */
     .manager-profile-card {
       background: var(--glass-card);
       backdrop-filter: blur(16px);
@@ -876,36 +877,64 @@
       color: var(--muted);
     }
 
+    /* CINEMATIC TROPHY ROOM */
     .trophy-room-3d {
       position: relative;
-      background: radial-gradient(circle at 50% 25%, #182a4d 0%, #081124 55%, #03060d 100%);
-      border: 1px solid rgba(0, 229, 255, 0.25);
+      background: radial-gradient(circle at 50% 40%, #0c1830 0%, #050b17 55%, #020409 100%);
+      border: 1px solid rgba(0, 229, 255, 0.2);
       border-radius: 24px;
-      padding: 24px 16px 30px 16px;
-      box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.9), 0 15px 40px rgba(0, 0, 0, 0.6);
-      perspective: 1200px;
+      padding: 24px 14px 28px 14px;
+      box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.95), 0 15px 40px rgba(0, 0, 0, 0.7);
       overflow: hidden;
     }
 
+    /* CURVED NEON ENERGY LIGHT RIBBONS IN BACKGROUND */
     .trophy-room-3d::before {
       content: "";
       position: absolute;
-      top: -20px;
-      left: 15%;
-      width: 70%;
-      height: 140px;
-      background: radial-gradient(ellipse at top, rgba(0, 229, 255, 0.25), transparent 70%);
+      top: 32%;
+      left: -20%;
+      width: 140%;
+      height: 90px;
+      background: repeating-linear-gradient(
+        -12deg,
+        transparent,
+        transparent 7px,
+        rgba(0, 229, 255, 0.85) 8px,
+        rgba(0, 229, 255, 0.85) 12px,
+        transparent 13px,
+        transparent 20px
+      );
+      filter: drop-shadow(0 0 14px rgba(0, 229, 255, 0.9)) blur(0.4px);
+      opacity: 0.85;
+      transform: rotate(-6deg);
       pointer-events: none;
+      z-index: 0;
+    }
+
+    /* TOP OVERHEAD SPOTLIGHT */
+    .trophy-room-3d::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 20%;
+      width: 60%;
+      height: 180px;
+      background: radial-gradient(ellipse at top, rgba(255, 255, 255, 0.18), transparent 70%);
+      pointer-events: none;
+      z-index: 1;
     }
 
     .room-header-title {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 900;
       text-transform: uppercase;
       letter-spacing: 2px;
       color: var(--accent);
       text-align: center;
-      margin-bottom: 22px;
+      margin-bottom: 24px;
+      position: relative;
+      z-index: 2;
       text-shadow: 0 0 12px var(--accent-glow);
     }
 
@@ -913,14 +942,14 @@
       display: flex;
       justify-content: center;
       align-items: flex-end;
-      gap: 16px;
-      margin-top: 10px;
-      transform-style: preserve-3d;
+      gap: 20px;
+      position: relative;
+      z-index: 2;
     }
 
     .trophy-stand-column {
       flex: 1;
-      max-width: 175px;
+      max-width: 165px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -929,13 +958,12 @@
 
     .stand-trophy-viewer-box {
       width: 100%;
-      height: 180px;
+      height: 190px;
       display: flex;
       align-items: center;
       justify-content: center;
-      position: relative;
-      margin-bottom: -15px;
-      z-index: 2;
+      margin-bottom: -10px;
+      z-index: 3;
     }
 
     .stand-trophy-viewer-box model-viewer {
@@ -953,52 +981,55 @@
       filter: drop-shadow(0 10px 16px rgba(0, 0, 0, 0.75));
     }
 
+    /* SLEEK MINIMAL DARK MONOLITH PEDESTAL */
     .pedestal-base {
       width: 100%;
-      height: 78px;
-      background: linear-gradient(180deg, #1f3358 0%, #0d172e 60%, #070d1a 100%);
-      border: 1px solid rgba(0, 229, 255, 0.35);
-      border-radius: 12px;
-      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.2);
+      height: 90px;
+      background: linear-gradient(180deg, #111a2e 0%, #090e1a 45%, #04070d 100%);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-top: 2px solid rgba(255, 255, 255, 0.6);
+      border-radius: 6px;
+      box-shadow: 
+        0 16px 30px rgba(0, 0, 0, 0.9),
+        0 0 20px rgba(0, 229, 255, 0.15),
+        inset 0 1px 2px rgba(255, 255, 255, 0.3);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       position: relative;
-      z-index: 1;
-      transform: rotateX(8deg);
+      z-index: 2;
     }
 
     .pedestal-glow-top {
       position: absolute;
-      top: 0;
-      left: 10%;
-      width: 80%;
-      height: 3px;
-      background: var(--accent);
-      box-shadow: 0 0 10px var(--accent);
-      border-radius: 50%;
+      top: -1px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #ffffff 50%, transparent);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
     }
 
     .pedestal-trophy-name {
       font-size: 10px;
       font-weight: 800;
-      color: var(--muted);
+      color: #94a3b8;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 1.2px;
     }
 
     .pedestal-count-badge {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 900;
       color: var(--gold);
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(4, 7, 13, 0.8);
       border: 1px solid rgba(255, 215, 0, 0.4);
-      padding: 3px 12px;
-      border-radius: 8px;
-      margin-top: 4px;
+      padding: 3px 14px;
+      border-radius: 6px;
+      margin-top: 6px;
       letter-spacing: 1px;
-      box-shadow: 0 0 10px rgba(255, 215, 0, 0.25);
+      box-shadow: 0 0 12px rgba(255, 215, 0, 0.2);
     }
 
     .admin-accordion {
@@ -1405,12 +1436,12 @@
                 camera-controls 
                 interaction-prompt="none"
                 environment-image="neutral"
-                exposure="1.3"
+                exposure="1.35"
                 style="width: 100%; height: 100%;">
               </model-viewer>
             </div>
             <div class="pedestal-base">
-              <div class="pedestal-glow-top" style="background: var(--ucl-blue); box-shadow: 0 0 10px var(--ucl-blue);"></div>
+              <div class="pedestal-glow-top"></div>
               <span class="pedestal-trophy-name" style="color: var(--ucl-blue);">UCL Trophy</span>
               <span class="pedestal-count-badge" id="roomUclCount">x0</span>
             </div>
@@ -1422,7 +1453,7 @@
               <img src="ucl-trophy.png" alt="League Trophy" class="stand-trophy-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/861/861512.png'">
             </div>
             <div class="pedestal-base">
-              <div class="pedestal-glow-top" style="background: var(--gold); box-shadow: 0 0 10px var(--gold);"></div>
+              <div class="pedestal-glow-top"></div>
               <span class="pedestal-trophy-name" style="color: var(--gold);">League Title</span>
               <span class="pedestal-count-badge" id="roomLeagueCount">x0</span>
             </div>
