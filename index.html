@@ -10,6 +10,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
 
+  <!-- Google Model-Viewer for 3D GLB/glTF Interactive Models -->
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+
   <!-- Firebase App & Realtime Database SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -756,12 +759,33 @@
 
     .ucl-trophy-podium {
       text-align: center;
-      padding: 28px 16px 22px 16px;
+      padding: 22px 14px 22px 14px;
       background: radial-gradient(circle at center, rgba(59, 130, 246, 0.25) 0%, rgba(10, 16, 32, 0.95) 75%);
       border: 1px solid rgba(59, 130, 246, 0.55);
       border-radius: 20px;
       margin-top: 20px;
       box-shadow: 0 0 35px var(--ucl-glow);
+      position: relative;
+    }
+
+    /* 3D MODEL VIEWER STYLING */
+    model-viewer#ucl3DModel {
+      width: 100%;
+      height: 250px;
+      margin: 0 auto;
+      outline: none;
+      --poster-color: transparent;
+      filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.6));
+    }
+
+    .model-hint {
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: -6px;
+      margin-bottom: 6px;
+      font-weight: 700;
     }
 
     .podium-winner-name {
@@ -770,10 +794,9 @@
       color: #ffffff;
       text-transform: uppercase;
       letter-spacing: 1px;
-      margin-top: 14px;
+      margin-top: 8px;
     }
 
-    /* OFFICIAL UCL THEME CHAMPIONS TYPOGRAPHY */
     .podium-champion-badge {
       display: inline-block;
       margin-top: 8px;
@@ -1132,8 +1155,24 @@
           </div>
         </div>
 
+        <!-- UCL 3D INTERACTIVE MODEL PODIUM -->
         <div class="ucl-trophy-podium">
-          <img src="ucl-trophy.png" alt="UCL Trophy" style="width: 140px; height: auto; display: block; margin: 0 auto; filter: drop-shadow(0 0 25px rgba(59, 130, 246, 0.6));">
+          <model-viewer 
+            id="ucl3DModel" 
+            src="Cl_cup.glb" 
+            alt="UEFA Champions League Official Trophy 3D Model" 
+            auto-rotate 
+            rotation-per-second="24deg"
+            camera-controls 
+            touch-action="pan-y"
+            shadow-intensity="1.5"
+            exposure="1.15"
+            environment-image="neutral"
+            interaction-prompt="none"
+            camera-orbit="0deg 75deg 105%">
+          </model-viewer>
+          <div class="model-hint">👆 Touch & Drag to Rotate 3D Trophy</div>
+
           <div class="podium-winner-name" id="uclWinnerName">Real Madrid</div>
           <span class="podium-champion-badge">Champions</span>
         </div>
@@ -1329,7 +1368,7 @@
           <div class="form-group">
             <label>Crown UCL Champion (Adds to UCL Titles)</label>
             <select id="setUclChampSelect" style="margin-bottom:6px;"></select>
-            <button class="btn btn-gold" onclick="updateUclKnockouts()">Award UCL Trophy 🏆</button>
+            <button class="btn btn-gold" onclick="updateUclKnockouts()">Save UCL Trophy Winner 🏆</button>
           </div>
         </div>
       </div>
@@ -1450,7 +1489,6 @@
     const db = firebase.database();
     const stateRef = db.ref('esport_state');
 
-    // ONE-TIME PERMANENT LOGIN FOR THIS DEVICE
     let isAdminUnlocked = localStorage.getItem('ccnn_admin_logged_in') === 'true';
 
     let defaultState = {
@@ -1555,7 +1593,7 @@
         const pass = prompt("🔒 Enter Admin Password:");
         if (pass === "batman67") {
           isAdminUnlocked = true;
-          localStorage.setItem('ccnn_admin_logged_in', 'true'); // Persisted forever on this device
+          localStorage.setItem('ccnn_admin_logged_in', 'true');
         } else {
           if (pass !== null) alert("Incorrect Admin Password!");
           return;
@@ -1630,7 +1668,6 @@
       return state.teams.find(t => t.id === id) || { name: 'Unknown Club', logo: '' };
     }
 
-    // ACCURATE FORM CALCULATION (CHRONOLOGICAL SEQUENCING)
     function calculateStandingsForComp(compType, filterTeams = null) {
       const baseTeams = filterTeams || state.teams;
       const standings = baseTeams.map(t => ({
@@ -1644,7 +1681,6 @@
         streak: 0
       }));
 
-      // Sort chronological (oldest to newest)
       const chronologicalResults = [...(state.results || [])].sort((a, b) => {
         return (parseInt(a.id) || 0) - (parseInt(b.id) || 0);
       });
@@ -1749,7 +1785,6 @@
 
       const leagueTable = calculateStandingsForComp('league');
 
-      // Home Leader Card
       const leader = leagueTable[0] || { name: 'No Team', logo: '', pts: 0, streak: 0 };
       document.getElementById('heroLeaderName').textContent = leader.name;
       document.getElementById('heroLeaderBadge').innerHTML = renderTeamBadge(leader);
@@ -1783,12 +1818,9 @@
         graphContainer.innerHTML = `<div style="color:var(--muted); font-size:12px; margin:auto;">Add teams to generate predictions</div>`;
       }
 
-      // League Table: CORRECT CHRONOLOGICAL ORDER (1st match -> 2nd match -> 3rd match...)
       const tbody = document.getElementById('leagueTableBody');
       tbody.innerHTML = leagueTable.map((t, idx) => {
         const isUcl = idx < state.uclSpots;
-
-        // Take up to 5 most recent matches, rendered chronologically left-to-right
         const last5 = t.form.slice(-5);
         const formHtml = [0, 1, 2, 3, 4].map(i => {
           const outcome = last5[i];
@@ -1818,7 +1850,6 @@
         `;
       }).join('');
 
-      // UCL Table
       const uclQualifiedClubs = leagueTable.slice(0, state.uclSpots);
       const uclTable = calculateStandingsForComp('ucl', uclQualifiedClubs);
 
@@ -1844,7 +1875,6 @@
         `;
       }).join('') || '<tr><td colspan="10" style="padding:14px; color:var(--muted);">No teams in group stage.</td></tr>';
 
-      // UCL Knockouts
       if (state.ucl) {
         document.getElementById('semiHomeName').textContent = state.ucl.semiHome;
         document.getElementById('semiHomeScore').textContent = state.ucl.semiHScore;
@@ -1856,11 +1886,9 @@
         document.getElementById('finalAwayName').textContent = state.ucl.finalAway;
         document.getElementById('finalAwayScore').textContent = state.ucl.finalAScore;
         
-        // Blank / None support on UCL champion podium
         document.getElementById('uclWinnerName').textContent = state.ucl.champion || 'TBD';
       }
 
-      // Fixtures
       const fixContainer = document.getElementById('sub-fixtures');
       fixContainer.innerHTML = (state.fixtures || []).map(f => {
         const isUcl = f.comp === 'ucl';
@@ -1879,7 +1907,6 @@
         `;
       }).join('') || '<p style="text-align:center; color:var(--muted); padding:20px;">No upcoming fixtures.</p>';
 
-      // Results
       const resContainer = document.getElementById('sub-results');
       resContainer.innerHTML = (state.results || []).map(r => {
         const isUcl = r.comp === 'ucl';
@@ -1897,7 +1924,6 @@
         `;
       }).join('') || '<p style="text-align:center; color:var(--muted); padding:20px;">No results recorded.</p>';
 
-      // Trophies
       const totalSorted = [...state.teams].sort((a,b) => (b.leagueTitles + b.uclTitles) - (a.leagueTitles + a.uclTitles));
       document.getElementById('totalTrophiesBody').innerHTML = totalSorted.map((t, idx) => `
         <tr>
@@ -1925,16 +1951,13 @@
         </tr>
       `).join('');
 
-      // Admin Select & Inputs Populating
       const teamOptions = state.teams.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
       document.getElementById('fixtureHomeTeam').innerHTML = teamOptions;
       document.getElementById('fixtureAwayTeam').innerHTML = teamOptions;
       document.getElementById('adminDeleteTeamSelect').innerHTML = teamOptions;
       document.getElementById('adminEditLogoTeamSelect').innerHTML = teamOptions;
       
-      // Included None / Blank option in UCL Champion selection
       document.getElementById('setUclChampSelect').innerHTML = `<option value="">-- None / Blank --</option>` + teamOptions;
-      
       document.getElementById('trophyEditTeamSelect').innerHTML = teamOptions;
 
       document.getElementById('adminUclSpotsSelect').value = state.uclSpots;
@@ -2132,7 +2155,7 @@
           state.ucl.champion = champTeam.name;
         }
       } else {
-        state.ucl.champion = ""; // None / Blank
+        state.ucl.champion = "";
       }
 
       saveState();
