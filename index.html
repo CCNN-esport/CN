@@ -10,12 +10,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
 
-  <!-- Production-grade 3D Model Viewer Engine -->
+  <!-- 3D Model Viewer Library for UCL Tab -->
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
 
-  <!-- Firebase App & Realtime Database SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <!-- Three.js + GLTFLoader for the 3D Studio Room -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 
   <style>
     :root {
@@ -872,183 +872,76 @@
       color: var(--muted);
     }
 
-    /* 3D ENCLOSED STUDIO ROOM FOR MANAGERS */
-    .manager-3d-room-environment {
+    /* 3D WEBGL STUDIO ROOM CONTAINER (WIDE ANGLE CINEMATIC VIEW) */
+    .trophy-room-canvas-container {
       position: relative;
-      background: radial-gradient(ellipse at 50% 30%, #0c1830 0%, #060c18 55%, #020409 100%);
+      width: 100%;
+      height: 420px;
+      background: radial-gradient(circle at 50% 35%, #081122 0%, #03060d 75%);
       border: 1px solid rgba(0, 229, 255, 0.3);
       border-radius: 24px;
-      padding: 24px 14px 28px 14px;
-      box-shadow: inset 0 0 70px rgba(0, 0, 0, 0.95), 0 20px 45px rgba(0, 0, 0, 0.75);
-      perspective: 1200px;
-      transform-style: preserve-3d;
       overflow: hidden;
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.85), inset 0 0 50px rgba(0, 0, 0, 0.95);
     }
 
-    /* 3D PERSPECTIVE FLOOR TILES */
-    .manager-3d-room-environment::before {
-      content: "";
+    #trophyRoomCanvas {
+      width: 100% !important;
+      height: 100% !important;
+      display: block;
+      outline: none;
+    }
+
+    .canvas-overlay-header {
       position: absolute;
-      bottom: -60px;
-      left: -20%;
-      width: 140%;
-      height: 220px;
-      background: 
-        linear-gradient(to bottom, transparent, rgba(3, 7, 18, 0.95)),
-        radial-gradient(ellipse at center, rgba(0, 229, 255, 0.15) 0%, transparent 70%),
-        repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 40px);
-      transform: rotateX(74deg);
-      transform-origin: bottom center;
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    /* CURVED NEON ENERGY RIBBONS IN BACKGROUND */
-    .neon-ribbon-decor {
-      position: absolute;
-      top: 36%;
-      left: -20%;
-      width: 140%;
-      height: 85px;
-      background: repeating-linear-gradient(
-        -12deg,
-        transparent,
-        transparent 6px,
-        rgba(0, 229, 255, 0.9) 7px,
-        rgba(0, 229, 255, 0.9) 11px,
-        transparent 12px,
-        transparent 19px
-      );
-      filter: drop-shadow(0 0 15px rgba(0, 229, 255, 0.9)) blur(0.4px);
-      opacity: 0.85;
-      transform: rotate(-6deg);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* OVERHEAD STUDIO LIGHT CONE */
-    .overhead-studio-light {
-      position: absolute;
-      top: 0;
-      left: 15%;
-      width: 70%;
-      height: 220px;
-      background: radial-gradient(ellipse at top, rgba(255, 255, 255, 0.18), transparent 70%);
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    .room-header-title {
+      top: 14px;
+      left: 0;
+      right: 0;
+      text-align: center;
       font-size: 11px;
       font-weight: 900;
       text-transform: uppercase;
       letter-spacing: 2px;
       color: var(--accent);
-      text-align: center;
-      margin-bottom: 24px;
-      position: relative;
-      z-index: 2;
       text-shadow: 0 0 12px var(--accent-glow);
-    }
-
-    /* WIDE-SPACED PEDESTALS CONTAINER */
-    .trophy-stands-row {
-      display: flex;
-      justify-content: center;
-      align-items: flex-end;
-      gap: 36px;
-      position: relative;
-      z-index: 2;
-      padding: 0 10px;
-    }
-
-    .trophy-stand-unit {
-      flex: 1;
-      max-width: 145px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      position: relative;
-    }
-
-    /* MODEL VIEWER CONTAINER (LOCKED & PREVENT TOUCH-ADJUSTING) */
-    .stand-model-box {
-      width: 100%;
-      height: 180px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      margin-bottom: -12px;
-      z-index: 3;
-      /* Completely lock touch dragging / swipe gestures */
       pointer-events: none;
+      z-index: 5;
     }
 
-    .stand-model-box model-viewer {
-      width: 100%;
-      height: 100%;
-      outline: none;
-      --poster-color: transparent;
-      filter: drop-shadow(0 12px 22px rgba(0, 0, 0, 0.85));
-    }
-
-    .stand-trophy-img {
-      max-height: 135px;
-      width: auto;
-      object-fit: contain;
-      filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.8));
-    }
-
-    /* SLENDER MONOLITH PILLAR (MATCHING REFERENCE IMAGE) */
-    .slender-monolith-pillar {
-      width: 100%;
-      height: 112px;
-      background: linear-gradient(180deg, #101726 0%, #080d17 50%, #03060a 100%);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-top: 1.5px solid rgba(255, 255, 255, 0.6);
-      border-radius: 4px;
-      box-shadow: 
-        0 20px 35px rgba(0, 0, 0, 0.9),
-        0 0 22px rgba(0, 229, 255, 0.12),
-        inset 0 1px 2px rgba(255, 255, 255, 0.25);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      z-index: 2;
-    }
-
-    .pillar-rim-top {
+    .pedestal-stats-row {
       position: absolute;
-      top: -1px;
+      bottom: 14px;
       left: 0;
-      width: 100%;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, #ffffff 50%, transparent);
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+      right: 0;
+      display: flex;
+      justify-content: space-around;
+      padding: 0 28px;
+      pointer-events: none;
+      z-index: 5;
     }
 
-    .pillar-name-tag {
-      font-size: 10px;
+    .pedestal-stat-chip {
+      background: rgba(5, 9, 18, 0.85);
+      border: 1px solid rgba(255, 215, 0, 0.4);
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.9);
+      border-radius: 10px;
+      padding: 6px 14px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .stat-chip-label {
+      font-size: 9px;
       font-weight: 800;
-      color: #94a3b8;
       text-transform: uppercase;
-      letter-spacing: 1.2px;
+      letter-spacing: 1px;
+      display: block;
     }
 
-    .pillar-count-plaque {
+    .stat-chip-num {
       font-size: 15px;
       font-weight: 900;
       color: var(--gold);
-      background: rgba(3, 6, 11, 0.85);
-      border: 1px solid rgba(255, 215, 0, 0.4);
-      padding: 3px 14px;
-      border-radius: 6px;
-      margin-top: 8px;
       letter-spacing: 1px;
-      box-shadow: 0 0 12px rgba(255, 215, 0, 0.2);
     }
 
     .admin-accordion {
@@ -1414,7 +1307,7 @@
       </div>
     </div>
 
-    <!-- MANAGERS TAB (3D ENCLOSED ROOM, SLENDER STANDS, LOCKED ROTATION) -->
+    <!-- MANAGERS TAB (SLENDER 3D MONOLITH STANDS & WIDE-ANGLE DISTANCE) -->
     <div id="page-managers" class="view-card">
       <div class="league-banner">
         <div>
@@ -1438,50 +1331,20 @@
         </div>
       </div>
 
-      <!-- TRUE 3D ENCLOSED ROOM SHOWCASE -->
-      <div class="manager-3d-room-environment">
-        <div class="overhead-studio-light"></div>
-        <div class="neon-ribbon-decor"></div>
-        <div class="room-header-title">🏛️ 3D Trophy Room Showcase</div>
+      <!-- 3D ROOM CONTAINER -->
+      <div class="trophy-room-canvas-container" id="trophyRoomContainer">
+        <div class="canvas-overlay-header">🏛️ 3D Trophy Room Showcase</div>
+        <canvas id="trophyRoomCanvas"></canvas>
         
-        <div class="trophy-stands-row">
-          
-          <!-- Stand 1: UCL 3D Trophy on Slender Monolith Stand (Locked Auto-Rotation) -->
-          <div class="trophy-stand-unit">
-            <div class="stand-model-box">
-              <model-viewer 
-                id="managerUclModel"
-                src="ucl-trophy.glb" 
-                alt="3D UCL Trophy"
-                auto-rotate 
-                rotation-per-second="18deg"
-                camera-orbit="0deg 75deg 105%"
-                field-of-view="36deg"
-                interaction-prompt="none"
-                environment-image="neutral"
-                shadow-intensity="1.5"
-                exposure="1.35">
-              </model-viewer>
-            </div>
-            <div class="slender-monolith-pillar">
-              <div class="pillar-rim-top"></div>
-              <span class="pillar-name-tag" style="color: var(--ucl-blue);">UCL Trophy</span>
-              <span class="pillar-count-plaque" id="roomUclCount">x0</span>
-            </div>
+        <div class="pedestal-stats-row">
+          <div class="pedestal-stat-chip" style="border-color: rgba(59, 130, 246, 0.5);">
+            <span class="stat-chip-label" style="color: var(--ucl-blue);">UCL Titles</span>
+            <span class="stat-chip-num" id="roomUclCount">x0</span>
           </div>
-
-          <!-- Stand 2: League Title Trophy on Slender Monolith Stand -->
-          <div class="trophy-stand-unit">
-            <div class="stand-model-box">
-              <img src="ucl-trophy.png" alt="League Trophy" class="stand-trophy-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/861/861512.png'">
-            </div>
-            <div class="slender-monolith-pillar">
-              <div class="pillar-rim-top"></div>
-              <span class="pillar-name-tag" style="color: var(--gold);">League Title</span>
-              <span class="pillar-count-plaque" id="roomLeagueCount">x0</span>
-            </div>
+          <div class="pedestal-stat-chip" style="border-color: rgba(255, 215, 0, 0.5);">
+            <span class="stat-chip-label" style="color: var(--gold);">League Titles</span>
+            <span class="stat-chip-num" id="roomLeagueCount">x0</span>
           </div>
-
         </div>
       </div>
     </div>
@@ -1823,11 +1686,11 @@
       return `<span class="team-badge" style="${extraStyle}">${initial}</span>`;
     }
 
-    // 3D TROPHY SHADER (Ensures pure polished silver mirror chrome on both viewers)
-    function applySilverShader(viewerElement) {
-      if (!viewerElement) return;
-      viewerElement.addEventListener('load', () => {
-        const model = viewerElement.model;
+    // 3D TROPHY SHADER FOR UCL TAB
+    const trophyViewer = document.getElementById('uclTrophyModel');
+    if (trophyViewer) {
+      trophyViewer.addEventListener('load', () => {
+        const model = trophyViewer.model;
         if (model && model.materials) {
           model.materials.forEach(material => {
             if (material.pbrMetallicRoughness) {
@@ -1839,9 +1702,6 @@
         }
       });
     }
-
-    applySilverShader(document.getElementById('uclTrophyModel'));
-    applySilverShader(document.getElementById('managerUclModel'));
 
     const uclAudio = document.getElementById('uclAnthemAudio');
     const uclMusicBtn = document.getElementById('uclMusicBtn');
@@ -1876,7 +1736,235 @@
       });
     }
 
+    // ==========================================================
+    // THREE.JS 3D ROOM SCENE ENGINE (SLENDER PEDESTAL & WIDE ZOOM-OUT)
+    // ==========================================================
+    let threeScene, threeCamera, threeRenderer;
+    let ucl3DModel = null;
+    let leagueTrophyMesh = null;
+    let isThreeInitialized = false;
+
+    function initThreeDStudioRoom() {
+      const container = document.getElementById('trophyRoomContainer');
+      const canvas = document.getElementById('trophyRoomCanvas');
+      if (!container || !canvas || isThreeInitialized) return;
+
+      const width = container.clientWidth || 340;
+      const height = container.clientHeight || 420;
+
+      // 1. Scene & Perspective Camera (Pushed back to z: 8.8 for wide-angle distance)
+      threeScene = new THREE.Scene();
+      threeScene.background = new THREE.Color(0x02050c);
+      threeScene.fog = new THREE.FogExp2(0x02050c, 0.035);
+
+      threeCamera = new THREE.PerspectiveCamera(42, width / height, 0.1, 100);
+      threeCamera.position.set(0, 2.1, 8.8);
+      threeCamera.lookAt(0, 0.6, 0);
+
+      // 2. WebGL Renderer with Shadows
+      threeRenderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+      threeRenderer.setSize(width, height);
+      threeRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      threeRenderer.shadowMap.enabled = true;
+      threeRenderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+      // 3. Studio Room Geometry
+      // Floor (Polished dark reflective tiles)
+      const floorGeo = new THREE.PlaneGeometry(24, 24);
+      const floorMat = new THREE.MeshStandardMaterial({
+        color: 0x040813,
+        roughness: 0.22,
+        metalness: 0.85
+      });
+      const floor = new THREE.Mesh(floorGeo, floorMat);
+      floor.rotation.x = -Math.PI / 2;
+      floor.position.y = -1.6;
+      floor.receiveShadow = true;
+      threeScene.add(floor);
+
+      // Back Studio Wall
+      const wallGeo = new THREE.PlaneGeometry(24, 14);
+      const wallMat = new THREE.MeshStandardMaterial({
+        color: 0x050b18,
+        roughness: 0.8,
+        metalness: 0.15
+      });
+      const backWall = new THREE.Mesh(wallGeo, wallMat);
+      backWall.position.set(0, 4.5, -5.5);
+      threeScene.add(backWall);
+
+      // 4. Curved Glowing Neon Energy Tubes
+      createNeonEnergyRibbon(-0.8, 0x00e5ff);
+      createNeonEnergyRibbon(-0.2, 0x0099ff);
+      createNeonEnergyRibbon(0.4, 0x2563eb);
+
+      // 5. Slender Monolith Pedestals (Sleek, slim width matching picture)
+      // Left Pedestal (UCL)
+      createSlenderPedestal(-1.95, 0x3b82f6);
+      // Right Pedestal (League)
+      createSlenderPedestal(1.95, 0xffd700);
+
+      // 6. Realistic Lighting
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+      threeScene.add(ambientLight);
+
+      // Top Spotlights directed straight at pedestals
+      const spotLeft = new THREE.SpotLight(0x00e5ff, 3.2);
+      spotLeft.position.set(-1.95, 6, 2.5);
+      spotLeft.angle = 0.42;
+      spotLeft.penumbra = 0.7;
+      spotLeft.castShadow = true;
+      threeScene.add(spotLeft);
+
+      const spotRight = new THREE.SpotLight(0xffd700, 3.2);
+      spotRight.position.set(1.95, 6, 2.5);
+      spotRight.angle = 0.42;
+      spotRight.penumbra = 0.7;
+      spotRight.castShadow = true;
+      threeScene.add(spotRight);
+
+      // 7. Load UCL Trophy .GLB model on Left Slender Pedestal
+      const gltfLoader = new THREE.GLTFLoader();
+      gltfLoader.load('ucl-trophy.glb', (gltf) => {
+        ucl3DModel = gltf.scene;
+        ucl3DModel.position.set(-1.95, 0.35, 0);
+
+        // Precise proportional sizing for slim stand top
+        const box = new THREE.Box3().setFromObject(ucl3DModel);
+        const size = new THREE.Vector3();
+        box.getSize(size);
+        const scaleFactor = 1.45 / (size.y || 1);
+        ucl3DModel.scale.set(scaleFactor, scaleFactor, scaleFactor);
+
+        ucl3DModel.traverse((child) => {
+          if (child.isMesh) {
+            child.castShadow = true;
+            child.receiveShadow = true;
+            if (child.material) {
+              child.material.metalness = 0.98;
+              child.material.roughness = 0.12;
+              child.material.color = new THREE.Color(0xf2f7ff);
+            }
+          }
+        });
+
+        threeScene.add(ucl3DModel);
+      }, undefined, (err) => {
+        console.log('GLTF loader fallback:', err);
+      });
+
+      // 8. 3D Golden League Trophy on Right Slender Pedestal
+      leagueTrophyMesh = createLeagueCupMesh();
+      leagueTrophyMesh.position.set(1.95, 1.05, 0);
+      threeScene.add(leagueTrophyMesh);
+
+      isThreeInitialized = true;
+      animateThreeRoom();
+    }
+
+    function createNeonEnergyRibbon(yOffset, hexColor) {
+      const curve = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(-10, yOffset + 0.4, -4.2),
+        new THREE.Vector3(-3.5, yOffset + 1.2, -3.8),
+        new THREE.Vector3(3, yOffset + 2.0, -3.9),
+        new THREE.Vector3(10, yOffset + 2.8, -4.2)
+      ]);
+
+      const tubeGeo = new THREE.TubeGeometry(curve, 72, 0.035, 8, false);
+      const tubeMat = new THREE.MeshBasicMaterial({ color: hexColor });
+      const ribbon = new THREE.Mesh(tubeGeo, tubeMat);
+      threeScene.add(ribbon);
+    }
+
+    // SLENDER DARK MONOLITH STAND (Matches user highlighted reference image)
+    function createSlenderPedestal(xPos, rimColor) {
+      const group = new THREE.Group();
+      group.position.set(xPos, -0.65, 0);
+
+      // Slender column (width 0.95, depth 0.95, height 1.9)
+      const pillarGeo = new THREE.BoxGeometry(0.95, 1.9, 0.95);
+      const pillarMat = new THREE.MeshStandardMaterial({
+        color: 0x080e1a,
+        metalness: 0.92,
+        roughness: 0.18
+      });
+      const pillar = new THREE.Mesh(pillarGeo, pillarMat);
+      pillar.castShadow = true;
+      pillar.receiveShadow = true;
+      group.add(pillar);
+
+      // Sharp Top Edge Rim Light
+      const rimGeo = new THREE.BoxGeometry(0.97, 0.025, 0.97);
+      const rimMat = new THREE.MeshBasicMaterial({ color: rimColor });
+      const rim = new THREE.Mesh(rimGeo, rimMat);
+      rim.position.y = 0.95;
+      group.add(rim);
+
+      threeScene.add(group);
+    }
+
+    function createLeagueCupMesh() {
+      const cupGroup = new THREE.Group();
+      const goldMat = new THREE.MeshStandardMaterial({
+        color: 0xffd700,
+        metalness: 0.96,
+        roughness: 0.16
+      });
+
+      // Cup Bowl
+      const bodyGeo = new THREE.CylinderGeometry(0.44, 0.22, 0.72, 24);
+      const body = new THREE.Mesh(bodyGeo, goldMat);
+      body.castShadow = true;
+      cupGroup.add(body);
+
+      // Stem
+      const stemGeo = new THREE.CylinderGeometry(0.1, 0.12, 0.35, 16);
+      const stem = new THREE.Mesh(stemGeo, goldMat);
+      stem.position.y = -0.46;
+      stem.castShadow = true;
+      cupGroup.add(stem);
+
+      // Base Foot
+      const footGeo = new THREE.CylinderGeometry(0.32, 0.38, 0.12, 24);
+      const foot = new THREE.Mesh(footGeo, goldMat);
+      foot.position.y = -0.65;
+      foot.castShadow = true;
+      cupGroup.add(foot);
+
+      return cupGroup;
+    }
+
+    function animateThreeRoom() {
+      requestAnimationFrame(animateThreeRoom);
+
+      // Auto-rotation locked to showcase angle
+      if (ucl3DModel) {
+        ucl3DModel.rotation.y += 0.012;
+      }
+      if (leagueTrophyMesh) {
+        leagueTrophyMesh.rotation.y += 0.012;
+      }
+
+      if (threeRenderer && threeScene && threeCamera) {
+        threeRenderer.render(threeScene, threeCamera);
+      }
+    }
+
+    function resizeThreeRoom() {
+      const container = document.getElementById('trophyRoomContainer');
+      if (!container || !threeRenderer || !threeCamera) return;
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+      threeCamera.aspect = width / height;
+      threeCamera.updateProjectionMatrix();
+      threeRenderer.setSize(width, height);
+    }
+
+    window.addEventListener('resize', resizeThreeRoom);
+
+    // ==========================================================
     // TAB SWITCHING & AUTH
+    // ==========================================================
     function switchTab(tabKey) {
       if (tabKey === 'admin' && !isAdminUnlocked) {
         const pass = prompt("🔒 Enter Admin Password:");
@@ -1924,6 +2012,16 @@
           btn.classList.add('active');
         }
       });
+
+      if (tabKey === 'managers') {
+        setTimeout(() => {
+          if (!isThreeInitialized) {
+            initThreeDStudioRoom();
+          } else {
+            resizeThreeRoom();
+          }
+        }, 60);
+      }
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
