@@ -804,9 +804,7 @@
       text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
     }
 
-    /* ==========================================================
-       MANAGERS 3D TROPHY ROOM & SHOWCASE STYLES
-       ========================================================== */
+    /* MANAGERS 3D TROPHY ROOM & SHOWCASE STYLES */
     .manager-profile-card {
       background: var(--glass-card);
       backdrop-filter: blur(16px);
@@ -878,7 +876,6 @@
       color: var(--muted);
     }
 
-    /* 3D TROPHY ROOM CABINET CONTAINER */
     .trophy-room-3d {
       position: relative;
       background: radial-gradient(circle at 50% 25%, #182a4d 0%, #081124 55%, #03060d 100%);
@@ -890,7 +887,6 @@
       overflow: hidden;
     }
 
-    /* CEILING SPOTLIGHT BEAMS */
     .trophy-room-3d::before {
       content: "";
       position: absolute;
@@ -922,7 +918,6 @@
       transform-style: preserve-3d;
     }
 
-    /* INDIVIDUAL TROPHY SHOWCASE STAND */
     .trophy-stand-column {
       flex: 1;
       max-width: 175px;
@@ -958,7 +953,6 @@
       filter: drop-shadow(0 10px 16px rgba(0, 0, 0, 0.75));
     }
 
-    /* 3D ILLUMINATED PEDESTAL BASE */
     .pedestal-base {
       width: 100%;
       height: 78px;
@@ -994,7 +988,6 @@
       letter-spacing: 1px;
     }
 
-    /* COUNT OF TROPHIES PLAQUE */
     .pedestal-count-badge {
       font-size: 16px;
       font-weight: 900;
@@ -1387,7 +1380,7 @@
         </div>
         <div class="manager-info-meta">
           <div class="manager-sub-label">Head Coach</div>
-          <div class="manager-display-name" id="managerDisplayName">Haris</div>
+          <div class="manager-display-name" id="managerDisplayName">Manager</div>
           <div class="manager-club-badge" id="managerClubBadge">
             <span class="team-badge" id="managerTeamLogo">R</span>
             <span id="managerClubName">Real Madrid</span>
@@ -1584,7 +1577,7 @@
         <div class="admin-accordion-body">
           <div class="form-group">
             <label>Manager Name</label>
-            <input type="text" id="adminManagerNameInput" placeholder="e.g. Haris">
+            <input type="text" id="adminManagerNameInput" placeholder="e.g. Manager">
           </div>
           <div class="form-group">
             <label>Manager Photo (URL or file name, e.g. manager.png)</label>
@@ -1713,7 +1706,7 @@
       lastUclChamp: 'Real Madrid',
       uclSpots: 4,
       manager: {
-        name: 'Haris',
+        name: 'Manager',
         photo: '',
         teamId: '3'
       },
