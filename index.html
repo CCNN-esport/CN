@@ -767,7 +767,7 @@
       box-shadow: 0 0 35px var(--ucl-glow);
     }
 
-    /* 3D TROPHY VIEWER STYLING */
+    /* 3D TROPHY VIEWER STYLING WITH SILVER METALLIC SHINE */
     .ucl-trophy-3d {
       width: 100%;
       max-width: 280px;
@@ -776,7 +776,7 @@
       display: block;
       outline: none;
       --poster-color: transparent;
-      filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.5));
+      filter: drop-shadow(0 0 24px rgba(59, 130, 246, 0.65));
     }
 
     .podium-winner-name {
@@ -1147,17 +1147,21 @@
           </div>
         </div>
 
-        <!-- 3D UCL TROPHY PODIUM (REPLACING 2D IMAGE) -->
+        <!-- 3D UCL TROPHY PODIUM (SILVER CHROME SHINE & REALISTIC LIGHTING) -->
         <div class="ucl-trophy-podium">
           <model-viewer 
+            id="uclTrophyModel"
             src="ucl-trophy.glb" 
             alt="UEFA Champions League 3D Trophy" 
             auto-rotate 
-            rotation-per-second="25deg"
+            rotation-per-second="22deg"
             camera-controls 
             interaction-prompt="none"
-            shadow-intensity="1.2" 
-            exposure="1.25"
+            environment-image="neutral"
+            shadow-intensity="1.6" 
+            shadow-softness="0.8"
+            exposure="1.4"
+            tone-mapping="commerce"
             class="ucl-trophy-3d">
           </model-viewer>
           <div class="podium-winner-name" id="uclWinnerName">Real Madrid</div>
@@ -1541,6 +1545,23 @@
       }
       const initial = team && team.name ? team.name.charAt(0) : '?';
       return `<span class="team-badge" style="${extraStyle}">${initial}</span>`;
+    }
+
+    // 3D TROPHY SHADER: Forces high-gloss silver mirror chrome on load
+    const trophyViewer = document.getElementById('uclTrophyModel');
+    if (trophyViewer) {
+      trophyViewer.addEventListener('load', () => {
+        const model = trophyViewer.model;
+        if (model && model.materials) {
+          model.materials.forEach(material => {
+            if (material.pbrMetallicRoughness) {
+              material.pbrMetallicRoughness.setMetallicFactor(1.0);
+              material.pbrMetallicRoughness.setRoughnessFactor(0.12);
+              material.pbrMetallicRoughness.setBaseColorFactor([0.94, 0.97, 1.0, 1.0]);
+            }
+          });
+        }
+      });
     }
 
     const uclAudio = document.getElementById('uclAnthemAudio');
