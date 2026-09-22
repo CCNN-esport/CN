@@ -872,20 +872,39 @@
       color: var(--muted);
     }
 
-    /* 3D STUDIO TROPHY ROOM SHOWCASE */
-    .trophy-room-showcase {
+    /* 3D ENCLOSED STUDIO ROOM FOR MANAGERS */
+    .manager-3d-room-environment {
       position: relative;
-      background: radial-gradient(ellipse at 50% 30%, #0c1830 0%, #050b17 55%, #020409 100%);
-      border: 1px solid rgba(0, 229, 255, 0.25);
+      background: radial-gradient(ellipse at 50% 30%, #0c1830 0%, #060c18 55%, #020409 100%);
+      border: 1px solid rgba(0, 229, 255, 0.3);
       border-radius: 24px;
-      padding: 24px 12px 28px 12px;
-      box-shadow: inset 0 0 70px rgba(0, 0, 0, 0.95), 0 18px 45px rgba(0, 0, 0, 0.7);
+      padding: 24px 14px 28px 14px;
+      box-shadow: inset 0 0 70px rgba(0, 0, 0, 0.95), 0 20px 45px rgba(0, 0, 0, 0.75);
+      perspective: 1200px;
+      transform-style: preserve-3d;
       overflow: hidden;
     }
 
-    /* CURVED NEON ENERGY STRIPES IN BACKGROUND */
-    .trophy-room-showcase::before {
+    /* 3D PERSPECTIVE FLOOR TILES */
+    .manager-3d-room-environment::before {
       content: "";
+      position: absolute;
+      bottom: -60px;
+      left: -20%;
+      width: 140%;
+      height: 220px;
+      background: 
+        linear-gradient(to bottom, transparent, rgba(3, 7, 18, 0.95)),
+        radial-gradient(ellipse at center, rgba(0, 229, 255, 0.15) 0%, transparent 70%),
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 40px);
+      transform: rotateX(74deg);
+      transform-origin: bottom center;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* CURVED NEON ENERGY RIBBONS IN BACKGROUND */
+    .neon-ribbon-decor {
       position: absolute;
       top: 36%;
       left: -20%;
@@ -907,15 +926,14 @@
       z-index: 0;
     }
 
-    /* OVERHEAD STUDIO SPOTLIGHT */
-    .trophy-room-showcase::after {
-      content: "";
+    /* OVERHEAD STUDIO LIGHT CONE */
+    .overhead-studio-light {
       position: absolute;
       top: 0;
       left: 15%;
       width: 70%;
       height: 220px;
-      background: radial-gradient(ellipse at top, rgba(255, 255, 255, 0.16), transparent 70%);
+      background: radial-gradient(ellipse at top, rgba(255, 255, 255, 0.18), transparent 70%);
       pointer-events: none;
       z-index: 1;
     }
@@ -938,7 +956,7 @@
       display: flex;
       justify-content: center;
       align-items: flex-end;
-      gap: 32px;
+      gap: 36px;
       position: relative;
       z-index: 2;
       padding: 0 10px;
@@ -953,7 +971,7 @@
       position: relative;
     }
 
-    /* MODEL VIEWER CONTAINER (LOCKED ROTATION, ZERO DRAG/ADJUSTMENT) */
+    /* MODEL VIEWER CONTAINER (LOCKED & PREVENT TOUCH-ADJUSTING) */
     .stand-model-box {
       width: 100%;
       height: 180px;
@@ -963,7 +981,8 @@
       position: relative;
       margin-bottom: -12px;
       z-index: 3;
-      pointer-events: none; /* Disables all touch/click dragging so model stays locked in place */
+      /* Completely lock touch dragging / swipe gestures */
+      pointer-events: none;
     }
 
     .stand-model-box model-viewer {
@@ -971,7 +990,7 @@
       height: 100%;
       outline: none;
       --poster-color: transparent;
-      filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.8));
+      filter: drop-shadow(0 12px 22px rgba(0, 0, 0, 0.85));
     }
 
     .stand-trophy-img {
@@ -984,10 +1003,10 @@
     /* SLENDER MONOLITH PILLAR (MATCHING REFERENCE IMAGE) */
     .slender-monolith-pillar {
       width: 100%;
-      height: 110px;
+      height: 112px;
       background: linear-gradient(180deg, #101726 0%, #080d17 50%, #03060a 100%);
       border: 1px solid rgba(255, 255, 255, 0.1);
-      border-top: 1.5px solid rgba(255, 255, 255, 0.55);
+      border-top: 1.5px solid rgba(255, 255, 255, 0.6);
       border-radius: 4px;
       box-shadow: 
         0 20px 35px rgba(0, 0, 0, 0.9),
@@ -1395,7 +1414,7 @@
       </div>
     </div>
 
-    <!-- MANAGERS TAB (SLENDER 3D MONOLITH STANDS & LOCKED ROTATION) -->
+    <!-- MANAGERS TAB (3D ENCLOSED ROOM, SLENDER STANDS, LOCKED ROTATION) -->
     <div id="page-managers" class="view-card">
       <div class="league-banner">
         <div>
@@ -1419,13 +1438,15 @@
         </div>
       </div>
 
-      <!-- 3D STUDIO ROOM SHOWCASE (LOCKED AUTO-ROTATION, SLENDER STANDS) -->
-      <div class="trophy-room-showcase">
+      <!-- TRUE 3D ENCLOSED ROOM SHOWCASE -->
+      <div class="manager-3d-room-environment">
+        <div class="overhead-studio-light"></div>
+        <div class="neon-ribbon-decor"></div>
         <div class="room-header-title">🏛️ 3D Trophy Room Showcase</div>
         
         <div class="trophy-stands-row">
           
-          <!-- Pedestal 1: Slender Monolith Stand for UCL Trophy (Locked Angle, No Touch Dragging) -->
+          <!-- Stand 1: UCL 3D Trophy on Slender Monolith Stand (Locked Auto-Rotation) -->
           <div class="trophy-stand-unit">
             <div class="stand-model-box">
               <model-viewer 
@@ -1435,7 +1456,7 @@
                 auto-rotate 
                 rotation-per-second="18deg"
                 camera-orbit="0deg 75deg 105%"
-                field-of-view="34deg"
+                field-of-view="36deg"
                 interaction-prompt="none"
                 environment-image="neutral"
                 shadow-intensity="1.5"
@@ -1449,7 +1470,7 @@
             </div>
           </div>
 
-          <!-- Pedestal 2: Slender Monolith Stand for League Title -->
+          <!-- Stand 2: League Title Trophy on Slender Monolith Stand -->
           <div class="trophy-stand-unit">
             <div class="stand-model-box">
               <img src="ucl-trophy.png" alt="League Trophy" class="stand-trophy-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/861/861512.png'">
