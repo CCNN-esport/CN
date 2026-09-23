@@ -808,7 +808,7 @@
       text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
     }
 
-    /* MANAGERS PROFILE CARD WITH ALIGNED COLONS */
+    /* MANAGERS PROFILE CARD WITH STRAIGHT ALIGNED COLONS */
     .manager-showcase-block {
       margin-bottom: 24px;
     }
@@ -852,7 +852,7 @@
       stroke: var(--muted);
     }
 
-    /* Grid alignment for straight colons */
+    /* Perfect straight colon alignment */
     .manager-info-grid {
       flex: 1;
       display: grid;
@@ -1289,7 +1289,7 @@
       </div>
     </div>
 
-    <!-- MANAGERS TAB (SHOWCASE WITH 1 CEILING SPOTLIGHT FLASHING ON 1 METALLIC TROPHY) -->
+    <!-- MANAGERS TAB (SHOWCASE WITH REAL METALLIC SHINY UCL TROPHY) -->
     <div id="page-managers" class="view-card">
       <div class="league-banner">
         <div>
@@ -1712,8 +1712,49 @@
     }
 
     // ==========================================================
+    // STUDIO ENVIRONMENT GENERATOR (ENBALES REAL SILVER REFLECTIONS)
+    // ==========================================================
+    function createStudioEnvironment(renderer) {
+      const pmrem = new THREE.PMREMGenerator(renderer);
+      const envScene = new THREE.Scene();
+      envScene.background = new THREE.Color(0x020510);
+
+      const lightGeom = new THREE.PlaneGeometry(5, 5);
+      
+      // Top Softbox
+      const topMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+      const topMesh = new THREE.Mesh(lightGeom, topMat);
+      topMesh.position.set(0, 4, 0);
+      topMesh.rotation.x = Math.PI / 2;
+      envScene.add(topMesh);
+
+      // Front Studio Fill Light
+      const frontMat = new THREE.MeshBasicMaterial({ color: 0xf1f5f9 });
+      const frontMesh = new THREE.Mesh(lightGeom, frontMat);
+      frontMesh.position.set(0, 0, 4);
+      envScene.add(frontMesh);
+
+      // Left Highlight Strip
+      const sideMat = new THREE.MeshBasicMaterial({ color: 0x93c5fd });
+      const leftMesh = new THREE.Mesh(lightGeom, sideMat);
+      leftMesh.position.set(-4, 1, 0);
+      leftMesh.rotation.y = Math.PI / 2;
+      envScene.add(leftMesh);
+
+      // Right Highlight Strip
+      const rightMesh = new THREE.Mesh(lightGeom, sideMat);
+      rightMesh.position.set(4, 1, 0);
+      rightMesh.rotation.y = -Math.PI / 2;
+      envScene.add(rightMesh);
+
+      const envMap = pmrem.fromScene(envScene, 0.04).texture;
+      pmrem.dispose();
+      return envMap;
+    }
+
+    // ==========================================================
     // MULTI-ROOM THREE.JS INSTANCES ENGINE
-    // Room lights off, 1 spotlight on ceiling beaming down to 1 shiny trophy
+    // Realistic silver chrome reflections with focused ceiling beam
     // ==========================================================
     let threeRooms = [];
 
@@ -1732,8 +1773,7 @@
         const height = unit.clientHeight || 145;
 
         const scene = new THREE.Scene();
-        // Room light completely turned off (Pitch dark room background)
-        scene.background = new THREE.Color(0x010206);
+        scene.background = new THREE.Color(0x020409); // Dark showcase background
 
         const camera = new THREE.PerspectiveCamera(74, width / height, 0.1, 100);
         camera.position.set(0, 0.08, 1.15);
@@ -1743,10 +1783,14 @@
         renderer.setSize(width, height);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
+        // Inject studio environment map so metallic chrome shines and reflects
+        const studioEnv = createStudioEnvironment(renderer);
+        scene.environment = studioEnv;
+
         // Dark Floor
         const floorGeo = new THREE.PlaneGeometry(24, 24);
         const floorMat = new THREE.MeshStandardMaterial({
-          color: 0x020409,
+          color: 0x050812,
           roughness: 0.6,
           metalness: 0.3
         });
@@ -1758,7 +1802,7 @@
         // Dark Back Wall
         const wallGeo = new THREE.PlaneGeometry(24, 12);
         const wallMat = new THREE.MeshStandardMaterial({
-          color: 0x010308,
+          color: 0x030610,
           roughness: 0.8,
           metalness: 0.1
         });
@@ -1766,30 +1810,29 @@
         backWall.position.set(0, 3.5, -4);
         scene.add(backWall);
 
-        // 5 Pillars with identical dark uniform tops
+        // 5 Pillars
         const pillarPositions = [-1.44, -0.72, 0.0, 0.72, 1.44];
         pillarPositions.forEach(x => {
           create3DPedestalMesh(scene, x);
         });
 
-        // 1. One focused ceiling spotlight directly above the trophy
-        const ceilingSpot = new THREE.SpotLight(0xffffff, 14.0);
-        ceilingSpot.position.set(-0.72, 4.0, 0.4);
-        ceilingSpot.target.position.set(-0.72, -0.05, 0);
-        ceilingSpot.angle = 0.28;
-        ceilingSpot.penumbra = 0.35;
+        // 1. CEILING BEAM SPOTLIGHT directly pointing down at the trophy on Pillar 2
+        const ceilingSpot = new THREE.SpotLight(0xffffff, 8.0);
+        ceilingSpot.position.set(-0.72, 3.8, 0.3);
+        ceilingSpot.target.position.set(-0.72, -0.15, 0);
+        ceilingSpot.angle = 0.32;
+        ceilingSpot.penumbra = 0.45;
         scene.add(ceilingSpot);
         scene.add(ceilingSpot.target);
 
-        // 2. Front reflection kicker light to illuminate high metallic mirror highlights
-        const frontHighlightLight = new THREE.DirectionalLight(0xe0f2fe, 2.8);
-        frontHighlightLight.position.set(-0.72, 0.5, 2.2);
-        scene.add(frontHighlightLight);
+        // 2. Focused front key light for high-contrast mirror highlights
+        const frontHighlight = new THREE.DirectionalLight(0xffffff, 2.5);
+        frontHighlight.position.set(-0.72, 0.8, 2.0);
+        scene.add(frontHighlight);
 
-        // 3. Subtle rim light from behind for silhouette
-        const rimBacklight = new THREE.DirectionalLight(0x38bdf8, 1.2);
-        rimBacklight.position.set(-0.72, 1.5, -1.5);
-        scene.add(rimBacklight);
+        // 3. Subtle ambient light so room is not pitch black
+        const softAmbient = new THREE.AmbientLight(0xffffff, 0.3);
+        scene.add(softAmbient);
 
         const roomData = {
           unit: unit,
@@ -1800,14 +1843,14 @@
           singleTrophyModel: null
         };
 
-        // Fallback shiny metallic cup on Pillar 2 (-0.72) while GLB loads
+        // Fallback brilliant silver trophy while GLB loads
         const shinyCupPlaceholder = createShinyCupMesh();
         shinyCupPlaceholder.position.set(-0.72, -0.27, 0);
         shinyCupPlaceholder.scale.set(0.56, 0.56, 0.56);
         scene.add(shinyCupPlaceholder);
         roomData.singleTrophyModel = shinyCupPlaceholder;
 
-        // Load UCL GLB model with full metallic reflection (metallic 1.0, roughness 0.08)
+        // Load UCL GLB model with true mirror chrome reflection
         const gltfLoader = new THREE.GLTFLoader();
         gltfLoader.load('ucl-trophy.glb', (gltf) => {
           scene.remove(shinyCupPlaceholder);
@@ -1821,10 +1864,13 @@
           model.position.set(-0.72, -0.27, 0);
 
           model.traverse(child => {
-            if (child.isMesh && child.material) {
-              child.material.metalness = 1.0;
-              child.material.roughness = 0.08;
-              child.material.color = new THREE.Color(0xf1f5f9);
+            if (child.isMesh) {
+              child.material = new THREE.MeshStandardMaterial({
+                color: new THREE.Color(0xfcfdff), // Pure silver white
+                metalness: 1.0,                    // 100% pure metallic mirror
+                roughness: 0.08,                   // Ultra high gloss reflection
+                envMapIntensity: 2.2               // High reflection brightness
+              });
             }
           });
 
@@ -1867,9 +1913,10 @@
     function createShinyCupMesh() {
       const cupGroup = new THREE.Group();
       const chromeMat = new THREE.MeshStandardMaterial({
-        color: 0xf8fafc,
+        color: 0xfcfdff,
         metalness: 1.0,
-        roughness: 0.08
+        roughness: 0.08,
+        envMapIntensity: 2.2
       });
 
       const bodyGeo = new THREE.CylinderGeometry(0.32, 0.16, 0.52, 32);
@@ -2271,7 +2318,7 @@
         `;
       }).join('') || '<p style="text-align:center; color:var(--muted); padding:20px;">No results recorded.</p>';
 
-      // RENDER MANAGERS TAB SHOWCASE LIST (Exact CSS Grid Aligned Colons)
+      // RENDER MANAGERS TAB SHOWCASE LIST
       const managersList = document.getElementById('managersListContainer');
       managersList.innerHTML = (state.managers || []).map((mgr, index) => {
         const mgrTeam = getTeam(mgr.teamId);
@@ -2301,7 +2348,7 @@
               </div>
             </div>
 
-            <!-- Dark Showcase Room Unit with 1 Shiny Trophy -->
+            <!-- Single Metallic Shiny Trophy under Ceiling Spotlight -->
             <div class="trophy-room-canvas-container manager-3d-room-unit" id="mgrCanvasContainer_${index}">
               <div class="canvas-overlay-header">🏛️ 3D Trophy Room Showcase</div>
               <canvas class="trophy-canvas-instance"></canvas>
@@ -2404,7 +2451,7 @@
       if (!state.managers) state.managers = [];
       state.managers.push(newMgr);
       saveState();
-      alert('New Manager added live with their 3D trophy showcase room!');
+      alert('New Manager added live!');
     }
 
     function deleteSelectedManager() {
