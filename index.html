@@ -921,7 +921,7 @@
       right: 0;
       display: flex;
       justify-content: space-around;
-      padding: 0 14px;
+      padding: 0 10px;
       pointer-events: none;
       z-index: 5;
     }
@@ -1314,7 +1314,7 @@
       </div>
     </div>
 
-    <!-- MANAGERS TAB (CODED 3D TROPHY ROOM WITH THREE.JS) -->
+    <!-- MANAGERS TAB (FIVE PILLARS 3D STUDIO SHOWCASE) -->
     <div id="page-managers" class="view-card">
       <div class="league-banner">
         <div>
@@ -1338,18 +1338,18 @@
         </div>
       </div>
 
-      <!-- CODED 3D TROPHY ROOM CANVAS CONTAINER -->
+      <!-- 3D FIVE PILLARS TROPHY SHOWCASE CONTAINER -->
       <div class="trophy-room-canvas-container" id="trophyRoomContainer">
         <div class="canvas-overlay-header">🏛️ 3D Trophy Room Showcase</div>
         <canvas id="trophyRoomCanvas"></canvas>
         
         <div class="pedestal-stats-row">
           <div class="pedestal-stat-chip" style="border-color: rgba(59, 130, 246, 0.6);">
-            <span class="stat-chip-label" style="color: var(--ucl-blue);">UCL Titles</span>
+            <span class="stat-chip-label" style="color: var(--ucl-blue);">UCL</span>
             <span class="stat-chip-num" id="roomUclCount">x0</span>
           </div>
           <div class="pedestal-stat-chip" style="border-color: rgba(255, 215, 0, 0.6);">
-            <span class="stat-chip-label" style="color: var(--gold);">League Titles</span>
+            <span class="stat-chip-label" style="color: var(--gold);">League</span>
             <span class="stat-chip-num" id="roomLeagueCount">x0</span>
           </div>
         </div>
@@ -1744,11 +1744,11 @@
     }
 
     // ==========================================================
-    // THREE.JS 3D ROOM SCENE ENGINE (SHORTER & SLIMMER PILLARS)
+    // THREE.JS 3D ROOM SCENE ENGINE (FIVE SLENDER PEDESTALS)
     // ==========================================================
     let threeScene, threeCamera, threeRenderer;
     let ucl3DModel = null;
-    let leagueTrophyMesh = null;
+    let animatedMeshes = [];
     let isThreeInitialized = false;
 
     function initThreeDStudioRoom() {
@@ -1803,38 +1803,42 @@
       createNeonEnergyRibbon(-1.2, 0x00a2ff);
       createNeonEnergyRibbon(-0.6, 0x3b82f6);
 
-      // 5. 3D Pedestals - Shorter height (0.85) and slim breadth (0.75)
-      create3DPedestal(-1.35, 0x00e5ff);
-      create3DPedestal(1.35, 0xffd700);
+      // 5. Five Pedestals (x positions: -1.7, -0.85, 0, 0.85, 1.7)
+      const pillarConfigs = [
+        { x: -1.7, color: 0x00e5ff },
+        { x: -0.85, color: 0x3b82f6 },
+        { x: 0.0, color: 0xffd700 },
+        { x: 0.85, color: 0x3b82f6 },
+        { x: 1.7, color: 0xffd700 }
+      ];
 
-      // 6. Realistic Lighting
+      pillarConfigs.forEach(cfg => {
+        create3DPedestal(cfg.x, cfg.color);
+      });
+
+      // 6. Realistic Studio Lighting
       const ambientLight = new THREE.AmbientLight(0xffffff, 0.55);
       threeScene.add(ambientLight);
 
-      const spotLeft = new THREE.SpotLight(0x00e5ff, 2.5);
-      spotLeft.position.set(-1.35, 5, 2);
-      spotLeft.angle = 0.45;
-      spotLeft.penumbra = 0.6;
-      spotLeft.castShadow = true;
-      threeScene.add(spotLeft);
+      pillarConfigs.forEach(cfg => {
+        const spot = new THREE.SpotLight(cfg.color, 1.8);
+        spot.position.set(cfg.x, 4.5, 1.8);
+        spot.angle = 0.35;
+        spot.penumbra = 0.5;
+        spot.castShadow = true;
+        threeScene.add(spot);
+      });
 
-      const spotRight = new THREE.SpotLight(0xffd700, 2.5);
-      spotRight.position.set(1.35, 5, 2);
-      spotRight.angle = 0.45;
-      spotRight.penumbra = 0.6;
-      spotRight.castShadow = true;
-      threeScene.add(spotRight);
-
-      // 7. Load UCL .GLB Trophy into Left Pedestal
+      // 7. Load UCL .GLB Trophy onto Center-Left Pedestal (-0.85)
       const gltfLoader = new THREE.GLTFLoader();
       gltfLoader.load('ucl-trophy.glb', (gltf) => {
         ucl3DModel = gltf.scene;
-        ucl3DModel.position.set(-1.35, -0.12, 0);
+        ucl3DModel.position.set(-0.85, -0.22, 0);
 
         const box = new THREE.Box3().setFromObject(ucl3DModel);
         const size = new THREE.Vector3();
         box.getSize(size);
-        const scaleFactor = 1.25 / (size.y || 1);
+        const scaleFactor = 0.95 / (size.y || 1);
         ucl3DModel.scale.set(scaleFactor, scaleFactor, scaleFactor);
 
         ucl3DModel.traverse((child) => {
@@ -1854,10 +1858,21 @@
         console.log('Falling back to geometric trophy on pedestal:', err);
       });
 
-      // 8. 3D Golden League Trophy on Right Pedestal
-      leagueTrophyMesh = createLeagueCupMesh();
-      leagueTrophyMesh.position.set(1.35, 0.5, 0);
-      threeScene.add(leagueTrophyMesh);
+      // 8. Place Sleek Geometric Cups on Remaining Pillars
+      const trophyPlacements = [
+        { x: -1.7, color: 0x00e5ff, scale: 0.65 },
+        { x: 0.0, color: 0xffd700, scale: 0.8 },
+        { x: 0.85, color: 0xf0f5ff, scale: 0.68 },
+        { x: 1.7, color: 0xffd700, scale: 0.65 }
+      ];
+
+      trophyPlacements.forEach(tp => {
+        const mesh = createLeagueCupMesh(tp.color);
+        mesh.position.set(tp.x, 0.18, 0);
+        mesh.scale.set(tp.scale, tp.scale, tp.scale);
+        threeScene.add(mesh);
+        animatedMeshes.push(mesh);
+      });
 
       isThreeInitialized = true;
       animateThreeRoom();
@@ -1877,12 +1892,12 @@
       threeScene.add(ribbon);
     }
 
-    // SHORTER HEIGHT & SLIM BREADTH PEDESTAL (0.75 x 0.85 x 0.75)
+    // COMPACT SLIM & LOWER HEIGHT PEDESTAL (0.55 width/depth x 0.70 height)
     function create3DPedestal(xPos, rimColor) {
       const group = new THREE.Group();
-      group.position.set(xPos, -0.77, 0);
+      group.position.set(xPos, -0.85, 0);
 
-      const pillarGeo = new THREE.BoxGeometry(0.75, 0.85, 0.75);
+      const pillarGeo = new THREE.BoxGeometry(0.55, 0.70, 0.55);
       const pillarMat = new THREE.MeshStandardMaterial({
         color: 0x141d30,
         metalness: 0.82,
@@ -1893,37 +1908,37 @@
       pillar.receiveShadow = true;
       group.add(pillar);
 
-      const rimGeo = new THREE.BoxGeometry(0.77, 0.025, 0.77);
+      const rimGeo = new THREE.BoxGeometry(0.57, 0.02, 0.57);
       const rimMat = new THREE.MeshBasicMaterial({ color: rimColor });
       const rim = new THREE.Mesh(rimGeo, rimMat);
-      rim.position.y = 0.425;
+      rim.position.y = 0.35;
       group.add(rim);
 
       threeScene.add(group);
     }
 
-    function createLeagueCupMesh() {
+    function createLeagueCupMesh(hexColor = 0xffd700) {
       const cupGroup = new THREE.Group();
       const goldMat = new THREE.MeshStandardMaterial({
-        color: 0xffd700,
+        color: hexColor,
         metalness: 0.95,
         roughness: 0.18
       });
 
-      const bodyGeo = new THREE.CylinderGeometry(0.42, 0.22, 0.68, 24);
+      const bodyGeo = new THREE.CylinderGeometry(0.35, 0.18, 0.55, 24);
       const body = new THREE.Mesh(bodyGeo, goldMat);
       body.castShadow = true;
       cupGroup.add(body);
 
-      const stemGeo = new THREE.CylinderGeometry(0.1, 0.12, 0.32, 16);
+      const stemGeo = new THREE.CylinderGeometry(0.08, 0.1, 0.28, 16);
       const stem = new THREE.Mesh(stemGeo, goldMat);
-      stem.position.y = -0.44;
+      stem.position.y = -0.38;
       stem.castShadow = true;
       cupGroup.add(stem);
 
-      const footGeo = new THREE.CylinderGeometry(0.3, 0.35, 0.1, 24);
+      const footGeo = new THREE.CylinderGeometry(0.24, 0.28, 0.09, 24);
       const foot = new THREE.Mesh(footGeo, goldMat);
-      foot.position.y = -0.62;
+      foot.position.y = -0.52;
       foot.castShadow = true;
       cupGroup.add(foot);
 
@@ -1936,9 +1951,9 @@
       if (ucl3DModel) {
         ucl3DModel.rotation.y += 0.012;
       }
-      if (leagueTrophyMesh) {
-        leagueTrophyMesh.rotation.y += 0.012;
-      }
+      animatedMeshes.forEach(mesh => {
+        mesh.rotation.y += 0.012;
+      });
 
       if (threeRenderer && threeScene && threeCamera) {
         threeRenderer.render(threeScene, threeCamera);
