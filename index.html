@@ -1289,7 +1289,7 @@
       </div>
     </div>
 
-    <!-- MANAGERS TAB (SHOWCASE WITH REAL METALLIC SHINY UCL TROPHY) -->
+    <!-- MANAGERS TAB (SHOWCASE WITH SILVER CHROMED UCL TROPHY & CLEAN ALIGNED METAS) -->
     <div id="page-managers" class="view-card">
       <div class="league-banner">
         <div>
@@ -1712,37 +1712,38 @@
     }
 
     // ==========================================================
-    // STUDIO ENVIRONMENT GENERATOR (ENBALES REAL SILVER REFLECTIONS)
+    // STUDIO ENVIRONMENT WITH NEUTRAL LIGHT REFLECTION
     // ==========================================================
-    function createStudioEnvironment(renderer) {
+    function createNeutralStudioEnv(renderer) {
       const pmrem = new THREE.PMREMGenerator(renderer);
       const envScene = new THREE.Scene();
-      envScene.background = new THREE.Color(0x020510);
+      envScene.background = new THREE.Color(0x0a0f1d);
 
-      const lightGeom = new THREE.PlaneGeometry(5, 5);
-      
-      // Top Softbox
+      const panelGeo = new THREE.PlaneGeometry(6, 6);
+
+      // Top softbox
       const topMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-      const topMesh = new THREE.Mesh(lightGeom, topMat);
+      const topMesh = new THREE.Mesh(panelGeo, topMat);
       topMesh.position.set(0, 4, 0);
       topMesh.rotation.x = Math.PI / 2;
       envScene.add(topMesh);
 
-      // Front Studio Fill Light
-      const frontMat = new THREE.MeshBasicMaterial({ color: 0xf1f5f9 });
-      const frontMesh = new THREE.Mesh(lightGeom, frontMat);
+      // Front soft light
+      const frontMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+      const frontMesh = new THREE.Mesh(panelGeo, frontMat);
       frontMesh.position.set(0, 0, 4);
       envScene.add(frontMesh);
 
-      // Left Highlight Strip
-      const sideMat = new THREE.MeshBasicMaterial({ color: 0x93c5fd });
-      const leftMesh = new THREE.Mesh(lightGeom, sideMat);
+      // Left white kicker
+      const leftMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+      const leftMesh = new THREE.Mesh(panelGeo, leftMat);
       leftMesh.position.set(-4, 1, 0);
       leftMesh.rotation.y = Math.PI / 2;
       envScene.add(leftMesh);
 
-      // Right Highlight Strip
-      const rightMesh = new THREE.Mesh(lightGeom, sideMat);
+      // Right soft white kicker
+      const rightMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+      const rightMesh = new THREE.Mesh(panelGeo, rightMat);
       rightMesh.position.set(4, 1, 0);
       rightMesh.rotation.y = -Math.PI / 2;
       envScene.add(rightMesh);
@@ -1753,8 +1754,7 @@
     }
 
     // ==========================================================
-    // MULTI-ROOM THREE.JS INSTANCES ENGINE
-    // Realistic silver chrome reflections with focused ceiling beam
+    // THREE.JS MULTI-ROOM SHOWCASE ENGINE
     // ==========================================================
     let threeRooms = [];
 
@@ -1773,7 +1773,7 @@
         const height = unit.clientHeight || 145;
 
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x020409); // Dark showcase background
+        scene.background = new THREE.Color(0x02050e);
 
         const camera = new THREE.PerspectiveCamera(74, width / height, 0.1, 100);
         camera.position.set(0, 0.08, 1.15);
@@ -1783,28 +1783,32 @@
         renderer.setSize(width, height);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-        // Inject studio environment map so metallic chrome shines and reflects
-        const studioEnv = createStudioEnvironment(renderer);
-        scene.environment = studioEnv;
+        // Color management for authentic PBR metal rendering
+        renderer.outputEncoding = THREE.sRGBEncoding;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.0;
 
-        // Dark Floor
+        // Apply neutral studio reflection map
+        scene.environment = createNeutralStudioEnv(renderer);
+
+        // Neutral dark floor
         const floorGeo = new THREE.PlaneGeometry(24, 24);
         const floorMat = new THREE.MeshStandardMaterial({
-          color: 0x050812,
-          roughness: 0.6,
-          metalness: 0.3
+          color: 0x080c14,
+          roughness: 0.8,
+          metalness: 0.1
         });
         const floor = new THREE.Mesh(floorGeo, floorMat);
         floor.rotation.x = -Math.PI / 2;
         floor.position.y = -1.1;
         scene.add(floor);
 
-        // Dark Back Wall
+        // Neutral dark wall
         const wallGeo = new THREE.PlaneGeometry(24, 12);
         const wallMat = new THREE.MeshStandardMaterial({
-          color: 0x030610,
-          roughness: 0.8,
-          metalness: 0.1
+          color: 0x05070c,
+          roughness: 0.9,
+          metalness: 0.05
         });
         const backWall = new THREE.Mesh(wallGeo, wallMat);
         backWall.position.set(0, 3.5, -4);
@@ -1816,23 +1820,23 @@
           create3DPedestalMesh(scene, x);
         });
 
-        // 1. CEILING BEAM SPOTLIGHT directly pointing down at the trophy on Pillar 2
-        const ceilingSpot = new THREE.SpotLight(0xffffff, 8.0);
-        ceilingSpot.position.set(-0.72, 3.8, 0.3);
-        ceilingSpot.target.position.set(-0.72, -0.15, 0);
-        ceilingSpot.angle = 0.32;
-        ceilingSpot.penumbra = 0.45;
+        // Neutral soft room ambient
+        const softAmbient = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(softAmbient);
+
+        // Ceiling spotlight above trophy
+        const ceilingSpot = new THREE.SpotLight(0xffffff, 3.2);
+        ceilingSpot.position.set(-0.72, 3.6, 0.4);
+        ceilingSpot.target.position.set(-0.72, -0.1, 0);
+        ceilingSpot.angle = 0.35;
+        ceilingSpot.penumbra = 0.5;
         scene.add(ceilingSpot);
         scene.add(ceilingSpot.target);
 
-        // 2. Focused front key light for high-contrast mirror highlights
-        const frontHighlight = new THREE.DirectionalLight(0xffffff, 2.5);
-        frontHighlight.position.set(-0.72, 0.8, 2.0);
-        scene.add(frontHighlight);
-
-        // 3. Subtle ambient light so room is not pitch black
-        const softAmbient = new THREE.AmbientLight(0xffffff, 0.3);
-        scene.add(softAmbient);
+        // Front directional light for chrome highlights
+        const frontLight = new THREE.DirectionalLight(0xffffff, 1.4);
+        frontLight.position.set(-0.72, 1.2, 2.0);
+        scene.add(frontLight);
 
         const roomData = {
           unit: unit,
@@ -1843,17 +1847,17 @@
           singleTrophyModel: null
         };
 
-        // Fallback brilliant silver trophy while GLB loads
-        const shinyCupPlaceholder = createShinyCupMesh();
-        shinyCupPlaceholder.position.set(-0.72, -0.27, 0);
-        shinyCupPlaceholder.scale.set(0.56, 0.56, 0.56);
-        scene.add(shinyCupPlaceholder);
-        roomData.singleTrophyModel = shinyCupPlaceholder;
+        // Fallback cup while GLB loads
+        const placeholderCup = createSilverCupMesh();
+        placeholderCup.position.set(-0.72, -0.27, 0);
+        placeholderCup.scale.set(0.56, 0.56, 0.56);
+        scene.add(placeholderCup);
+        roomData.singleTrophyModel = placeholderCup;
 
-        // Load UCL GLB model with true mirror chrome reflection
+        // Load original GLB model and keep its native metallic roughness
         const gltfLoader = new THREE.GLTFLoader();
         gltfLoader.load('ucl-trophy.glb', (gltf) => {
-          scene.remove(shinyCupPlaceholder);
+          scene.remove(placeholderCup);
 
           const model = gltf.scene;
           const box = new THREE.Box3().setFromObject(model);
@@ -1864,33 +1868,32 @@
           model.position.set(-0.72, -0.27, 0);
 
           model.traverse(child => {
-            if (child.isMesh) {
-              child.material = new THREE.MeshStandardMaterial({
-                color: new THREE.Color(0xfcfdff), // Pure silver white
-                metalness: 1.0,                    // 100% pure metallic mirror
-                roughness: 0.08,                   // Ultra high gloss reflection
-                envMapIntensity: 2.2               // High reflection brightness
-              });
+            if (child.isMesh && child.material) {
+              child.material.metalness = 1.0;
+              child.material.roughness = 0.12;
+              child.material.color = new THREE.Color(0xf1f5f9);
+              child.material.envMapIntensity = 1.8;
+              child.material.needsUpdate = true;
             }
           });
 
           scene.add(model);
           roomData.singleTrophyModel = model;
-        }, undefined, err => console.log("Using fallback shiny cup:", err));
+        }, undefined, err => console.log("Using fallback silver cup:", err));
 
         threeRooms.push(roomData);
       });
     }
 
-    // PILLAR: Breadth 0.28, Height 0.55, clean monochromatic dark top
+    // PILLAR: Breadth 0.28, Height 0.55
     function create3DPedestalMesh(scene, xPos) {
       const group = new THREE.Group();
       group.position.set(xPos, -0.55, 0);
 
       const pillarGeo = new THREE.BoxGeometry(0.28, 0.55, 0.28);
       const pillarMat = new THREE.MeshStandardMaterial({
-        color: 0x080e1a,
-        metalness: 0.7,
+        color: 0x0c121e,
+        metalness: 0.6,
         roughness: 0.5
       });
       const pillar = new THREE.Mesh(pillarGeo, pillarMat);
@@ -1898,8 +1901,8 @@
 
       const rimGeo = new THREE.BoxGeometry(0.29, 0.02, 0.29);
       const rimMat = new THREE.MeshStandardMaterial({
-        color: 0x111c30,
-        metalness: 0.8,
+        color: 0x182438,
+        metalness: 0.7,
         roughness: 0.3
       });
       const rim = new THREE.Mesh(rimGeo, rimMat);
@@ -1909,28 +1912,28 @@
       scene.add(group);
     }
 
-    // High reflection chrome/silver finish cup mesh
-    function createShinyCupMesh() {
+    // Realistic brushed silver trophy placeholder
+    function createSilverCupMesh() {
       const cupGroup = new THREE.Group();
-      const chromeMat = new THREE.MeshStandardMaterial({
-        color: 0xfcfdff,
+      const silverMat = new THREE.MeshStandardMaterial({
+        color: 0xf1f5f9,
         metalness: 1.0,
-        roughness: 0.08,
-        envMapIntensity: 2.2
+        roughness: 0.12,
+        envMapIntensity: 1.8
       });
 
       const bodyGeo = new THREE.CylinderGeometry(0.32, 0.16, 0.52, 32);
-      const body = new THREE.Mesh(bodyGeo, chromeMat);
+      const body = new THREE.Mesh(bodyGeo, silverMat);
       body.position.y = 0.27;
       cupGroup.add(body);
 
       const stemGeo = new THREE.CylinderGeometry(0.07, 0.09, 0.26, 20);
-      const stem = new THREE.Mesh(stemGeo, chromeMat);
+      const stem = new THREE.Mesh(stemGeo, silverMat);
       stem.position.y = -0.09;
       cupGroup.add(stem);
 
       const footGeo = new THREE.CylinderGeometry(0.22, 0.26, 0.08, 32);
-      const foot = new THREE.Mesh(footGeo, chromeMat);
+      const foot = new THREE.Mesh(footGeo, silverMat);
       foot.position.y = -0.22;
       cupGroup.add(foot);
 
