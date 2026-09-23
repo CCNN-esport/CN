@@ -878,7 +878,7 @@
       color: var(--muted);
     }
 
-    /* COMPACT 3D TROPHY ROOM BOX (REDUCED HEIGHT) */
+    /* COMPACT 3D TROPHY ROOM BOX */
     .trophy-room-canvas-container {
       position: relative;
       width: 100%;
@@ -1744,7 +1744,7 @@
     }
 
     // ==========================================================
-    // THREE.JS 3D ROOM SCENE ENGINE
+    // THREE.JS 3D ROOM SCENE ENGINE (SLIM PEDESTALS & COMPACT FRAME)
     // ==========================================================
     let threeScene, threeCamera, threeRenderer;
     let ucl3DModel = null;
@@ -1759,7 +1759,7 @@
       const width = container.clientWidth || 340;
       const height = container.clientHeight || 180;
 
-      // 1. Scene & Perspective Camera (Re-framed for 180px compact height)
+      // 1. Scene & Perspective Camera
       threeScene = new THREE.Scene();
       threeScene.background = new THREE.Color(0x030712);
       threeScene.fog = new THREE.FogExp2(0x030712, 0.04);
@@ -1803,23 +1803,23 @@
       createNeonEnergyRibbon(-1.2, 0x00a2ff);
       createNeonEnergyRibbon(-0.6, 0x3b82f6);
 
-      // 5. 3D Pedestals
-      create3DPedestal(-1.5, 0x00e5ff);
-      create3DPedestal(1.5, 0xffd700);
+      // 5. 3D Pedestals - Slim breadths (0.75 width/depth) for exact single-trophy fit
+      create3DPedestal(-1.35, 0x00e5ff);
+      create3DPedestal(1.35, 0xffd700);
 
       // 6. Realistic Lighting
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.45);
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.55);
       threeScene.add(ambientLight);
 
       const spotLeft = new THREE.SpotLight(0x00e5ff, 2.5);
-      spotLeft.position.set(-1.5, 5, 2);
+      spotLeft.position.set(-1.35, 5, 2);
       spotLeft.angle = 0.45;
       spotLeft.penumbra = 0.6;
       spotLeft.castShadow = true;
       threeScene.add(spotLeft);
 
       const spotRight = new THREE.SpotLight(0xffd700, 2.5);
-      spotRight.position.set(1.5, 5, 2);
+      spotRight.position.set(1.35, 5, 2);
       spotRight.angle = 0.45;
       spotRight.penumbra = 0.6;
       spotRight.castShadow = true;
@@ -1829,12 +1829,12 @@
       const gltfLoader = new THREE.GLTFLoader();
       gltfLoader.load('ucl-trophy.glb', (gltf) => {
         ucl3DModel = gltf.scene;
-        ucl3DModel.position.set(-1.5, 0.05, 0);
+        ucl3DModel.position.set(-1.35, 0.05, 0);
 
         const box = new THREE.Box3().setFromObject(ucl3DModel);
         const size = new THREE.Vector3();
         box.getSize(size);
-        const scaleFactor = 1.35 / (size.y || 1);
+        const scaleFactor = 1.25 / (size.y || 1);
         ucl3DModel.scale.set(scaleFactor, scaleFactor, scaleFactor);
 
         ucl3DModel.traverse((child) => {
@@ -1856,7 +1856,7 @@
 
       // 8. 3D Golden League Trophy on Right Pedestal
       leagueTrophyMesh = createLeagueCupMesh();
-      leagueTrophyMesh.position.set(1.5, 0.72, 0);
+      leagueTrophyMesh.position.set(1.35, 0.68, 0);
       threeScene.add(leagueTrophyMesh);
 
       isThreeInitialized = true;
@@ -1877,22 +1877,23 @@
       threeScene.add(ribbon);
     }
 
+    // SLENDER BREADTH PEDESTAL (0.75 x 0.75 base for snug trophy fitting)
     function create3DPedestal(xPos, rimColor) {
       const group = new THREE.Group();
       group.position.set(xPos, -0.6, 0);
 
-      const pillarGeo = new THREE.BoxGeometry(1.4, 1.2, 1.4);
+      const pillarGeo = new THREE.BoxGeometry(0.75, 1.2, 0.75);
       const pillarMat = new THREE.MeshStandardMaterial({
-        color: 0x090e1a,
-        metalness: 0.85,
-        roughness: 0.25
+        color: 0x141d30,
+        metalness: 0.82,
+        roughness: 0.28
       });
       const pillar = new THREE.Mesh(pillarGeo, pillarMat);
       pillar.castShadow = true;
       pillar.receiveShadow = true;
       group.add(pillar);
 
-      const rimGeo = new THREE.BoxGeometry(1.42, 0.03, 1.42);
+      const rimGeo = new THREE.BoxGeometry(0.77, 0.025, 0.77);
       const rimMat = new THREE.MeshBasicMaterial({ color: rimColor });
       const rim = new THREE.Mesh(rimGeo, rimMat);
       rim.position.y = 0.6;
@@ -1909,20 +1910,20 @@
         roughness: 0.18
       });
 
-      const bodyGeo = new THREE.CylinderGeometry(0.48, 0.25, 0.75, 24);
+      const bodyGeo = new THREE.CylinderGeometry(0.42, 0.22, 0.68, 24);
       const body = new THREE.Mesh(bodyGeo, goldMat);
       body.castShadow = true;
       cupGroup.add(body);
 
-      const stemGeo = new THREE.CylinderGeometry(0.12, 0.14, 0.35, 16);
+      const stemGeo = new THREE.CylinderGeometry(0.1, 0.12, 0.32, 16);
       const stem = new THREE.Mesh(stemGeo, goldMat);
-      stem.position.y = -0.48;
+      stem.position.y = -0.44;
       stem.castShadow = true;
       cupGroup.add(stem);
 
-      const footGeo = new THREE.CylinderGeometry(0.35, 0.4, 0.12, 24);
+      const footGeo = new THREE.CylinderGeometry(0.3, 0.35, 0.1, 24);
       const foot = new THREE.Mesh(footGeo, goldMat);
-      foot.position.y = -0.68;
+      foot.position.y = -0.62;
       foot.castShadow = true;
       cupGroup.add(foot);
 
