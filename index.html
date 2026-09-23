@@ -1314,7 +1314,7 @@
       </div>
     </div>
 
-    <!-- MANAGERS TAB (FIVE PILLARS 3D STUDIO SHOWCASE - CLOSER VIEW) -->
+    <!-- MANAGERS TAB (FIVE PILLARS 3D STUDIO SHOWCASE - CLOSER VIEW WITH VISIBLE GAPS) -->
     <div id="page-managers" class="view-card">
       <div class="league-banner">
         <div>
@@ -1744,7 +1744,7 @@
     }
 
     // ==========================================================
-    // THREE.JS 3D ROOM SCENE ENGINE (FIVE CLOSER PILLARS)
+    // THREE.JS 3D ROOM SCENE ENGINE (FIVE PILLARS WITH PROPER GAPS)
     // ==========================================================
     let threeScene, threeCamera, threeRenderer;
     let ucl3DModel = null;
@@ -1759,13 +1759,13 @@
       const width = container.clientWidth || 340;
       const height = container.clientHeight || 180;
 
-      // 1. Scene & Perspective Camera (Pushed close to z: 2.8 for prominent, bold display)
+      // 1. Scene & Perspective Camera (Close-up framing)
       threeScene = new THREE.Scene();
       threeScene.background = new THREE.Color(0x030712);
       threeScene.fog = new THREE.FogExp2(0x030712, 0.038);
 
-      threeCamera = new THREE.PerspectiveCamera(52, width / height, 0.1, 100);
-      threeCamera.position.set(0, 0.32, 2.8);
+      threeCamera = new THREE.PerspectiveCamera(54, width / height, 0.1, 100);
+      threeCamera.position.set(0, 0.32, 2.9);
       threeCamera.lookAt(0, -0.18, 0);
 
       // 2. WebGL Renderer with Shadows
@@ -1803,13 +1803,13 @@
       createNeonEnergyRibbon(-1.2, 0x00a2ff);
       createNeonEnergyRibbon(-0.6, 0x3b82f6);
 
-      // 5. Five Pedestals positioned to neatly fill the close-up viewport
+      // 5. Five Pedestals with CLEAR GAPS (Spacing set to 0.7, pillar width 0.38)
       const pillarConfigs = [
-        { x: -1.3, color: 0x00e5ff },
-        { x: -0.65, color: 0x3b82f6 },
+        { x: -1.4, color: 0x00e5ff },
+        { x: -0.7, color: 0x3b82f6 },
         { x: 0.0, color: 0xffd700 },
-        { x: 0.65, color: 0x3b82f6 },
-        { x: 1.3, color: 0xffd700 }
+        { x: 0.7, color: 0x3b82f6 },
+        { x: 1.4, color: 0xffd700 }
       ];
 
       pillarConfigs.forEach(cfg => {
@@ -1829,16 +1829,16 @@
         threeScene.add(spot);
       });
 
-      // 7. Load UCL .GLB Trophy onto Center-Left Pedestal (-0.65)
+      // 7. Load UCL .GLB Trophy onto Center-Left Pedestal (-0.7)
       const gltfLoader = new THREE.GLTFLoader();
       gltfLoader.load('ucl-trophy.glb', (gltf) => {
         ucl3DModel = gltf.scene;
-        ucl3DModel.position.set(-0.65, -0.22, 0);
+        ucl3DModel.position.set(-0.7, -0.22, 0);
 
         const box = new THREE.Box3().setFromObject(ucl3DModel);
         const size = new THREE.Vector3();
         box.getSize(size);
-        const scaleFactor = 1.05 / (size.y || 1);
+        const scaleFactor = 0.95 / (size.y || 1);
         ucl3DModel.scale.set(scaleFactor, scaleFactor, scaleFactor);
 
         ucl3DModel.traverse((child) => {
@@ -1858,12 +1858,12 @@
         console.log('Falling back to geometric trophy on pedestal:', err);
       });
 
-      // 8. Place Sleek Geometric Cups on Remaining Pillars
+      // 8. Place Sleek Geometric Cups on Remaining Pillars with Gaps
       const trophyPlacements = [
-        { x: -1.3, color: 0x00e5ff, scale: 0.72 },
-        { x: 0.0, color: 0xffd700, scale: 0.88 },
-        { x: 0.65, color: 0xf0f5ff, scale: 0.76 },
-        { x: 1.3, color: 0xffd700, scale: 0.72 }
+        { x: -1.4, color: 0x00e5ff, scale: 0.65 },
+        { x: 0.0, color: 0xffd700, scale: 0.78 },
+        { x: 0.7, color: 0xf0f5ff, scale: 0.68 },
+        { x: 1.4, color: 0xffd700, scale: 0.65 }
       ];
 
       trophyPlacements.forEach(tp => {
@@ -1892,12 +1892,12 @@
       threeScene.add(ribbon);
     }
 
-    // COMPACT SLIM & LOWER HEIGHT PEDESTAL (0.55 width/depth x 0.70 height)
+    // SLIMMER PEDESTAL WITH CLEAR GAPS (0.38 width/depth x 0.70 height)
     function create3DPedestal(xPos, rimColor) {
       const group = new THREE.Group();
       group.position.set(xPos, -0.85, 0);
 
-      const pillarGeo = new THREE.BoxGeometry(0.55, 0.70, 0.55);
+      const pillarGeo = new THREE.BoxGeometry(0.38, 0.70, 0.38);
       const pillarMat = new THREE.MeshStandardMaterial({
         color: 0x141d30,
         metalness: 0.82,
@@ -1908,7 +1908,7 @@
       pillar.receiveShadow = true;
       group.add(pillar);
 
-      const rimGeo = new THREE.BoxGeometry(0.57, 0.02, 0.57);
+      const rimGeo = new THREE.BoxGeometry(0.40, 0.02, 0.40);
       const rimMat = new THREE.MeshBasicMaterial({ color: rimColor });
       const rim = new THREE.Mesh(rimGeo, rimMat);
       rim.position.y = 0.35;
@@ -1925,20 +1925,20 @@
         roughness: 0.18
       });
 
-      const bodyGeo = new THREE.CylinderGeometry(0.35, 0.18, 0.55, 24);
+      const bodyGeo = new THREE.CylinderGeometry(0.32, 0.16, 0.52, 24);
       const body = new THREE.Mesh(bodyGeo, goldMat);
       body.castShadow = true;
       cupGroup.add(body);
 
-      const stemGeo = new THREE.CylinderGeometry(0.08, 0.1, 0.28, 16);
+      const stemGeo = new THREE.CylinderGeometry(0.07, 0.09, 0.26, 16);
       const stem = new THREE.Mesh(stemGeo, goldMat);
-      stem.position.y = -0.38;
+      stem.position.y = -0.36;
       stem.castShadow = true;
       cupGroup.add(stem);
 
-      const footGeo = new THREE.CylinderGeometry(0.24, 0.28, 0.09, 24);
+      const footGeo = new THREE.CylinderGeometry(0.22, 0.26, 0.08, 24);
       const foot = new THREE.Mesh(footGeo, goldMat);
-      foot.position.y = -0.52;
+      foot.position.y = -0.49;
       foot.castShadow = true;
       cupGroup.add(foot);
 
