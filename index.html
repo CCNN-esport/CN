@@ -808,7 +808,7 @@
       text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
     }
 
-    /* MANAGERS PROFILE CARD WITH NAME, PLAYSTYLE, CURRENT TEAM */
+    /* MANAGERS PROFILE CARD WITH ALIGNED COLONS */
     .manager-showcase-block {
       margin-bottom: 24px;
     }
@@ -852,40 +852,42 @@
       stroke: var(--muted);
     }
 
-    .manager-info-meta {
+    /* Perfect straight colons using CSS Grid */
+    .manager-info-grid {
       flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .mgr-meta-row {
-      display: flex;
+      display: grid;
+      grid-template-columns: auto auto 1fr;
       align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      color: #cbd5e1;
+      column-gap: 8px;
+      row-gap: 5px;
     }
 
-    .mgr-meta-label {
+    .mgr-label {
       font-size: 11px;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.8px;
       color: var(--muted);
-      min-width: 90px;
+      white-space: nowrap;
     }
 
-    .mgr-meta-val {
+    .mgr-colon {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .mgr-value {
       font-size: 13px;
       font-weight: 800;
       color: #fff;
-    }
-
-    .mgr-meta-val.team-val {
-      display: inline-flex;
+      display: flex;
       align-items: center;
       gap: 6px;
+    }
+
+    .mgr-value.team-val {
       color: var(--accent);
     }
 
@@ -1287,7 +1289,7 @@
       </div>
     </div>
 
-    <!-- MANAGERS TAB (SHOWCASE CONTAINER DYNAMICALLY GENERATED) -->
+    <!-- MANAGERS TAB (EMPTY 5 PILLARS WITH ROOM LIGHT OFF & ALIGNED COLONS) -->
     <div id="page-managers" class="view-card">
       <div class="league-banner">
         <div>
@@ -1296,7 +1298,6 @@
         </div>
       </div>
 
-      <!-- Container that holds manager cards + 3D showcase boxes -->
       <div id="managersListContainer"></div>
     </div>
 
@@ -1582,7 +1583,7 @@
       managers: [
         {
           id: '1',
-          name: 'Manager',
+          name: 'Nasif',
           playstyle: 'Quick Counter',
           teamId: '3',
           photo: ''
@@ -1621,12 +1622,11 @@
         if (!state.results) state.results = [];
         if (!state.ucl) state.ucl = defaultState.ucl;
         
-        // Backward compatibility: Convert single manager to array if needed
         if (!state.managers || !Array.isArray(state.managers)) {
           if (state.manager) {
             state.managers = [{
               id: '1',
-              name: state.manager.name || 'Manager',
+              name: state.manager.name || 'Nasif',
               playstyle: 'Quick Counter',
               teamId: state.manager.teamId || '3',
               photo: state.manager.photo || ''
@@ -1712,12 +1712,11 @@
     }
 
     // ==========================================================
-    // MULTI-ROOM THREE.JS INSTANCES ENGINE
+    // MULTI-ROOM THREE.JS INSTANCES ENGINE (EMPTY PILLARS & LIGHTS OFF)
     // ==========================================================
-    let threeRooms = []; // Stores scene, camera, renderer, animatedMeshes for each manager canvas
+    let threeRooms = [];
 
     function initAllManagerRooms() {
-      // Clear previous Three.js instances
       threeRooms.forEach(room => {
         if (room.renderer) room.renderer.dispose();
       });
@@ -1732,7 +1731,8 @@
         const height = unit.clientHeight || 145;
 
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x060e22);
+        // Light off: dark moody background
+        scene.background = new THREE.Color(0x02050e);
 
         const camera = new THREE.PerspectiveCamera(74, width / height, 0.1, 100);
         camera.position.set(0, 0.08, 1.15);
@@ -1742,58 +1742,42 @@
         renderer.setSize(width, height);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-        // Floor
+        // Dark Floor
         const floorGeo = new THREE.PlaneGeometry(24, 24);
         const floorMat = new THREE.MeshStandardMaterial({
-          color: 0x0c1630,
-          roughness: 0.2,
-          metalness: 0.6
+          color: 0x040814,
+          roughness: 0.6,
+          metalness: 0.2
         });
         const floor = new THREE.Mesh(floorGeo, floorMat);
         floor.rotation.x = -Math.PI / 2;
         floor.position.y = -1.1;
         scene.add(floor);
 
-        // Back Wall
+        // Dark Back Wall
         const wallGeo = new THREE.PlaneGeometry(24, 12);
         const wallMat = new THREE.MeshStandardMaterial({
-          color: 0x0f1c3d,
-          roughness: 0.5,
-          metalness: 0.3
+          color: 0x030610,
+          roughness: 0.8,
+          metalness: 0.1
         });
         const backWall = new THREE.Mesh(wallGeo, wallMat);
         backWall.position.set(0, 3.5, -4);
         scene.add(backWall);
 
-        // Neon Ribbons
-        addRibbonToScene(scene, -1.5, 0x00e5ff);
-        addRibbonToScene(scene, -0.9, 0x00a2ff);
-        addRibbonToScene(scene, -0.3, 0x3b82f6);
+        // Dim ambient light (lights off mode)
+        const dimAmbient = new THREE.AmbientLight(0xffffff, 0.15);
+        scene.add(dimAmbient);
 
-        // 5 Pillars
+        // Very soft backlight so pillars are subtly visible in the dark
+        const softRim = new THREE.DirectionalLight(0x38bdf8, 0.2);
+        softRim.position.set(0, 4, -2);
+        scene.add(softRim);
+
+        // 5 Empty Pillars - Neutral uniform dark top rim (no yellow, blue, or trophies)
         const pillarPositions = [-1.44, -0.72, 0.0, 0.72, 1.44];
         pillarPositions.forEach(x => {
           create3DPedestalMesh(scene, x);
-        });
-
-        // Lights
-        const ambientLight = new THREE.AmbientLight(0xffffff, 1.6);
-        scene.add(ambientLight);
-
-        const hemiLight = new THREE.HemisphereLight(0xffffff, 0x334466, 1.3);
-        hemiLight.position.set(0, 10, 0);
-        scene.add(hemiLight);
-
-        const keyLight = new THREE.DirectionalLight(0xffffff, 1.5);
-        keyLight.position.set(0, 4, 5);
-        scene.add(keyLight);
-
-        pillarPositions.forEach(x => {
-          const spot = new THREE.SpotLight(0xffffff, 2.0);
-          spot.position.set(x, 3.0, 1.5);
-          spot.angle = 0.45;
-          spot.penumbra = 0.3;
-          scene.add(spot);
         });
 
         const roomData = {
@@ -1801,96 +1785,33 @@
           canvas: canvas,
           scene: scene,
           camera: camera,
-          renderer: renderer,
-          animatedMeshes: [],
-          ucl3DModel: null
+          renderer: renderer
         };
-
-        // Pillar 2: Placeholder cup until UCL GLB loads
-        const placeholder = createCupMesh(0xf0f5ff);
-        placeholder.position.set(-0.72, -0.27, 0);
-        placeholder.scale.set(0.56, 0.56, 0.56);
-        scene.add(placeholder);
-        roomData.animatedMeshes.push(placeholder);
-
-        // Load UCL GLB
-        const gltfLoader = new THREE.GLTFLoader();
-        gltfLoader.load('ucl-trophy.glb', (gltf) => {
-          scene.remove(placeholder);
-          const pIdx = roomData.animatedMeshes.indexOf(placeholder);
-          if (pIdx !== -1) roomData.animatedMeshes.splice(pIdx, 1);
-
-          const model = gltf.scene;
-          const box = new THREE.Box3().setFromObject(model);
-          const size = new THREE.Vector3();
-          box.getSize(size);
-          const scaleFactor = 0.58 / (size.y || 1);
-          model.scale.set(scaleFactor, scaleFactor, scaleFactor);
-          model.position.set(-0.72, -0.27, 0);
-
-          model.traverse(child => {
-            if (child.isMesh && child.material) {
-              child.material.metalness = 0.95;
-              child.material.roughness = 0.15;
-              child.material.color = new THREE.Color(0xf5f8ff);
-            }
-          });
-
-          scene.add(model);
-          roomData.ucl3DModel = model;
-        }, undefined, err => console.log("GLB load fallback", err));
-
-        // Pillars 1, 3, 4, 5 cups
-        const cups = [
-          { x: -1.44, color: 0x00e5ff, scale: 0.54 },
-          { x: 0.0,   color: 0xffd700, scale: 0.62 },
-          { x: 0.72,  color: 0xf0f5ff, scale: 0.56 },
-          { x: 1.44,  color: 0xffd700, scale: 0.54 }
-        ];
-
-        cups.forEach(tp => {
-          const mesh = createCupMesh(tp.color);
-          mesh.position.set(tp.x, -0.27, 0);
-          mesh.scale.set(tp.scale, tp.scale, tp.scale);
-          scene.add(mesh);
-          roomData.animatedMeshes.push(mesh);
-        });
 
         threeRooms.push(roomData);
       });
     }
 
-    function addRibbonToScene(scene, yOffset, hexColor) {
-      const curve = new THREE.CatmullRomCurve3([
-        new THREE.Vector3(-10, yOffset + 0.5, -3.2),
-        new THREE.Vector3(-4, yOffset + 1.2, -2.8),
-        new THREE.Vector3(3, yOffset + 1.8, -2.9),
-        new THREE.Vector3(10, yOffset + 2.5, -3.2)
-      ]);
-      const tubeGeo = new THREE.TubeGeometry(curve, 64, 0.04, 8, false);
-      const tubeMat = new THREE.MeshBasicMaterial({ color: hexColor });
-      const ribbon = new THREE.Mesh(tubeGeo, tubeMat);
-      scene.add(ribbon);
-    }
-
+    // PILLAR: Breadth 0.28, Height 0.55, clean monochromatic dark top
     function create3DPedestalMesh(scene, xPos) {
       const group = new THREE.Group();
       group.position.set(xPos, -0.55, 0);
 
       const pillarGeo = new THREE.BoxGeometry(0.28, 0.55, 0.28);
       const pillarMat = new THREE.MeshStandardMaterial({
-        color: 0x18243c,
+        color: 0x0a101f,
         metalness: 0.75,
-        roughness: 0.3
+        roughness: 0.4
       });
       const pillar = new THREE.Mesh(pillarGeo, pillarMat);
       group.add(pillar);
 
+      // Uniform dark sleek top rim (removed yellow / blue colors)
       const rimGeo = new THREE.BoxGeometry(0.29, 0.02, 0.29);
       const rimMat = new THREE.MeshStandardMaterial({
-        color: 0x223252,
-        metalness: 0.8,
-        roughness: 0.2
+        color: 0x131f38,
+        metalness: 0.85,
+        roughness: 0.25
       });
       const rim = new THREE.Mesh(rimGeo, rimMat);
       rim.position.y = 0.275;
@@ -1899,43 +1820,10 @@
       scene.add(group);
     }
 
-    function createCupMesh(hexColor = 0xffd700) {
-      const cupGroup = new THREE.Group();
-      const goldMat = new THREE.MeshStandardMaterial({
-        color: hexColor,
-        metalness: 0.95,
-        roughness: 0.18
-      });
-
-      const bodyGeo = new THREE.CylinderGeometry(0.32, 0.16, 0.52, 24);
-      const body = new THREE.Mesh(bodyGeo, goldMat);
-      body.position.y = 0.27;
-      cupGroup.add(body);
-
-      const stemGeo = new THREE.CylinderGeometry(0.07, 0.09, 0.26, 16);
-      const stem = new THREE.Mesh(stemGeo, goldMat);
-      stem.position.y = -0.09;
-      cupGroup.add(stem);
-
-      const footGeo = new THREE.CylinderGeometry(0.22, 0.26, 0.08, 24);
-      const foot = new THREE.Mesh(footGeo, goldMat);
-      foot.position.y = -0.22;
-      cupGroup.add(foot);
-
-      return cupGroup;
-    }
-
     function animateAllRooms() {
       requestAnimationFrame(animateAllRooms);
 
       threeRooms.forEach(room => {
-        if (room.ucl3DModel) {
-          room.ucl3DModel.rotation.y += 0.012;
-        }
-        room.animatedMeshes.forEach(mesh => {
-          mesh.rotation.y += 0.012;
-        });
-
         if (room.renderer && room.scene && room.camera) {
           room.renderer.render(room.scene, room.camera);
         }
@@ -2310,7 +2198,7 @@
         `;
       }).join('') || '<p style="text-align:center; color:var(--muted); padding:20px;">No results recorded.</p>';
 
-      // RENDER MANAGERS TAB SHOWCASE LIST (Exact Sketch Design)
+      // RENDER MANAGERS TAB (Clean grid alignment with colon on separate column)
       const managersList = document.getElementById('managersListContainer');
       managersList.innerHTML = (state.managers || []).map((mgr, index) => {
         const mgrTeam = getTeam(mgr.teamId);
@@ -2322,26 +2210,25 @@
           <div class="manager-showcase-block">
             <div class="manager-profile-card">
               <div class="manager-avatar-box">${avatarHtml}</div>
-              <div class="manager-info-meta">
-                <div class="mgr-meta-row">
-                  <span class="mgr-meta-label">Name :</span>
-                  <span class="mgr-meta-val">${mgr.name || 'Manager'}</span>
-                </div>
-                <div class="mgr-meta-row">
-                  <span class="mgr-meta-label">Playstyle :</span>
-                  <span class="mgr-meta-val">${mgr.playstyle || 'Quick Counter'}</span>
-                </div>
-                <div class="mgr-meta-row">
-                  <span class="mgr-meta-label">Current Team :</span>
-                  <span class="mgr-meta-val team-val">
-                    ${renderTeamBadge(mgrTeam)}
-                    <span>${mgrTeam.name}</span>
-                  </span>
+              <div class="manager-info-grid">
+                <div class="mgr-label">NAME</div>
+                <div class="mgr-colon">:</div>
+                <div class="mgr-value">${mgr.name || 'Manager'}</div>
+
+                <div class="mgr-label">PLAYSTYLE</div>
+                <div class="mgr-colon">:</div>
+                <div class="mgr-value">${mgr.playstyle || 'Quick Counter'}</div>
+
+                <div class="mgr-label">CURRENT TEAM</div>
+                <div class="mgr-colon">:</div>
+                <div class="mgr-value team-val">
+                  ${renderTeamBadge(mgrTeam)}
+                  <span>${mgrTeam.name}</span>
                 </div>
               </div>
             </div>
 
-            <!-- 3D Room Box for this manager -->
+            <!-- Empty Pillars 3D Showcase (Lights off) -->
             <div class="trophy-room-canvas-container manager-3d-room-unit" id="mgrCanvasContainer_${index}">
               <div class="canvas-overlay-header">🏛️ 3D Trophy Room Showcase</div>
               <canvas class="trophy-canvas-instance"></canvas>
@@ -2365,7 +2252,6 @@
       document.getElementById('adminLastLeagueChampInput').value = state.lastLeagueChamp;
       document.getElementById('adminLastUclChampInput').value = state.lastUclChamp;
 
-      // Populate Manager Selector in Admin
       const mgrSelect = document.getElementById('adminSelectManagerToEdit');
       mgrSelect.innerHTML = (state.managers || []).map((m, idx) => `<option value="${idx}">${m.name} (${getTeam(m.teamId).name})</option>`).join('');
       populateManagerForm();
@@ -2400,7 +2286,6 @@
         </div>
       `).join('') || '<div style="color:var(--muted); font-size:12px;">No matches awaiting score entry.</div>';
 
-      // Re-initialize manager 3D canvases if managers tab is currently active
       if (document.getElementById('page-managers').classList.contains('active')) {
         setTimeout(initAllManagerRooms, 50);
       }
@@ -2446,7 +2331,7 @@
       if (!state.managers) state.managers = [];
       state.managers.push(newMgr);
       saveState();
-      alert('New Manager added live with their 3D trophy showcase room!');
+      alert('New Manager added live!');
     }
 
     function deleteSelectedManager() {
