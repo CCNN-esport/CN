@@ -1314,7 +1314,7 @@
       </div>
     </div>
 
-    <!-- MANAGERS TAB (FIVE PILLARS 3D STUDIO SHOWCASE - ZOOMED CLOSE-UP) -->
+    <!-- MANAGERS TAB (FIVE PILLARS 3D STUDIO SHOWCASE - MAX CLOSE-UP) -->
     <div id="page-managers" class="view-card">
       <div class="league-banner">
         <div>
@@ -1744,7 +1744,7 @@
     }
 
     // ==========================================================
-    // THREE.JS 3D ROOM SCENE ENGINE (BRIGHT STUDIO & DIRECT CLOSE-UP ZOOM)
+    // THREE.JS 3D ROOM SCENE ENGINE (PROMINENT CLOSE-UP)
     // ==========================================================
     let threeScene, threeCamera, threeRenderer;
     let ucl3DModel = null;
@@ -1759,12 +1759,13 @@
       const width = container.clientWidth || 340;
       const height = container.clientHeight || 145;
 
-      // 1. Scene & Perspective Camera (Pulled in to z: 2.15 for an up-close, full-view experience)
+      // 1. Scene & Close-up Perspective Camera
       threeScene = new THREE.Scene();
       threeScene.background = new THREE.Color(0x060e22);
 
-      threeCamera = new THREE.PerspectiveCamera(54, width / height, 0.1, 100);
-      threeCamera.position.set(0, 0.28, 2.15);
+      // Camera brought up close to z: 1.55 with 62 FOV so all 5 pillars stay in full view
+      threeCamera = new THREE.PerspectiveCamera(62, width / height, 0.1, 100);
+      threeCamera.position.set(0, 0.16, 1.55);
       threeCamera.lookAt(0, -0.06, 0);
 
       // 2. WebGL Renderer
@@ -1813,28 +1814,40 @@
       });
 
       // 6. FULL BRIGHT STUDIO LIGHTING
-      const ambientLight = new THREE.AmbientLight(0xffffff, 1.4);
+      const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
       threeScene.add(ambientLight);
 
-      const hemiLight = new THREE.HemisphereLight(0xffffff, 0x334466, 1.1);
+      const hemiLight = new THREE.HemisphereLight(0xffffff, 0x334466, 1.2);
       hemiLight.position.set(0, 10, 0);
       threeScene.add(hemiLight);
 
-      const keyLight = new THREE.DirectionalLight(0xffffff, 1.3);
+      const keyLight = new THREE.DirectionalLight(0xffffff, 1.4);
       keyLight.position.set(0, 4, 5);
       threeScene.add(keyLight);
 
       pillarConfigs.forEach(cfg => {
-        const spot = new THREE.SpotLight(cfg.color, 2.5);
-        spot.position.set(cfg.x, 3.2, 1.5);
+        const spot = new THREE.SpotLight(cfg.color, 2.8);
+        spot.position.set(cfg.x, 3.0, 1.5);
         spot.angle = 0.45;
         spot.penumbra = 0.3;
         threeScene.add(spot);
       });
 
+      // Temporary placeholder cup on pillar 2 to ensure it is never empty
+      const defaultUclPlaceholder = createLeagueCupMesh(0x3b82f6);
+      defaultUclPlaceholder.position.set(-0.72, 0.0, 0);
+      defaultUclPlaceholder.scale.set(0.56, 0.56, 0.56);
+      threeScene.add(defaultUclPlaceholder);
+      animatedMeshes.push(defaultUclPlaceholder);
+
       // 7. Load UCL .GLB Trophy Placed Directly ON TOP of Center-Left Pillar (Surface Y: -0.27)
       const gltfLoader = new THREE.GLTFLoader();
       gltfLoader.load('ucl-trophy.glb', (gltf) => {
+        // Remove temporary placeholder once GLB loads
+        threeScene.remove(defaultUclPlaceholder);
+        const idx = animatedMeshes.indexOf(defaultUclPlaceholder);
+        if (idx !== -1) animatedMeshes.splice(idx, 1);
+
         ucl3DModel = gltf.scene;
 
         const box = new THREE.Box3().setFromObject(ucl3DModel);
@@ -1855,7 +1868,7 @@
 
         threeScene.add(ucl3DModel);
       }, undefined, (err) => {
-        console.log('Falling back to geometric trophy on pedestal:', err);
+        console.log('Using placeholder trophy on pillar 2:', err);
       });
 
       // 8. Place Cups Directly ON TOP of the Other 4 Pillars
