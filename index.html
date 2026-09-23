@@ -1314,7 +1314,7 @@
       </div>
     </div>
 
-    <!-- MANAGERS TAB (FIVE PILLARS 3D STUDIO SHOWCASE) -->
+    <!-- MANAGERS TAB (FIVE PILLARS 3D STUDIO SHOWCASE - CLOSER VIEW) -->
     <div id="page-managers" class="view-card">
       <div class="league-banner">
         <div>
@@ -1759,14 +1759,14 @@
       const width = container.clientWidth || 340;
       const height = container.clientHeight || 180;
 
-      // 1. Scene & Perspective Camera (Camera closer at z: 4.15 and higher FOV for tight framing)
+      // 1. Scene & Perspective Camera (Pushed close to z: 2.8 for prominent, bold display)
       threeScene = new THREE.Scene();
       threeScene.background = new THREE.Color(0x030712);
       threeScene.fog = new THREE.FogExp2(0x030712, 0.038);
 
-      threeCamera = new THREE.PerspectiveCamera(54, width / height, 0.1, 100);
-      threeCamera.position.set(0, 0.52, 4.15);
-      threeCamera.lookAt(0, -0.15, 0);
+      threeCamera = new THREE.PerspectiveCamera(52, width / height, 0.1, 100);
+      threeCamera.position.set(0, 0.32, 2.8);
+      threeCamera.lookAt(0, -0.18, 0);
 
       // 2. WebGL Renderer with Shadows
       threeRenderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
@@ -1803,13 +1803,13 @@
       createNeonEnergyRibbon(-1.2, 0x00a2ff);
       createNeonEnergyRibbon(-0.6, 0x3b82f6);
 
-      // 5. Five Pedestals with Distinct Spacing (x positions spaced across front view)
+      // 5. Five Pedestals positioned to neatly fill the close-up viewport
       const pillarConfigs = [
-        { x: -2.0, color: 0x00e5ff },
-        { x: -1.0, color: 0x3b82f6 },
+        { x: -1.3, color: 0x00e5ff },
+        { x: -0.65, color: 0x3b82f6 },
         { x: 0.0, color: 0xffd700 },
-        { x: 1.0, color: 0x3b82f6 },
-        { x: 2.0, color: 0xffd700 }
+        { x: 0.65, color: 0x3b82f6 },
+        { x: 1.3, color: 0xffd700 }
       ];
 
       pillarConfigs.forEach(cfg => {
@@ -1817,23 +1817,23 @@
       });
 
       // 6. Realistic Studio Lighting
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.58);
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
       threeScene.add(ambientLight);
 
       pillarConfigs.forEach(cfg => {
-        const spot = new THREE.SpotLight(cfg.color, 1.9);
-        spot.position.set(cfg.x, 4.2, 1.8);
-        spot.angle = 0.38;
-        spot.penumbra = 0.5;
+        const spot = new THREE.SpotLight(cfg.color, 2.2);
+        spot.position.set(cfg.x, 3.8, 1.6);
+        spot.angle = 0.42;
+        spot.penumbra = 0.55;
         spot.castShadow = true;
         threeScene.add(spot);
       });
 
-      // 7. Load UCL .GLB Trophy onto Center-Left Pedestal (-1.0)
+      // 7. Load UCL .GLB Trophy onto Center-Left Pedestal (-0.65)
       const gltfLoader = new THREE.GLTFLoader();
       gltfLoader.load('ucl-trophy.glb', (gltf) => {
         ucl3DModel = gltf.scene;
-        ucl3DModel.position.set(-1.0, -0.22, 0);
+        ucl3DModel.position.set(-0.65, -0.22, 0);
 
         const box = new THREE.Box3().setFromObject(ucl3DModel);
         const size = new THREE.Vector3();
@@ -1860,10 +1860,10 @@
 
       // 8. Place Sleek Geometric Cups on Remaining Pillars
       const trophyPlacements = [
-        { x: -2.0, color: 0x00e5ff, scale: 0.72 },
+        { x: -1.3, color: 0x00e5ff, scale: 0.72 },
         { x: 0.0, color: 0xffd700, scale: 0.88 },
-        { x: 1.0, color: 0xf0f5ff, scale: 0.76 },
-        { x: 2.0, color: 0xffd700, scale: 0.72 }
+        { x: 0.65, color: 0xf0f5ff, scale: 0.76 },
+        { x: 1.3, color: 0xffd700, scale: 0.72 }
       ];
 
       trophyPlacements.forEach(tp => {
