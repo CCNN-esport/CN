@@ -1744,7 +1744,7 @@
     }
 
     // ==========================================================
-    // THREE.JS 3D ROOM SCENE ENGINE (FIVE SLENDER PEDESTALS)
+    // THREE.JS 3D ROOM SCENE ENGINE (FIVE WIDE-GAP PILLARS)
     // ==========================================================
     let threeScene, threeCamera, threeRenderer;
     let ucl3DModel = null;
@@ -1759,13 +1759,13 @@
       const width = container.clientWidth || 340;
       const height = container.clientHeight || 180;
 
-      // 1. Scene & Perspective Camera
+      // 1. Scene & Perspective Camera (Pushed to z: 5.6 for wider spacing coverage)
       threeScene = new THREE.Scene();
       threeScene.background = new THREE.Color(0x030712);
-      threeScene.fog = new THREE.FogExp2(0x030712, 0.04);
+      threeScene.fog = new THREE.FogExp2(0x030712, 0.038);
 
-      threeCamera = new THREE.PerspectiveCamera(46, width / height, 0.1, 100);
-      threeCamera.position.set(0, 0.55, 4.8);
+      threeCamera = new THREE.PerspectiveCamera(48, width / height, 0.1, 100);
+      threeCamera.position.set(0, 0.65, 5.6);
       threeCamera.lookAt(0, -0.15, 0);
 
       // 2. WebGL Renderer with Shadows
@@ -1776,7 +1776,7 @@
       threeRenderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
       // 3. Studio Room Box Geometry (Floor & Walls)
-      const floorGeo = new THREE.PlaneGeometry(16, 16);
+      const floorGeo = new THREE.PlaneGeometry(24, 24);
       const floorMat = new THREE.MeshStandardMaterial({
         color: 0x050a17,
         roughness: 0.25,
@@ -1788,7 +1788,7 @@
       floor.receiveShadow = true;
       threeScene.add(floor);
 
-      const wallGeo = new THREE.PlaneGeometry(16, 10);
+      const wallGeo = new THREE.PlaneGeometry(24, 12);
       const wallMat = new THREE.MeshStandardMaterial({
         color: 0x070e1c,
         roughness: 0.7,
@@ -1803,13 +1803,13 @@
       createNeonEnergyRibbon(-1.2, 0x00a2ff);
       createNeonEnergyRibbon(-0.6, 0x3b82f6);
 
-      // 5. Five Pedestals (x positions: -1.7, -0.85, 0, 0.85, 1.7)
+      // 5. Five Pedestals with Wider Distance Gaps (spacing increased to 1.15)
       const pillarConfigs = [
-        { x: -1.7, color: 0x00e5ff },
-        { x: -0.85, color: 0x3b82f6 },
+        { x: -2.3, color: 0x00e5ff },
+        { x: -1.15, color: 0x3b82f6 },
         { x: 0.0, color: 0xffd700 },
-        { x: 0.85, color: 0x3b82f6 },
-        { x: 1.7, color: 0xffd700 }
+        { x: 1.15, color: 0x3b82f6 },
+        { x: 2.3, color: 0xffd700 }
       ];
 
       pillarConfigs.forEach(cfg => {
@@ -1829,11 +1829,11 @@
         threeScene.add(spot);
       });
 
-      // 7. Load UCL .GLB Trophy onto Center-Left Pedestal (-0.85)
+      // 7. Load UCL .GLB Trophy onto Center-Left Pedestal (-1.15)
       const gltfLoader = new THREE.GLTFLoader();
       gltfLoader.load('ucl-trophy.glb', (gltf) => {
         ucl3DModel = gltf.scene;
-        ucl3DModel.position.set(-0.85, -0.22, 0);
+        ucl3DModel.position.set(-1.15, -0.22, 0);
 
         const box = new THREE.Box3().setFromObject(ucl3DModel);
         const size = new THREE.Vector3();
@@ -1858,12 +1858,12 @@
         console.log('Falling back to geometric trophy on pedestal:', err);
       });
 
-      // 8. Place Sleek Geometric Cups on Remaining Pillars
+      // 8. Place Sleek Geometric Cups on Remaining Pillars (Matching Wider Distance)
       const trophyPlacements = [
-        { x: -1.7, color: 0x00e5ff, scale: 0.65 },
+        { x: -2.3, color: 0x00e5ff, scale: 0.65 },
         { x: 0.0, color: 0xffd700, scale: 0.8 },
-        { x: 0.85, color: 0xf0f5ff, scale: 0.68 },
-        { x: 1.7, color: 0xffd700, scale: 0.65 }
+        { x: 1.15, color: 0xf0f5ff, scale: 0.68 },
+        { x: 2.3, color: 0xffd700, scale: 0.65 }
       ];
 
       trophyPlacements.forEach(tp => {
@@ -1880,10 +1880,10 @@
 
     function createNeonEnergyRibbon(yOffset, hexColor) {
       const curve = new THREE.CatmullRomCurve3([
-        new THREE.Vector3(-8, yOffset + 0.5, -3.2),
-        new THREE.Vector3(-3, yOffset + 1.2, -2.8),
-        new THREE.Vector3(2, yOffset + 1.8, -2.9),
-        new THREE.Vector3(8, yOffset + 2.5, -3.2)
+        new THREE.Vector3(-10, yOffset + 0.5, -3.2),
+        new THREE.Vector3(-4, yOffset + 1.2, -2.8),
+        new THREE.Vector3(3, yOffset + 1.8, -2.9),
+        new THREE.Vector3(10, yOffset + 2.5, -3.2)
       ]);
 
       const tubeGeo = new THREE.TubeGeometry(curve, 64, 0.04, 8, false);
