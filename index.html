@@ -1744,7 +1744,7 @@
     }
 
     // ==========================================================
-    // THREE.JS 3D ROOM SCENE ENGINE (SLIM PEDESTALS & COMPACT FRAME)
+    // THREE.JS 3D ROOM SCENE ENGINE (SHORTER & SLIMMER PILLARS)
     // ==========================================================
     let threeScene, threeCamera, threeRenderer;
     let ucl3DModel = null;
@@ -1765,8 +1765,8 @@
       threeScene.fog = new THREE.FogExp2(0x030712, 0.04);
 
       threeCamera = new THREE.PerspectiveCamera(46, width / height, 0.1, 100);
-      threeCamera.position.set(0, 0.65, 4.8);
-      threeCamera.lookAt(0, -0.05, 0);
+      threeCamera.position.set(0, 0.55, 4.8);
+      threeCamera.lookAt(0, -0.15, 0);
 
       // 2. WebGL Renderer with Shadows
       threeRenderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
@@ -1803,7 +1803,7 @@
       createNeonEnergyRibbon(-1.2, 0x00a2ff);
       createNeonEnergyRibbon(-0.6, 0x3b82f6);
 
-      // 5. 3D Pedestals - Slim breadths (0.75 width/depth) for exact single-trophy fit
+      // 5. 3D Pedestals - Shorter height (0.85) and slim breadth (0.75)
       create3DPedestal(-1.35, 0x00e5ff);
       create3DPedestal(1.35, 0xffd700);
 
@@ -1829,7 +1829,7 @@
       const gltfLoader = new THREE.GLTFLoader();
       gltfLoader.load('ucl-trophy.glb', (gltf) => {
         ucl3DModel = gltf.scene;
-        ucl3DModel.position.set(-1.35, 0.05, 0);
+        ucl3DModel.position.set(-1.35, -0.12, 0);
 
         const box = new THREE.Box3().setFromObject(ucl3DModel);
         const size = new THREE.Vector3();
@@ -1856,7 +1856,7 @@
 
       // 8. 3D Golden League Trophy on Right Pedestal
       leagueTrophyMesh = createLeagueCupMesh();
-      leagueTrophyMesh.position.set(1.35, 0.68, 0);
+      leagueTrophyMesh.position.set(1.35, 0.5, 0);
       threeScene.add(leagueTrophyMesh);
 
       isThreeInitialized = true;
@@ -1877,12 +1877,12 @@
       threeScene.add(ribbon);
     }
 
-    // SLENDER BREADTH PEDESTAL (0.75 x 0.75 base for snug trophy fitting)
+    // SHORTER HEIGHT & SLIM BREADTH PEDESTAL (0.75 x 0.85 x 0.75)
     function create3DPedestal(xPos, rimColor) {
       const group = new THREE.Group();
-      group.position.set(xPos, -0.6, 0);
+      group.position.set(xPos, -0.77, 0);
 
-      const pillarGeo = new THREE.BoxGeometry(0.75, 1.2, 0.75);
+      const pillarGeo = new THREE.BoxGeometry(0.75, 0.85, 0.75);
       const pillarMat = new THREE.MeshStandardMaterial({
         color: 0x141d30,
         metalness: 0.82,
@@ -1896,7 +1896,7 @@
       const rimGeo = new THREE.BoxGeometry(0.77, 0.025, 0.77);
       const rimMat = new THREE.MeshBasicMaterial({ color: rimColor });
       const rim = new THREE.Mesh(rimGeo, rimMat);
-      rim.position.y = 0.6;
+      rim.position.y = 0.425;
       group.add(rim);
 
       threeScene.add(group);
