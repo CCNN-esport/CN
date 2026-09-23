@@ -1744,7 +1744,7 @@
     }
 
     // ==========================================================
-    // THREE.JS 3D ROOM SCENE ENGINE (FIVE WIDE-GAP PILLARS)
+    // THREE.JS 3D ROOM SCENE ENGINE (FIVE CLOSER PILLARS)
     // ==========================================================
     let threeScene, threeCamera, threeRenderer;
     let ucl3DModel = null;
@@ -1759,13 +1759,13 @@
       const width = container.clientWidth || 340;
       const height = container.clientHeight || 180;
 
-      // 1. Scene & Perspective Camera (Pushed to z: 5.6 for wider spacing coverage)
+      // 1. Scene & Perspective Camera (Camera closer at z: 4.15 and higher FOV for tight framing)
       threeScene = new THREE.Scene();
       threeScene.background = new THREE.Color(0x030712);
       threeScene.fog = new THREE.FogExp2(0x030712, 0.038);
 
-      threeCamera = new THREE.PerspectiveCamera(48, width / height, 0.1, 100);
-      threeCamera.position.set(0, 0.65, 5.6);
+      threeCamera = new THREE.PerspectiveCamera(54, width / height, 0.1, 100);
+      threeCamera.position.set(0, 0.52, 4.15);
       threeCamera.lookAt(0, -0.15, 0);
 
       // 2. WebGL Renderer with Shadows
@@ -1803,13 +1803,13 @@
       createNeonEnergyRibbon(-1.2, 0x00a2ff);
       createNeonEnergyRibbon(-0.6, 0x3b82f6);
 
-      // 5. Five Pedestals with Wider Distance Gaps (spacing increased to 1.15)
+      // 5. Five Pedestals with Distinct Spacing (x positions spaced across front view)
       const pillarConfigs = [
-        { x: -2.3, color: 0x00e5ff },
-        { x: -1.15, color: 0x3b82f6 },
+        { x: -2.0, color: 0x00e5ff },
+        { x: -1.0, color: 0x3b82f6 },
         { x: 0.0, color: 0xffd700 },
-        { x: 1.15, color: 0x3b82f6 },
-        { x: 2.3, color: 0xffd700 }
+        { x: 1.0, color: 0x3b82f6 },
+        { x: 2.0, color: 0xffd700 }
       ];
 
       pillarConfigs.forEach(cfg => {
@@ -1817,28 +1817,28 @@
       });
 
       // 6. Realistic Studio Lighting
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.55);
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.58);
       threeScene.add(ambientLight);
 
       pillarConfigs.forEach(cfg => {
-        const spot = new THREE.SpotLight(cfg.color, 1.8);
-        spot.position.set(cfg.x, 4.5, 1.8);
-        spot.angle = 0.35;
+        const spot = new THREE.SpotLight(cfg.color, 1.9);
+        spot.position.set(cfg.x, 4.2, 1.8);
+        spot.angle = 0.38;
         spot.penumbra = 0.5;
         spot.castShadow = true;
         threeScene.add(spot);
       });
 
-      // 7. Load UCL .GLB Trophy onto Center-Left Pedestal (-1.15)
+      // 7. Load UCL .GLB Trophy onto Center-Left Pedestal (-1.0)
       const gltfLoader = new THREE.GLTFLoader();
       gltfLoader.load('ucl-trophy.glb', (gltf) => {
         ucl3DModel = gltf.scene;
-        ucl3DModel.position.set(-1.15, -0.22, 0);
+        ucl3DModel.position.set(-1.0, -0.22, 0);
 
         const box = new THREE.Box3().setFromObject(ucl3DModel);
         const size = new THREE.Vector3();
         box.getSize(size);
-        const scaleFactor = 0.95 / (size.y || 1);
+        const scaleFactor = 1.05 / (size.y || 1);
         ucl3DModel.scale.set(scaleFactor, scaleFactor, scaleFactor);
 
         ucl3DModel.traverse((child) => {
@@ -1858,12 +1858,12 @@
         console.log('Falling back to geometric trophy on pedestal:', err);
       });
 
-      // 8. Place Sleek Geometric Cups on Remaining Pillars (Matching Wider Distance)
+      // 8. Place Sleek Geometric Cups on Remaining Pillars
       const trophyPlacements = [
-        { x: -2.3, color: 0x00e5ff, scale: 0.65 },
-        { x: 0.0, color: 0xffd700, scale: 0.8 },
-        { x: 1.15, color: 0xf0f5ff, scale: 0.68 },
-        { x: 2.3, color: 0xffd700, scale: 0.65 }
+        { x: -2.0, color: 0x00e5ff, scale: 0.72 },
+        { x: 0.0, color: 0xffd700, scale: 0.88 },
+        { x: 1.0, color: 0xf0f5ff, scale: 0.76 },
+        { x: 2.0, color: 0xffd700, scale: 0.72 }
       ];
 
       trophyPlacements.forEach(tp => {
