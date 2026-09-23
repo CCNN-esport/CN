@@ -878,16 +878,16 @@
       color: var(--muted);
     }
 
-    /* COMPACT 3D TROPHY ROOM BOX */
+    /* COMPACT 3D TROPHY ROOM BOX (REDUCED TO RED LINE) */
     .trophy-room-canvas-container {
       position: relative;
       width: 100%;
-      height: 180px;
+      height: 145px;
       background: #020409;
       border: 1px solid rgba(0, 229, 255, 0.35);
-      border-radius: 18px;
+      border-radius: 16px;
       overflow: hidden;
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.8), inset 0 0 30px rgba(0, 0, 0, 0.9);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), inset 0 0 25px rgba(0, 0, 0, 0.9);
     }
 
     #trophyRoomCanvas {
@@ -899,11 +899,11 @@
 
     .canvas-overlay-header {
       position: absolute;
-      top: 8px;
+      top: 6px;
       left: 0;
       right: 0;
       text-align: center;
-      font-size: 9px;
+      font-size: 8.5px;
       font-weight: 900;
       text-transform: uppercase;
       letter-spacing: 1.5px;
@@ -916,7 +916,7 @@
     /* TROPHY COUNTS FLOATING OVER PEDESTALS */
     .pedestal-stats-row {
       position: absolute;
-      bottom: 6px;
+      bottom: 5px;
       left: 0;
       right: 0;
       display: flex;
@@ -931,13 +931,13 @@
       border: 1px solid rgba(255, 215, 0, 0.4);
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
       border-radius: 7px;
-      padding: 3px 8px;
+      padding: 2px 7px;
       text-align: center;
       backdrop-filter: blur(6px);
     }
 
     .stat-chip-label {
-      font-size: 7.5px;
+      font-size: 7px;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.8px;
@@ -945,7 +945,7 @@
     }
 
     .stat-chip-num {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 900;
       color: var(--gold);
       letter-spacing: 0.5px;
@@ -1314,7 +1314,7 @@
       </div>
     </div>
 
-    <!-- MANAGERS TAB (FIVE PILLARS 3D STUDIO SHOWCASE - CLOSER VIEW WITH VISIBLE GAPS) -->
+    <!-- MANAGERS TAB (FIVE PILLARS 3D STUDIO SHOWCASE) -->
     <div id="page-managers" class="view-card">
       <div class="league-banner">
         <div>
@@ -1710,7 +1710,7 @@
       });
     }
 
-    const uclAudio = document.getElementById('uclAnthemAudio');
+    const uclAudio = document.getElementById('uclAntsendio');
     const uclMusicBtn = document.getElementById('uclMusicBtn');
     const musicBtnIcon = document.getElementById('musicBtnIcon');
     const musicBtnText = document.getElementById('musicBtnText');
@@ -1744,7 +1744,7 @@
     }
 
     // ==========================================================
-    // THREE.JS 3D ROOM SCENE ENGINE (FIVE PILLARS WITH PROPER GAPS)
+    // THREE.JS 3D ROOM SCENE ENGINE (BRIGHT STUDIO & ON-TOP TROPHIES)
     // ==========================================================
     let threeScene, threeCamera, threeRenderer;
     let ucl3DModel = null;
@@ -1757,99 +1757,100 @@
       if (!container || !canvas || isThreeInitialized) return;
 
       const width = container.clientWidth || 340;
-      const height = container.clientHeight || 180;
+      const height = container.clientHeight || 145;
 
-      // 1. Scene & Perspective Camera (Close-up framing)
+      // 1. Scene & Perspective Camera (Re-framed for 145px height)
       threeScene = new THREE.Scene();
-      threeScene.background = new THREE.Color(0x030712);
-      threeScene.fog = new THREE.FogExp2(0x030712, 0.038);
+      threeScene.background = new THREE.Color(0x060e22); // Brightened room background
 
-      threeCamera = new THREE.PerspectiveCamera(54, width / height, 0.1, 100);
-      threeCamera.position.set(0, 0.32, 2.9);
-      threeCamera.lookAt(0, -0.18, 0);
+      threeCamera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100);
+      threeCamera.position.set(0, 0.35, 3.2);
+      threeCamera.lookAt(0, -0.05, 0);
 
-      // 2. WebGL Renderer with Shadows
+      // 2. WebGL Renderer with Soft Lighting
       threeRenderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
       threeRenderer.setSize(width, height);
       threeRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      threeRenderer.shadowMap.enabled = true;
-      threeRenderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
       // 3. Studio Room Box Geometry (Floor & Walls)
       const floorGeo = new THREE.PlaneGeometry(24, 24);
       const floorMat = new THREE.MeshStandardMaterial({
-        color: 0x050a17,
-        roughness: 0.25,
-        metalness: 0.8
+        color: 0x0c1630,
+        roughness: 0.2,
+        metalness: 0.6
       });
       const floor = new THREE.Mesh(floorGeo, floorMat);
       floor.rotation.x = -Math.PI / 2;
-      floor.position.y = -1.2;
-      floor.receiveShadow = true;
+      floor.position.y = -1.1;
       threeScene.add(floor);
 
       const wallGeo = new THREE.PlaneGeometry(24, 12);
       const wallMat = new THREE.MeshStandardMaterial({
-        color: 0x070e1c,
-        roughness: 0.7,
-        metalness: 0.2
+        color: 0x0f1c3d,
+        roughness: 0.5,
+        metalness: 0.3
       });
       const backWall = new THREE.Mesh(wallGeo, wallMat);
       backWall.position.set(0, 3.5, -4);
       threeScene.add(backWall);
 
       // 4. Curved Glowing Neon Ribbons
-      createNeonEnergyRibbon(-1.8, 0x00e5ff);
-      createNeonEnergyRibbon(-1.2, 0x00a2ff);
-      createNeonEnergyRibbon(-0.6, 0x3b82f6);
+      createNeonEnergyRibbon(-1.5, 0x00e5ff);
+      createNeonEnergyRibbon(-0.9, 0x00a2ff);
+      createNeonEnergyRibbon(-0.3, 0x3b82f6);
 
-      // 5. Five Pedestals with CLEAR GAPS (Spacing set to 0.7, pillar width 0.38)
+      // 5. Five Pedestals with Distinct Visible Gaps (Spacing: 0.72, Width: 0.36)
       const pillarConfigs = [
-        { x: -1.4, color: 0x00e5ff },
-        { x: -0.7, color: 0x3b82f6 },
-        { x: 0.0, color: 0xffd700 },
-        { x: 0.7, color: 0x3b82f6 },
-        { x: 1.4, color: 0xffd700 }
+        { x: -1.44, color: 0x00e5ff },
+        { x: -0.72, color: 0x3b82f6 },
+        { x: 0.0,   color: 0xffd700 },
+        { x: 0.72,  color: 0x3b82f6 },
+        { x: 1.44,  color: 0xffd700 }
       ];
 
       pillarConfigs.forEach(cfg => {
         create3DPedestal(cfg.x, cfg.color);
       });
 
-      // 6. Realistic Studio Lighting
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
+      // 6. FULL BRIGHT STUDIO LIGHTING (All lights on)
+      const ambientLight = new THREE.AmbientLight(0xffffff, 1.4); // Bright ambient lighting
       threeScene.add(ambientLight);
 
+      const hemiLight = new THREE.HemisphereLight(0xffffff, 0x334466, 1.1); // Full room flood fill
+      hemiLight.position.set(0, 10, 0);
+      threeScene.add(hemiLight);
+
+      const keyLight = new THREE.DirectionalLight(0xffffff, 1.2); // Front key light for crystal clear visibility
+      keyLight.position.set(0, 4, 5);
+      threeScene.add(keyLight);
+
       pillarConfigs.forEach(cfg => {
-        const spot = new THREE.SpotLight(cfg.color, 2.2);
-        spot.position.set(cfg.x, 3.8, 1.6);
-        spot.angle = 0.42;
-        spot.penumbra = 0.55;
-        spot.castShadow = true;
+        const spot = new THREE.SpotLight(cfg.color, 2.5);
+        spot.position.set(cfg.x, 3.2, 1.5);
+        spot.angle = 0.45;
+        spot.penumbra = 0.3;
         threeScene.add(spot);
       });
 
-      // 7. Load UCL .GLB Trophy onto Center-Left Pedestal (-0.7)
+      // 7. Load UCL .GLB Trophy Placed Directly ON TOP of Center-Left Pillar (Surface at Y: -0.27)
       const gltfLoader = new THREE.GLTFLoader();
       gltfLoader.load('ucl-trophy.glb', (gltf) => {
         ucl3DModel = gltf.scene;
-        ucl3DModel.position.set(-0.7, -0.22, 0);
 
         const box = new THREE.Box3().setFromObject(ucl3DModel);
         const size = new THREE.Vector3();
         box.getSize(size);
-        const scaleFactor = 0.95 / (size.y || 1);
+        const scaleFactor = 0.58 / (size.y || 1);
         ucl3DModel.scale.set(scaleFactor, scaleFactor, scaleFactor);
 
+        // Precise placement directly sitting on top plate
+        ucl3DModel.position.set(-0.72, -0.27, 0);
+
         ucl3DModel.traverse((child) => {
-          if (child.isMesh) {
-            child.castShadow = true;
-            child.receiveShadow = true;
-            if (child.material) {
-              child.material.metalness = 0.95;
-              child.material.roughness = 0.15;
-              child.material.color = new THREE.Color(0xf0f5ff);
-            }
+          if (child.isMesh && child.material) {
+            child.material.metalness = 0.95;
+            child.material.roughness = 0.15;
+            child.material.color = new THREE.Color(0xf5f8ff);
           }
         });
 
@@ -1858,17 +1859,17 @@
         console.log('Falling back to geometric trophy on pedestal:', err);
       });
 
-      // 8. Place Sleek Geometric Cups on Remaining Pillars with Gaps
+      // 8. Place Cups Directly ON TOP of the Other 4 Pillars
       const trophyPlacements = [
-        { x: -1.4, color: 0x00e5ff, scale: 0.65 },
-        { x: 0.0, color: 0xffd700, scale: 0.78 },
-        { x: 0.7, color: 0xf0f5ff, scale: 0.68 },
-        { x: 1.4, color: 0xffd700, scale: 0.65 }
+        { x: -1.44, color: 0x00e5ff, scale: 0.54 },
+        { x: 0.0,   color: 0xffd700, scale: 0.62 },
+        { x: 0.72,  color: 0xf0f5ff, scale: 0.56 },
+        { x: 1.44,  color: 0xffd700, scale: 0.54 }
       ];
 
       trophyPlacements.forEach(tp => {
         const mesh = createLeagueCupMesh(tp.color);
-        mesh.position.set(tp.x, 0.18, 0);
+        mesh.position.set(tp.x, 0.0, 0); // Raised so bottom aligns flush on top of pillar
         mesh.scale.set(tp.scale, tp.scale, tp.scale);
         threeScene.add(mesh);
         animatedMeshes.push(mesh);
@@ -1892,26 +1893,24 @@
       threeScene.add(ribbon);
     }
 
-    // SLIMMER PEDESTAL WITH CLEAR GAPS (0.38 width/depth x 0.70 height)
+    // PILLAR (Width: 0.36, Height: 0.55, Top Surface Y: -0.275)
     function create3DPedestal(xPos, rimColor) {
       const group = new THREE.Group();
-      group.position.set(xPos, -0.85, 0);
+      group.position.set(xPos, -0.55, 0);
 
-      const pillarGeo = new THREE.BoxGeometry(0.38, 0.70, 0.38);
+      const pillarGeo = new THREE.BoxGeometry(0.36, 0.55, 0.36);
       const pillarMat = new THREE.MeshStandardMaterial({
-        color: 0x141d30,
-        metalness: 0.82,
-        roughness: 0.28
+        color: 0x18243c,
+        metalness: 0.75,
+        roughness: 0.3
       });
       const pillar = new THREE.Mesh(pillarGeo, pillarMat);
-      pillar.castShadow = true;
-      pillar.receiveShadow = true;
       group.add(pillar);
 
-      const rimGeo = new THREE.BoxGeometry(0.40, 0.02, 0.40);
+      const rimGeo = new THREE.BoxGeometry(0.38, 0.02, 0.38);
       const rimMat = new THREE.MeshBasicMaterial({ color: rimColor });
       const rim = new THREE.Mesh(rimGeo, rimMat);
-      rim.position.y = 0.35;
+      rim.position.y = 0.275;
       group.add(rim);
 
       threeScene.add(group);
@@ -1927,19 +1926,16 @@
 
       const bodyGeo = new THREE.CylinderGeometry(0.32, 0.16, 0.52, 24);
       const body = new THREE.Mesh(bodyGeo, goldMat);
-      body.castShadow = true;
       cupGroup.add(body);
 
       const stemGeo = new THREE.CylinderGeometry(0.07, 0.09, 0.26, 16);
       const stem = new THREE.Mesh(stemGeo, goldMat);
       stem.position.y = -0.36;
-      stem.castShadow = true;
       cupGroup.add(stem);
 
       const footGeo = new THREE.CylinderGeometry(0.22, 0.26, 0.08, 24);
       const foot = new THREE.Mesh(footGeo, goldMat);
       foot.position.y = -0.49;
-      foot.castShadow = true;
       cupGroup.add(foot);
 
       return cupGroup;
