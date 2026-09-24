@@ -13,7 +13,7 @@
   <!-- 3D Model Viewer Library for UCL Tab -->
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
 
-  <!-- Three.js + GLTFLoader for the Real 3D Studio Room -->
+  <!-- Three.js + GLTFLoader -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 
@@ -808,7 +808,7 @@
       text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
     }
 
-    /* MANAGERS PROFILE CARD WITH STRAIGHT ALIGNED COLONS */
+    /* MANAGERS PROFILE CARD WITH MP.PNG AVATAR */
     .manager-showcase-block {
       margin-bottom: 24px;
     }
@@ -819,7 +819,7 @@
       border: 1px solid var(--glass-border);
       border-radius: 20px;
       padding: 16px 18px;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
       display: flex;
       align-items: center;
       gap: 16px;
@@ -844,12 +844,7 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-    }
-
-    .manager-avatar-box svg {
-      width: 40px;
-      height: 40px;
-      stroke: var(--muted);
+      display: block;
     }
 
     /* Straight aligned colons via CSS Grid */
@@ -891,28 +886,33 @@
       color: var(--accent);
     }
 
-    /* DARK LUXURY 3D TROPHY ROOM BOX */
-    .trophy-room-canvas-container {
+    /* EMPTY SHOWCASE BOX (OUTLINE ONLY FOR CLEAN START) */
+    .trophy-room-outer-box {
       position: relative;
       width: 100%;
       height: 145px;
-      background: #030712;
+      background: rgba(3, 7, 18, 0.6);
       border: 1px solid rgba(0, 229, 255, 0.35);
       border-radius: 16px;
       overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85), inset 0 0 35px rgba(0, 0, 0, 0.95);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), inset 0 0 25px rgba(0, 0, 0, 0.85);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
 
-    .trophy-canvas-instance {
-      width: 100% !important;
-      height: 100% !important;
-      display: block;
-      outline: none;
+    .empty-room-inner-placeholder {
+      font-size: 11px;
+      font-weight: 700;
+      color: rgba(143, 160, 190, 0.4);
+      letter-spacing: 2px;
+      text-transform: uppercase;
     }
 
     .canvas-overlay-header {
       position: absolute;
-      top: 6px;
+      top: 8px;
       left: 0;
       right: 0;
       text-align: center;
@@ -1289,7 +1289,7 @@
       </div>
     </div>
 
-    <!-- MANAGERS TAB (DARK LUXURY SHOWCASE WITH REFINED STUDIO LIGHTING) -->
+    <!-- MANAGERS TAB (MP.PNG PROFILE & FRESH EMPTY SHOWCASE FRAME) -->
     <div id="page-managers" class="view-card">
       <div class="league-banner">
         <div>
@@ -1466,7 +1466,7 @@
 
           <div class="form-group">
             <label>Photo (Filename or URL) :</label>
-            <input type="text" id="adminManagerPhotoInput" placeholder="e.g. manager.png or https://...">
+            <input type="text" id="adminManagerPhotoInput" placeholder="e.g. mp.png or https://...">
           </div>
 
           <div style="display:flex; gap:8px;">
@@ -1586,7 +1586,7 @@
           name: 'Nasif',
           playstyle: 'Quick Counter',
           teamId: '3',
-          photo: ''
+          photo: 'mp.png'
         }
       ],
       teams: [
@@ -1629,12 +1629,17 @@
               name: state.manager.name || 'Nasif',
               playstyle: 'Quick Counter',
               teamId: state.manager.teamId || '3',
-              photo: state.manager.photo || ''
+              photo: state.manager.photo || 'mp.png'
             }];
           } else {
             state.managers = defaultState.managers;
           }
         }
+
+        // Default avatar to mp.png if none specified
+        state.managers.forEach(m => {
+          if (!m.photo) m.photo = 'mp.png';
+        });
 
         state.teams.forEach(t => {
           if (!t.logo) {
@@ -1712,254 +1717,6 @@
     }
 
     // ==========================================================
-    // STUDIO ENVIRONMENT (BALANCED SILVER SPECULARITY)
-    // ==========================================================
-    function createDarkStudioEnv(renderer) {
-      const pmrem = new THREE.PMREMGenerator(renderer);
-      const envScene = new THREE.Scene();
-      envScene.background = new THREE.Color(0x010204);
-
-      const panelGeo = new THREE.PlaneGeometry(8, 8);
-
-      // Top diffused light panel
-      const topMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-      const topMesh = new THREE.Mesh(panelGeo, topMat);
-      topMesh.position.set(0, 5, 0);
-      topMesh.rotation.x = Math.PI / 2;
-      envScene.add(topMesh);
-
-      // Angled side reflectors for metallic silhouette edge definition
-      const sideMat = new THREE.MeshBasicMaterial({ color: 0x94a3b8 });
-      const leftMesh = new THREE.Mesh(panelGeo, sideMat);
-      leftMesh.position.set(-5, 1, 1);
-      leftMesh.rotation.y = Math.PI / 2.5;
-      envScene.add(leftMesh);
-
-      const rightMesh = new THREE.Mesh(panelGeo, sideMat);
-      rightMesh.position.set(5, 1, 1);
-      rightMesh.rotation.y = -Math.PI / 2.5;
-      envScene.add(rightMesh);
-
-      const envMap = pmrem.fromScene(envScene, 0.04).texture;
-      pmrem.dispose();
-      return envMap;
-    }
-
-    // ==========================================================
-    // THREE.JS MULTI-ROOM ENGINE (CURATED ATMOSPHERE)
-    // ==========================================================
-    let threeRooms = [];
-
-    function initAllManagerRooms() {
-      threeRooms.forEach(room => {
-        if (room.renderer) room.renderer.dispose();
-      });
-      threeRooms = [];
-
-      const managerShowcases = document.querySelectorAll('.manager-3d-room-unit');
-      managerShowcases.forEach(unit => {
-        const canvas = unit.querySelector('canvas');
-        if (!canvas) return;
-
-        const width = unit.clientWidth || 340;
-        const height = unit.clientHeight || 145;
-
-        const scene = new THREE.Scene();
-        // Deep obsidian background
-        scene.background = new THREE.Color(0x020612);
-
-        const camera = new THREE.PerspectiveCamera(74, width / height, 0.1, 100);
-        camera.position.set(0, 0.08, 1.15);
-        camera.lookAt(0, -0.06, 0);
-
-        const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
-        renderer.setSize(width, height);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-        renderer.outputEncoding = THREE.sRGBEncoding;
-        renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        renderer.toneMappingExposure = 1.05;
-
-        scene.environment = createDarkStudioEnv(renderer);
-
-        // Dark navy velvet floor with soft reflection
-        const floorGeo = new THREE.PlaneGeometry(24, 24);
-        const floorMat = new THREE.MeshStandardMaterial({
-          color: 0x050a17,
-          roughness: 0.45,
-          metalness: 0.3
-        });
-        const floor = new THREE.Mesh(floorGeo, floorMat);
-        floor.rotation.x = -Math.PI / 2;
-        floor.position.y = -1.1;
-        scene.add(floor);
-
-        // Deep vignette back wall
-        const wallGeo = new THREE.PlaneGeometry(24, 12);
-        const wallMat = new THREE.MeshStandardMaterial({
-          color: 0x02040a,
-          roughness: 0.9,
-          metalness: 0.05
-        });
-        const backWall = new THREE.Mesh(wallGeo, wallMat);
-        backWall.position.set(0, 3.5, -4);
-        scene.add(backWall);
-
-        // 5 Pillars
-        const pillarPositions = [-1.44, -0.72, 0.0, 0.72, 1.44];
-        pillarPositions.forEach((x, i) => {
-          createCuratedPedestal(scene, x, i === 1);
-        });
-
-        // Ambient base fill
-        const ambient = new THREE.AmbientLight(0xffffff, 0.35);
-        scene.add(ambient);
-
-        // Key light: crisp cool-white directional light above-front for metallic reflections
-        const keyLight = new THREE.DirectionalLight(0xf8fafc, 2.2);
-        keyLight.position.set(-0.72, 2.8, 1.8);
-        scene.add(keyLight);
-
-        // Soft cyber-cyan rim light from behind for silhouette separation
-        const rimCyan = new THREE.DirectionalLight(0x00e5ff, 0.85);
-        rimCyan.position.set(-0.72, 1.5, -2.0);
-        scene.add(rimCyan);
-
-        const roomData = {
-          unit: unit,
-          canvas: canvas,
-          scene: scene,
-          camera: camera,
-          renderer: renderer,
-          singleTrophyModel: null
-        };
-
-        // Fallback cup while GLB loads
-        const placeholderCup = createSilverCupMesh();
-        placeholderCup.position.set(-0.72, -0.27, 0);
-        placeholderCup.scale.set(0.56, 0.56, 0.56);
-        scene.add(placeholderCup);
-        roomData.singleTrophyModel = placeholderCup;
-
-        // Load UCL GLB model with true mirror-silver calibration
-        const gltfLoader = new THREE.GLTFLoader();
-        gltfLoader.load('ucl-trophy.glb', (gltf) => {
-          scene.remove(placeholderCup);
-
-          const model = gltf.scene;
-          const box = new THREE.Box3().setFromObject(model);
-          const size = new THREE.Vector3();
-          box.getSize(size);
-          const scaleFactor = 0.58 / (size.y || 1);
-          model.scale.set(scaleFactor, scaleFactor, scaleFactor);
-          model.position.set(-0.72, -0.27, 0);
-
-          model.traverse(child => {
-            if (child.isMesh) {
-              child.material = new THREE.MeshStandardMaterial({
-                color: new THREE.Color(0xf1f5f9),
-                metalness: 0.98,
-                roughness: 0.12,
-                envMapIntensity: 2.0
-              });
-            }
-          });
-
-          scene.add(model);
-          roomData.singleTrophyModel = model;
-        }, undefined, err => console.log("Using fallback cup:", err));
-
-        threeRooms.push(roomData);
-      });
-    }
-
-    // PILLAR: Breadth 0.28, Height 0.55, sleek dark matte finish with subtle illuminated top
-    function createCuratedPedestal(scene, xPos, isTrophyPillar) {
-      const group = new THREE.Group();
-      group.position.set(xPos, -0.55, 0);
-
-      const pillarGeo = new THREE.BoxGeometry(0.28, 0.55, 0.28);
-      const pillarMat = new THREE.MeshStandardMaterial({
-        color: 0x090f1d,
-        metalness: 0.5,
-        roughness: 0.4
-      });
-      const pillar = new THREE.Mesh(pillarGeo, pillarMat);
-      group.add(pillar);
-
-      // Sleek top rim line
-      const rimGeo = new THREE.BoxGeometry(0.29, 0.015, 0.29);
-      const rimMat = new THREE.MeshStandardMaterial({
-        color: isTrophyPillar ? 0x00e5ff : 0x1e293b,
-        emissive: isTrophyPillar ? 0x00e5ff : 0x000000,
-        emissiveIntensity: isTrophyPillar ? 0.35 : 0.0,
-        metalness: 0.8,
-        roughness: 0.2
-      });
-      const rim = new THREE.Mesh(rimGeo, rimMat);
-      rim.position.y = 0.275;
-      group.add(rim);
-
-      scene.add(group);
-    }
-
-    // Curated high-reflection silver cup mesh
-    function createSilverCupMesh() {
-      const cupGroup = new THREE.Group();
-      const silverMat = new THREE.MeshStandardMaterial({
-        color: 0xf1f5f9,
-        metalness: 0.98,
-        roughness: 0.12,
-        envMapIntensity: 2.0
-      });
-
-      const bodyGeo = new THREE.CylinderGeometry(0.32, 0.16, 0.52, 32);
-      const body = new THREE.Mesh(bodyGeo, silverMat);
-      body.position.y = 0.27;
-      cupGroup.add(body);
-
-      const stemGeo = new THREE.CylinderGeometry(0.07, 0.09, 0.26, 20);
-      const stem = new THREE.Mesh(stemGeo, silverMat);
-      stem.position.y = -0.09;
-      cupGroup.add(stem);
-
-      const footGeo = new THREE.CylinderGeometry(0.22, 0.26, 0.08, 32);
-      const foot = new THREE.Mesh(footGeo, silverMat);
-      foot.position.y = -0.22;
-      cupGroup.add(foot);
-
-      return cupGroup;
-    }
-
-    function animateAllRooms() {
-      requestAnimationFrame(animateAllRooms);
-
-      threeRooms.forEach(room => {
-        if (room.singleTrophyModel) {
-          room.singleTrophyModel.rotation.y += 0.012;
-        }
-        if (room.renderer && room.scene && room.camera) {
-          room.renderer.render(room.scene, room.camera);
-        }
-      });
-    }
-
-    animateAllRooms();
-
-    function resizeAllRooms() {
-      threeRooms.forEach(room => {
-        if (!room.unit || !room.renderer || !room.camera) return;
-        const width = room.unit.clientWidth;
-        const height = room.unit.clientHeight;
-        room.camera.aspect = width / height;
-        room.camera.updateProjectionMatrix();
-        room.renderer.setSize(width, height);
-      });
-    }
-
-    window.addEventListener('resize', resizeAllRooms);
-
-    // ==========================================================
     // TAB SWITCHING & AUTH
     // ==========================================================
     function switchTab(tabKey) {
@@ -2009,12 +1766,6 @@
           btn.classList.add('active');
         }
       });
-
-      if (tabKey === 'managers') {
-        setTimeout(() => {
-          initAllManagerRooms();
-        }, 60);
-      }
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -2312,18 +2063,18 @@
         `;
       }).join('') || '<p style="text-align:center; color:var(--muted); padding:20px;">No results recorded.</p>';
 
-      // RENDER MANAGERS TAB SHOWCASE LIST
+      // RENDER MANAGERS TAB (mp.png Profile Avatar & Clean Outer-Line Frame)
       const managersList = document.getElementById('managersListContainer');
-      managersList.innerHTML = (state.managers || []).map((mgr, index) => {
+      managersList.innerHTML = (state.managers || []).map((mgr) => {
         const mgrTeam = getTeam(mgr.teamId);
-        const avatarHtml = mgr.photo
-          ? `<img src="${mgr.photo}" alt="${mgr.name}" onerror="this.outerHTML='<svg viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'2\\'><path d=\\'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2\\'></path><circle cx=\\'12\\' cy=\\'7\\' r=\\'4\\'></circle></svg>'">`
-          : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`;
+        const photoFile = mgr.photo || 'mp.png';
 
         return `
           <div class="manager-showcase-block">
             <div class="manager-profile-card">
-              <div class="manager-avatar-box">${avatarHtml}</div>
+              <div class="manager-avatar-box">
+                <img src="${photoFile}" alt="${mgr.name}" onerror="this.src='mp.png';">
+              </div>
               <div class="manager-info-grid">
                 <div class="mgr-label">NAME</div>
                 <div class="mgr-colon">:</div>
@@ -2342,10 +2093,10 @@
               </div>
             </div>
 
-            <!-- Dark Luxury Showcase with Clean Mirrored Silver Trophy -->
-            <div class="trophy-room-canvas-container manager-3d-room-unit" id="mgrCanvasContainer_${index}">
+            <!-- Outer line showcase box (clean slate ready for step 1) -->
+            <div class="trophy-room-outer-box">
               <div class="canvas-overlay-header">🏛️ 3D Trophy Room Showcase</div>
-              <canvas class="trophy-canvas-instance"></canvas>
+              <div class="empty-room-inner-placeholder">Showcase Empty</div>
             </div>
           </div>
         `;
@@ -2399,10 +2150,6 @@
           </div>
         </div>
       `).join('') || '<div style="color:var(--muted); font-size:12px;">No matches awaiting score entry.</div>';
-
-      if (document.getElementById('page-managers').classList.contains('active')) {
-        setTimeout(initAllManagerRooms, 50);
-      }
     }
 
     // MANAGERS ADMIN CRUD LOGIC
@@ -2413,7 +2160,7 @@
       document.getElementById('adminManagerNameInput').value = mgr.name || '';
       document.getElementById('adminManagerPlaystyleInput').value = mgr.playstyle || '';
       document.getElementById('adminManagerTeamSelect').value = mgr.teamId || '';
-      document.getElementById('adminManagerPhotoInput').value = mgr.photo || '';
+      document.getElementById('adminManagerPhotoInput').value = mgr.photo || 'mp.png';
     }
 
     function saveSelectedManager() {
@@ -2423,7 +2170,7 @@
       state.managers[idx].name = document.getElementById('adminManagerNameInput').value.trim() || 'Manager';
       state.managers[idx].playstyle = document.getElementById('adminManagerPlaystyleInput').value.trim() || 'Balanced';
       state.managers[idx].teamId = document.getElementById('adminManagerTeamSelect').value;
-      state.managers[idx].photo = document.getElementById('adminManagerPhotoInput').value.trim();
+      state.managers[idx].photo = document.getElementById('adminManagerPhotoInput').value.trim() || 'mp.png';
 
       saveState();
       alert('Manager Profile updated live!');
@@ -2439,7 +2186,7 @@
         name: name.trim(),
         playstyle: playstyle.trim(),
         teamId: state.teams[0] ? state.teams[0].id : '',
-        photo: ''
+        photo: 'mp.png'
       };
 
       if (!state.managers) state.managers = [];
