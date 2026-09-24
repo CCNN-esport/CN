@@ -761,54 +761,55 @@
       box-shadow: 0 0 8px var(--ucl-blue);
     }
 
+    /* REDUCED SIZE UCL TROPHY PODIUM (MATCHES USER RED LINE) */
     .ucl-trophy-podium {
       text-align: center;
-      padding: 24px 16px 22px 16px;
-      background: radial-gradient(circle at center, rgba(59, 130, 246, 0.25) 0%, rgba(10, 16, 32, 0.95) 75%);
+      padding: 12px 14px 14px 14px;
+      background: radial-gradient(circle at center, rgba(59, 130, 246, 0.2) 0%, rgba(10, 16, 32, 0.95) 75%);
       border: 1px solid rgba(59, 130, 246, 0.55);
-      border-radius: 20px;
-      margin-top: 20px;
-      box-shadow: 0 0 35px var(--ucl-glow);
+      border-radius: 18px;
+      margin-top: 16px;
+      box-shadow: 0 0 25px var(--ucl-glow);
     }
 
     .ucl-trophy-3d {
       width: 100%;
-      max-width: 280px;
-      height: 250px;
+      max-width: 190px;
+      height: 140px;
       margin: 0 auto;
       display: block;
       outline: none;
       --poster-color: transparent;
-      filter: drop-shadow(0 0 24px rgba(59, 130, 246, 0.65));
+      filter: drop-shadow(0 0 16px rgba(59, 130, 246, 0.65));
     }
 
     .podium-winner-name {
-      font-size: 22px;
+      font-size: 16px;
       font-weight: 900;
       color: #ffffff;
       text-transform: uppercase;
       letter-spacing: 1px;
-      margin-top: 14px;
+      margin-top: 6px;
     }
 
     .podium-champion-badge {
       display: inline-block;
-      margin-top: 8px;
-      padding: 5px 22px;
-      border-radius: 24px;
+      margin-top: 6px;
+      padding: 4px 18px;
+      border-radius: 20px;
       font-family: 'Montserrat', 'Cinzel', serif;
       font-weight: 900;
-      font-size: 12px;
-      letter-spacing: 4px;
+      font-size: 10px;
+      letter-spacing: 3px;
       text-transform: uppercase;
       background: linear-gradient(135deg, #0b1536 0%, #1e3a8a 50%, #0d1b46 100%);
       color: #ffd700;
       border: 1.5px solid rgba(255, 215, 0, 0.65);
-      box-shadow: 0 0 16px rgba(255, 215, 0, 0.4), inset 0 0 8px rgba(0, 229, 255, 0.3);
-      text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+      box-shadow: 0 0 14px rgba(255, 215, 0, 0.4), inset 0 0 6px rgba(0, 229, 255, 0.3);
+      text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
     }
 
-    /* MANAGERS PROFILE CARD WITH MP.PNG AVATAR */
+    /* MANAGERS PROFILE CARD WITH EDGE-TO-EDGE FULL-FIT AVATAR */
     .manager-showcase-block {
       margin-bottom: 24px;
     }
@@ -818,7 +819,7 @@
       backdrop-filter: blur(16px);
       border: 1px solid var(--glass-border);
       border-radius: 20px;
-      padding: 16px 18px;
+      padding: 14px 16px;
       margin-bottom: 12px;
       display: flex;
       align-items: center;
@@ -830,13 +831,12 @@
       width: 76px;
       height: 76px;
       border-radius: 18px;
-      background: linear-gradient(135deg, #1e293b, #0f172a);
+      background: #0f172a;
       border: 2px solid var(--accent);
       box-shadow: 0 0 16px var(--accent-glow);
       overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: block;
+      padding: 0;
       flex-shrink: 0;
     }
 
@@ -844,6 +844,7 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+      object-position: center;
       display: block;
     }
 
@@ -1267,6 +1268,7 @@
           </div>
         </div>
 
+        <!-- UCL TROPHY PODIUM (REDUCED SIZE MATCHING USER RED LINE) -->
         <div class="ucl-trophy-podium">
           <model-viewer 
             id="uclTrophyModel"
@@ -1289,7 +1291,7 @@
       </div>
     </div>
 
-    <!-- MANAGERS TAB (MP.PNG PROFILE & FRESH EMPTY SHOWCASE FRAME) -->
+    <!-- MANAGERS TAB (FULL-FIT AVATAR & CLEAN OUTLINE FRAME) -->
     <div id="page-managers" class="view-card">
       <div class="league-banner">
         <div>
@@ -1636,7 +1638,6 @@
           }
         }
 
-        // Default avatar to mp.png if none specified
         state.managers.forEach(m => {
           if (!m.photo) m.photo = 'mp.png';
         });
