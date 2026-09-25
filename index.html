@@ -893,27 +893,19 @@
       color: var(--accent);
     }
 
-    /* SHOWCASE ROOM BOX (3D CANVAS MOUNTED OVER room-bg.png) */
+    /* CLEAN OUTER-LINE SHOWCASE FRAME (CLEAN SLATE) */
     .trophy-room-showcase-wrap {
       position: relative;
       width: 100%;
       height: 155px;
-      background: #020409 url('room-bg.png') center/100% 100% no-repeat;
+      background: rgba(3, 7, 18, 0.6);
       border: 1px solid rgba(0, 229, 255, 0.35);
       border-radius: 16px;
       overflow: hidden;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85), inset 0 0 30px rgba(0, 0, 0, 0.9);
-    }
-
-    .trophy-canvas-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100% !important;
-      height: 100% !important;
-      display: block;
-      outline: none;
-      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .canvas-overlay-header {
@@ -1296,7 +1288,7 @@
       </div>
     </div>
 
-    <!-- MANAGERS TAB (SHOWCASE WITH LARGE SHINY METALLIC TROPHY) -->
+    <!-- MANAGERS TAB (CLEAN SHOWCASE FRAME - EVERYTHING INSIDE REMOVED) -->
     <div id="page-managers" class="view-card">
       <div class="league-banner">
         <div>
@@ -1723,184 +1715,6 @@
     }
 
     // ==========================================================
-    // STUDIO ENVIRONMENT FOR REALISTIC CHROME REFLECTIONS
-    // ==========================================================
-    function createStudioEnvironment(renderer) {
-      const pmrem = new THREE.PMREMGenerator(renderer);
-      const envScene = new THREE.Scene();
-      envScene.background = new THREE.Color(0x060d1f);
-
-      const panelGeo = new THREE.PlaneGeometry(8, 8);
-
-      // Top ceiling key light
-      const topMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-      const topMesh = new THREE.Mesh(panelGeo, topMat);
-      topMesh.position.set(0, 5, 0);
-      topMesh.rotation.x = Math.PI / 2;
-      envScene.add(topMesh);
-
-      // Front soft light
-      const frontMat = new THREE.MeshBasicMaterial({ color: 0xf8fafc });
-      const frontMesh = new THREE.Mesh(panelGeo, frontMat);
-      frontMesh.position.set(0, 0, 5);
-      envScene.add(frontMesh);
-
-      // Left rim highlight
-      const leftMat = new THREE.MeshBasicMaterial({ color: 0x93c5fd });
-      const leftMesh = new THREE.Mesh(panelGeo, leftMat);
-      leftMesh.position.set(-5, 1, 0);
-      leftMesh.rotation.y = Math.PI / 2;
-      envScene.add(leftMesh);
-
-      // Right soft highlight
-      const rightMat = new THREE.MeshBasicMaterial({ color: 0x60a5fa });
-      const rightMesh = new THREE.Mesh(panelGeo, rightMat);
-      rightMesh.position.set(5, 1, 0);
-      rightMesh.rotation.y = -Math.PI / 2;
-      envScene.add(rightMesh);
-
-      const envMap = pmrem.fromScene(envScene, 0.04).texture;
-      pmrem.dispose();
-      return envMap;
-    }
-
-    // ==========================================================
-    // 3D TROPHY ON SHELVES (PERFECT SIZE, CHROME REFLECTION, STATIC)
-    // ==========================================================
-    let activeRooms = [];
-
-    function initTrophyCanvases() {
-      activeRooms.forEach(r => {
-        if (r.renderer) r.renderer.dispose();
-      });
-      activeRooms = [];
-
-      const wrappers = document.querySelectorAll('.trophy-room-showcase-wrap');
-      wrappers.forEach((wrap) => {
-        const canvas = wrap.querySelector('canvas');
-        if (!canvas) return;
-
-        const width = wrap.clientWidth || 340;
-        const height = wrap.clientHeight || 155;
-
-        // Fully transparent canvas so room-bg.png shows clearly behind
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(48, width / height, 0.1, 100);
-        camera.position.set(0, 0.05, 3.2);
-        camera.lookAt(0, 0.0, 0);
-
-        const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
-        renderer.setSize(width, height);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        renderer.outputEncoding = THREE.sRGBEncoding;
-        renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        renderer.toneMappingExposure = 1.15;
-
-        // Add studio reflection environment so trophy has true metallic highlights
-        const studioEnv = createStudioEnvironment(renderer);
-        scene.environment = studioEnv;
-
-        // Balanced lighting for chrome
-        const ambient = new THREE.AmbientLight(0xffffff, 0.85);
-        scene.add(ambient);
-
-        const keyLight = new THREE.DirectionalLight(0xffffff, 2.2);
-        keyLight.position.set(-0.65, 3.2, 2.2);
-        scene.add(keyLight);
-
-        const fillLight = new THREE.DirectionalLight(0x93c5fd, 0.9);
-        fillLight.position.set(0.8, -0.2, 1.8);
-        scene.add(fillLight);
-
-        // Precise shelf slot positions matching room-bg.png bays
-        const shelfXPositions = [-1.30, -0.65, 0.0, 0.65, 1.30];
-        const shelfY = -0.22; // Flush sitting on the lighted shelf platform
-
-        // Prominent fallback silver cup
-        const placeholder = createSilverCupMesh();
-        placeholder.position.set(shelfXPositions[1], shelfY, 0);
-        placeholder.scale.set(0.92, 0.92, 0.92);
-        scene.add(placeholder);
-
-        // Load UCL Trophy Model in full shelf size with mirror chrome material
-        const gltfLoader = new THREE.GLTFLoader();
-        gltfLoader.load('ucl-trophy.glb', (gltf) => {
-          scene.remove(placeholder);
-
-          const model = gltf.scene;
-          const box = new THREE.Box3().setFromObject(model);
-          const size = new THREE.Vector3();
-          box.getSize(size);
-
-          // Scaled to 0.95 so it fills the shelf bay prominently (no longer tiny)
-          const scaleFactor = 0.95 / (size.y || 1);
-          model.scale.set(scaleFactor, scaleFactor, scaleFactor);
-
-          // Positioned securely in the 2nd bay
-          model.position.set(shelfXPositions[1], shelfY, 0);
-
-          // Pure mirror silver metallic chrome material
-          model.traverse(child => {
-            if (child.isMesh) {
-              child.material = new THREE.MeshStandardMaterial({
-                color: new THREE.Color(0xf8fafc),
-                metalness: 1.0,
-                roughness: 0.06,
-                envMapIntensity: 2.4
-              });
-            }
-          });
-
-          scene.add(model);
-          renderer.render(scene, camera);
-        }, undefined, () => {
-          renderer.render(scene, camera);
-        });
-
-        renderer.render(scene, camera);
-        activeRooms.push({ wrap, canvas, renderer, scene, camera });
-      });
-    }
-
-    function createSilverCupMesh() {
-      const cupGroup = new THREE.Group();
-      const chromeMat = new THREE.MeshStandardMaterial({
-        color: 0xf8fafc,
-        metalness: 1.0,
-        roughness: 0.06,
-        envMapIntensity: 2.4
-      });
-
-      const bodyGeo = new THREE.CylinderGeometry(0.32, 0.16, 0.52, 32);
-      const body = new THREE.Mesh(bodyGeo, chromeMat);
-      body.position.y = 0.27;
-      cupGroup.add(body);
-
-      const stemGeo = new THREE.CylinderGeometry(0.07, 0.09, 0.26, 20);
-      const stem = new THREE.Mesh(stemGeo, chromeMat);
-      stem.position.y = -0.09;
-      cupGroup.add(stem);
-
-      const footGeo = new THREE.CylinderGeometry(0.22, 0.26, 0.08, 32);
-      const foot = new THREE.Mesh(footGeo, chromeMat);
-      foot.position.y = -0.22;
-      cupGroup.add(foot);
-
-      return cupGroup;
-    }
-
-    window.addEventListener('resize', () => {
-      activeRooms.forEach(r => {
-        const width = r.wrap.clientWidth;
-        const height = r.wrap.clientHeight;
-        r.camera.aspect = width / height;
-        r.camera.updateProjectionMatrix();
-        r.renderer.setSize(width, height);
-        r.renderer.render(r.scene, r.camera);
-      });
-    });
-
-    // ==========================================================
     // TAB SWITCHING & AUTH
     // ==========================================================
     function switchTab(tabKey) {
@@ -1950,10 +1764,6 @@
           btn.classList.add('active');
         }
       });
-
-      if (tabKey === 'managers') {
-        setTimeout(initTrophyCanvases, 50);
-      }
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -2251,7 +2061,7 @@
         `;
       }).join('') || '<p style="text-align:center; color:var(--muted); padding:20px;">No results recorded.</p>';
 
-      // RENDER MANAGERS TAB WITH FULL-FIT AVATAR & ILLUMINATED SHELF TROPHY
+      // RENDER MANAGERS TAB WITH FULL-FIT AVATAR & CLEAN OUTLINE FRAME (NO INSIDE ELEMENTS)
       const managersList = document.getElementById('managersListContainer');
       managersList.innerHTML = (state.managers || []).map((mgr, index) => {
         const mgrTeam = getTeam(mgr.teamId);
@@ -2285,10 +2095,9 @@
               </div>
             </div>
 
-            <!-- Showcase Room Box with 3D Canvas mounted over room-bg.png -->
+            <!-- Clean Outline Showcase Frame - Ready For Step-by-Step Building -->
             <div class="trophy-room-showcase-wrap" id="mgrShowcase_${index}">
               <div class="canvas-overlay-header">🏛️ 3D Trophy Room Showcase</div>
-              <canvas class="trophy-canvas-overlay"></canvas>
             </div>
           </div>
         `;
@@ -2342,10 +2151,6 @@
           </div>
         </div>
       `).join('') || '<div style="color:var(--muted); font-size:12px;">No matches awaiting score entry.</div>';
-
-      if (document.getElementById('page-managers').classList.contains('active')) {
-        setTimeout(initTrophyCanvases, 50);
-      }
     }
 
     // MANAGERS ADMIN CRUD LOGIC
