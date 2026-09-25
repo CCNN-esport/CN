@@ -10,12 +10,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
 
-  <!-- 3D Model Viewer Library for UCL Tab -->
+  <!-- 3D Model Viewer Library for UCL Tab and Manager Trophies -->
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
-
-  <!-- Three.js + GLTFLoader -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 
   <!-- Firebase App & Realtime Database SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -809,7 +805,7 @@
       text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
     }
 
-    /* MANAGERS PROFILE CARD WITH EDGE-TO-EDGE FULL-FIT AVATAR */
+    /* MANAGERS PROFILE CARD WITH FULL-FIT AVATAR */
     .manager-showcase-block {
       margin-bottom: 24px;
     }
@@ -893,35 +889,56 @@
       color: var(--accent);
     }
 
-    /* CLEAN OUTER-LINE SHOWCASE FRAME (CLEAN SLATE) */
+    /* SHOWCASE FRAME WITH INTEGRATED TROPHY CARD */
     .trophy-room-showcase-wrap {
       position: relative;
       width: 100%;
-      height: 155px;
-      background: rgba(3, 7, 18, 0.6);
+      height: 180px;
+      background: rgba(5, 10, 24, 0.7);
       border: 1px solid rgba(0, 229, 255, 0.35);
       border-radius: 16px;
       overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85), inset 0 0 30px rgba(0, 0, 0, 0.9);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85), inset 0 0 25px rgba(0, 0, 0, 0.9);
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    .canvas-overlay-header {
-      position: absolute;
-      top: 8px;
-      left: 0;
-      right: 0;
-      text-align: center;
-      font-size: 8.5px;
+    .trophy-display-unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .trophy-3d-model {
+      width: 140px;
+      height: 120px;
+      outline: none;
+      --poster-color: transparent;
+      filter: drop-shadow(0 0 14px rgba(0, 229, 255, 0.4));
+    }
+
+    .trophy-count-tag {
+      font-size: 13px;
       font-weight: 900;
+      letter-spacing: 1px;
       text-transform: uppercase;
+      color: var(--gold);
+      background: rgba(14, 22, 42, 0.85);
+      border: 1px solid rgba(255, 215, 0, 0.4);
+      padding: 3px 12px;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(255, 215, 0, 0.25);
+    }
+
+    .empty-showcase-text {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
       letter-spacing: 1.5px;
-      color: var(--accent);
-      text-shadow: 0 0 10px var(--accent-glow);
-      pointer-events: none;
-      z-index: 5;
+      text-transform: uppercase;
     }
 
     .admin-accordion {
@@ -1288,7 +1305,7 @@
       </div>
     </div>
 
-    <!-- MANAGERS TAB (CLEAN SHOWCASE FRAME - EVERYTHING INSIDE REMOVED) -->
+    <!-- MANAGERS TAB (SHOWCASE WITH SELECTED 3D TROPHY & WIN COUNT) -->
     <div id="page-managers" class="view-card">
       <div class="league-banner">
         <div>
@@ -1436,10 +1453,10 @@
         </div>
       </div>
 
-      <!-- 5. MANAGERS SECTION (ADD & EDIT MANAGERS) -->
+      <!-- 5. MANAGERS SECTION (ADD, EDIT & ASSIGN 3D TROPHY + COUNT) -->
       <div class="admin-accordion">
         <div class="admin-accordion-header" onclick="toggleAccordion(this)">
-          <span>5. Managers & Showcase</span>
+          <span>5. Managers & Showcase Trophy</span>
           <span>▾</span>
         </div>
         <div class="admin-accordion-body">
@@ -1466,6 +1483,21 @@
           <div class="form-group">
             <label>Photo (Filename, e.g. manager-1.png or URL) :</label>
             <input type="text" id="adminManagerPhotoInput" placeholder="e.g. manager-1.png">
+          </div>
+
+          <!-- TROPHY SHOWCASE SELECTION & COUNT -->
+          <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.1); padding-top:12px;">
+            <label style="color:var(--gold);">Choose Trophy for Showcase Room</label>
+            <select id="adminManagerTrophyType">
+              <option value="none">None (Empty Room)</option>
+              <option value="ucl">UEFA Champions League Trophy (ucl-trophy.glb)</option>
+              <option value="league">Super League Trophy</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label style="color:var(--gold);">How Many Times (Trophy Count) :</label>
+            <input type="number" id="adminManagerTrophyCount" min="0" placeholder="e.g. 1, 2, 4">
           </div>
 
           <div style="display:flex; gap:8px;">
@@ -1585,7 +1617,27 @@
           name: 'Nasif',
           playstyle: 'Quick Counter',
           teamId: '3',
-          photo: 'manager-1.png'
+          photo: 'manager-1.png',
+          trophyType: 'ucl',
+          trophyCount: 1
+        },
+        {
+          id: '2',
+          name: 'Thameem',
+          playstyle: 'Possession',
+          teamId: '5',
+          photo: 'manager-2.png',
+          trophyType: 'none',
+          trophyCount: 0
+        },
+        {
+          id: '3',
+          name: 'shifan',
+          playstyle: 'Quick Counter',
+          teamId: '4',
+          photo: 'manager-3.png',
+          trophyType: 'none',
+          trophyCount: 0
         }
       ],
       teams: [
@@ -1628,7 +1680,9 @@
               name: state.manager.name || 'Nasif',
               playstyle: 'Quick Counter',
               teamId: state.manager.teamId || '3',
-              photo: state.manager.photo || 'manager-1.png'
+              photo: state.manager.photo || 'manager-1.png',
+              trophyType: 'ucl',
+              trophyCount: 1
             }];
           } else {
             state.managers = defaultState.managers;
@@ -1637,6 +1691,8 @@
 
         state.managers.forEach((m, idx) => {
           if (!m.photo) m.photo = `manager-${idx + 1}.png`;
+          if (m.trophyType === undefined) m.trophyType = 'none';
+          if (m.trophyCount === undefined) m.trophyCount = 0;
         });
 
         state.teams.forEach(t => {
@@ -2061,11 +2117,48 @@
         `;
       }).join('') || '<p style="text-align:center; color:var(--muted); padding:20px;">No results recorded.</p>';
 
-      // RENDER MANAGERS TAB WITH FULL-FIT AVATAR & CLEAN OUTLINE FRAME (NO INSIDE ELEMENTS)
+      // RENDER MANAGERS TAB WITH CHOSEN 3D TROPHY & WIN COUNT
       const managersList = document.getElementById('managersListContainer');
-      managersList.innerHTML = (state.managers || []).map((mgr, index) => {
+      managersList.innerHTML = (state.managers || []).map((mgr) => {
         const mgrTeam = getTeam(mgr.teamId);
-        const photoFile = mgr.photo || `manager-${index + 1}.png`;
+        const photoFile = mgr.photo || 'manager-1.png';
+
+        let trophyContent = `<span class="empty-showcase-text">No Trophies Won Yet</span>`;
+
+        if (mgr.trophyType === 'ucl') {
+          trophyContent = `
+            <div class="trophy-display-unit">
+              <model-viewer 
+                src="ucl-trophy.glb" 
+                alt="UCL 3D Trophy" 
+                camera-controls 
+                interaction-prompt="none"
+                environment-image="neutral"
+                shadow-intensity="1.4"
+                exposure="1.3"
+                tone-mapping="commerce"
+                class="trophy-3d-model">
+              </model-viewer>
+              <span class="trophy-count-tag">🏆 UCL x${mgr.trophyCount || 0}</span>
+            </div>
+          `;
+        } else if (mgr.trophyType === 'league') {
+          trophyContent = `
+            <div class="trophy-display-unit">
+              <model-viewer 
+                src="ucl-trophy.glb" 
+                alt="League Trophy" 
+                camera-controls 
+                interaction-prompt="none"
+                environment-image="neutral"
+                shadow-intensity="1.4"
+                exposure="1.3"
+                class="trophy-3d-model">
+              </model-viewer>
+              <span class="trophy-count-tag" style="color:var(--gold); border-color:var(--gold);">🏆 League x${mgr.trophyCount || 0}</span>
+            </div>
+          `;
+        }
 
         return `
           <div class="manager-showcase-block">
@@ -2095,13 +2188,29 @@
               </div>
             </div>
 
-            <!-- Clean Outline Showcase Frame - Ready For Step-by-Step Building -->
-            <div class="trophy-room-showcase-wrap" id="mgrShowcase_${index}">
-              <div class="canvas-overlay-header">🏛️ 3D Trophy Room Showcase</div>
+            <!-- Clean Showcase Frame showing selected Trophy + Count -->
+            <div class="trophy-room-showcase-wrap">
+              ${trophyContent}
             </div>
           </div>
         `;
       }).join('') || '<p style="text-align:center; color:var(--muted); padding:20px;">No managers added yet.</p>';
+
+      // Apply chrome metallic PBR parameters to any loaded manager trophy
+      document.querySelectorAll('.trophy-3d-model').forEach(viewer => {
+        viewer.addEventListener('load', () => {
+          const model = viewer.model;
+          if (model && model.materials) {
+            model.materials.forEach(mat => {
+              if (mat.pbrMetallicRoughness) {
+                mat.pbrMetallicRoughness.setMetallicFactor(1.0);
+                mat.pbrMetallicRoughness.setRoughnessFactor(0.1);
+                mat.pbrMetallicRoughness.setBaseColorFactor([0.96, 0.98, 1.0, 1.0]);
+              }
+            });
+          }
+        });
+      });
 
       // Populate Admin Form Elements
       const teamOptions = state.teams.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
@@ -2162,6 +2271,8 @@
       document.getElementById('adminManagerPlaystyleInput').value = mgr.playstyle || '';
       document.getElementById('adminManagerTeamSelect').value = mgr.teamId || '';
       document.getElementById('adminManagerPhotoInput').value = mgr.photo || `manager-${idx + 1}.png`;
+      document.getElementById('adminManagerTrophyType').value = mgr.trophyType || 'none';
+      document.getElementById('adminManagerTrophyCount').value = mgr.trophyCount !== undefined ? mgr.trophyCount : 0;
     }
 
     function saveSelectedManager() {
@@ -2172,9 +2283,11 @@
       state.managers[idx].playstyle = document.getElementById('adminManagerPlaystyleInput').value.trim() || 'Balanced';
       state.managers[idx].teamId = document.getElementById('adminManagerTeamSelect').value;
       state.managers[idx].photo = document.getElementById('adminManagerPhotoInput').value.trim() || `manager-${idx + 1}.png`;
+      state.managers[idx].trophyType = document.getElementById('adminManagerTrophyType').value;
+      state.managers[idx].trophyCount = parseInt(document.getElementById('adminManagerTrophyCount').value) || 0;
 
       saveState();
-      alert('Manager Profile updated live!');
+      alert('Manager Profile & Showcase updated live!');
     }
 
     function addNewManagerPrompt() {
@@ -2188,7 +2301,9 @@
         name: name.trim(),
         playstyle: playstyle.trim(),
         teamId: state.teams[0] ? state.teams[0].id : '',
-        photo: `manager-${newIdx}.png`
+        photo: `manager-${newIdx}.png`,
+        trophyType: 'none',
+        trophyCount: 0
       };
 
       if (!state.managers) state.managers = [];
