@@ -809,7 +809,7 @@
       text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
     }
 
-    /* MANAGERS PROFILE CARD WITH CLEAN IMAGE */
+    /* MANAGERS PROFILE CARD WITH FULL-FIT AVATAR */
     .manager-showcase-block {
       margin-bottom: 24px;
     }
@@ -827,17 +827,26 @@
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     }
 
-    .manager-avatar-img {
+    .manager-avatar-box {
       width: 76px;
       height: 76px;
       border-radius: 18px;
       border: 2px solid var(--accent);
       box-shadow: 0 0 16px var(--accent-glow);
+      overflow: hidden;
+      display: block;
+      padding: 0;
+      flex-shrink: 0;
+      background: #0f172a;
+    }
+
+    .manager-avatar-box img {
+      width: 100%;
+      height: 100%;
       object-fit: cover;
       object-position: center;
       display: block;
-      flex-shrink: 0;
-      background: #0f172a;
+      border-radius: 16px;
     }
 
     /* Straight aligned colons via CSS Grid */
@@ -879,19 +888,27 @@
       color: var(--accent);
     }
 
-    /* SHOWCASE ROOM BOX (POWERED BY room-bg.png) */
-    .trophy-room-outer-box {
+    /* SHOWCASE ROOM BOX (3D CANVAS MOUNTED OVER room-bg.png) */
+    .trophy-room-showcase-wrap {
       position: relative;
       width: 100%;
       height: 155px;
-      background: #020409 url('room-bg.png') center/cover no-repeat;
+      background: #020409 url('room-bg.png') center/100% 100% no-repeat;
       border: 1px solid rgba(0, 229, 255, 0.35);
       border-radius: 16px;
       overflow: hidden;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85), inset 0 0 30px rgba(0, 0, 0, 0.9);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    }
+
+    .trophy-canvas-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100% !important;
+      height: 100% !important;
+      display: block;
+      outline: none;
+      z-index: 2;
     }
 
     .canvas-overlay-header {
@@ -1274,7 +1291,7 @@
       </div>
     </div>
 
-    <!-- MANAGERS TAB (SHOWCASE WITH room-bg.png & manager-1.png) -->
+    <!-- MANAGERS TAB (FULL-FIT AVATAR & 3D TROPHIES ON SHELVES - NO ROTATION) -->
     <div id="page-managers" class="view-card">
       <div class="league-banner">
         <div>
@@ -1621,7 +1638,6 @@
           }
         }
 
-        // Set default manager-X.png naming if missing
         state.managers.forEach((m, idx) => {
           if (!m.photo) m.photo = `manager-${idx + 1}.png`;
         });
@@ -1702,6 +1718,130 @@
     }
 
     // ==========================================================
+    // 3D TROPHY ON SHELVES (STATIC - NO ROTATION - PERFECT ALIGNMENT)
+    // ==========================================================
+    let activeRooms = [];
+
+    function initTrophyCanvases() {
+      activeRooms.forEach(r => {
+        if (r.renderer) r.renderer.dispose();
+      });
+      activeRooms = [];
+
+      const wrappers = document.querySelectorAll('.trophy-room-showcase-wrap');
+      wrappers.forEach((wrap, wrapIdx) => {
+        const canvas = wrap.querySelector('canvas');
+        if (!canvas) return;
+
+        const width = wrap.clientWidth || 340;
+        const height = wrap.clientHeight || 155;
+
+        // Transparent background so room-bg.png displays behind cleanly
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(48, width / height, 0.1, 100);
+        camera.position.set(0, 0, 3.4);
+        camera.lookAt(0, -0.05, 0);
+
+        const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+        renderer.setSize(width, height);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.outputEncoding = THREE.sRGBEncoding;
+
+        // Balanced lighting highlighting the metallic trophy
+        const ambient = new THREE.AmbientLight(0xffffff, 0.9);
+        scene.add(ambient);
+
+        const keyLight = new THREE.DirectionalLight(0xffffff, 1.8);
+        keyLight.position.set(-0.7, 2.5, 2.0);
+        scene.add(keyLight);
+
+        const cyanFill = new THREE.DirectionalLight(0x00e5ff, 0.6);
+        cyanFill.position.set(0.7, -0.5, 1.5);
+        scene.add(cyanFill);
+
+        // Precise shelf slot positions matching the 5 bays in room-bg.png
+        const shelfXPositions = [-1.36, -0.68, 0.0, 0.68, 1.36];
+        const shelfY = -0.15; // Directly sits on the lighted ledge
+
+        // Placeholder silver cup on Slot 2 until GLB loads
+        const placeholder = createSilverCupMesh();
+        placeholder.position.set(shelfXPositions[1], shelfY, 0);
+        placeholder.scale.set(0.48, 0.48, 0.48);
+        scene.add(placeholder);
+
+        // Load UCL Trophy Model statically (NO ROTATION)
+        const gltfLoader = new THREE.GLTFLoader();
+        gltfLoader.load('ucl-trophy.glb', (gltf) => {
+          scene.remove(placeholder);
+
+          const model = gltf.scene;
+          const box = new THREE.Box3().setFromObject(model);
+          const size = new THREE.Vector3();
+          box.getSize(size);
+          const scaleFactor = 0.52 / (size.y || 1);
+          model.scale.set(scaleFactor, scaleFactor, scaleFactor);
+
+          // Positioned squarely on the 2nd illuminated shelf
+          model.position.set(shelfXPositions[1], shelfY, 0);
+
+          model.traverse(child => {
+            if (child.isMesh && child.material) {
+              child.material.metalness = 0.95;
+              child.material.roughness = 0.12;
+              child.material.color = new THREE.Color(0xf8fafc);
+              child.material.needsUpdate = true;
+            }
+          });
+
+          scene.add(model);
+          renderer.render(scene, camera);
+        }, undefined, (err) => {
+          renderer.render(scene, camera);
+        });
+
+        renderer.render(scene, camera);
+        activeRooms.push({ wrap, canvas, renderer, scene, camera });
+      });
+    }
+
+    function createSilverCupMesh() {
+      const cupGroup = new THREE.Group();
+      const silverMat = new THREE.MeshStandardMaterial({
+        color: 0xf1f5f9,
+        metalness: 0.95,
+        roughness: 0.15
+      });
+
+      const bodyGeo = new THREE.CylinderGeometry(0.32, 0.16, 0.52, 28);
+      const body = new THREE.Mesh(bodyGeo, silverMat);
+      body.position.y = 0.27;
+      cupGroup.add(body);
+
+      const stemGeo = new THREE.CylinderGeometry(0.07, 0.09, 0.26, 16);
+      const stem = new THREE.Mesh(stemGeo, silverMat);
+      stem.position.y = -0.09;
+      cupGroup.add(stem);
+
+      const footGeo = new THREE.CylinderGeometry(0.22, 0.26, 0.08, 28);
+      const foot = new THREE.Mesh(footGeo, silverMat);
+      foot.position.y = -0.22;
+      cupGroup.add(foot);
+
+      return cupGroup;
+    }
+
+    window.addEventListener('resize', () => {
+      activeRooms.forEach(r => {
+        const width = r.wrap.clientWidth;
+        const height = r.wrap.clientHeight;
+        r.camera.aspect = width / height;
+        r.camera.updateProjectionMatrix();
+        r.renderer.setSize(width, height);
+        r.renderer.render(r.scene, r.camera);
+      });
+    });
+
+    // ==========================================================
     // TAB SWITCHING & AUTH
     // ==========================================================
     function switchTab(tabKey) {
@@ -1751,6 +1891,10 @@
           btn.classList.add('active');
         }
       });
+
+      if (tabKey === 'managers') {
+        setTimeout(initTrophyCanvases, 50);
+      }
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -2048,7 +2192,7 @@
         `;
       }).join('') || '<p style="text-align:center; color:var(--muted); padding:20px;">No results recorded.</p>';
 
-      // RENDER MANAGERS TAB WITH MANAGER IMAGE & ROOM-BG.PNG
+      // RENDER MANAGERS TAB WITH MANAGER AVATAR & 3D TROPHY ON SHELF
       const managersList = document.getElementById('managersListContainer');
       managersList.innerHTML = (state.managers || []).map((mgr, index) => {
         const mgrTeam = getTeam(mgr.teamId);
@@ -2057,12 +2201,13 @@
         return `
           <div class="manager-showcase-block">
             <div class="manager-profile-card">
-              <img 
-                src="${photoFile}" 
-                alt="${mgr.name}" 
-                class="manager-avatar-img" 
-                onerror="this.src='manager-1.png';"
-              >
+              <div class="manager-avatar-box">
+                <img 
+                  src="${photoFile}" 
+                  alt="${mgr.name}" 
+                  onerror="this.src='manager-1.png';"
+                >
+              </div>
               <div class="manager-info-grid">
                 <div class="mgr-label">NAME</div>
                 <div class="mgr-colon">:</div>
@@ -2081,9 +2226,10 @@
               </div>
             </div>
 
-            <!-- Showcase Room Box displaying room-bg.png -->
-            <div class="trophy-room-outer-box">
+            <!-- Showcase Room Box with 3D Canvas mounted over room-bg.png -->
+            <div class="trophy-room-showcase-wrap" id="mgrShowcase_${index}">
               <div class="canvas-overlay-header">🏛️ 3D Trophy Room Showcase</div>
+              <canvas class="trophy-canvas-overlay"></canvas>
             </div>
           </div>
         `;
@@ -2137,6 +2283,10 @@
           </div>
         </div>
       `).join('') || '<div style="color:var(--muted); font-size:12px;">No matches awaiting score entry.</div>';
+
+      if (document.getElementById('page-managers').classList.contains('active')) {
+        setTimeout(initTrophyCanvases, 50);
+      }
     }
 
     // MANAGERS ADMIN CRUD LOGIC
