@@ -19,22 +19,23 @@
 
   <style>
     :root {
-      --glass-bg: rgba(16, 24, 48, 0.65);
-      --glass-card: rgba(14, 22, 42, 0.72);
-      --glass-border: rgba(0, 229, 255, 0.22);
-      --glass-shine: rgba(255, 255, 255, 0.08);
+      /* LIQUID GLASS THEME VARIABLES */
+      --glass-bg: rgba(10, 18, 38, 0.32);
+      --glass-card: rgba(8, 16, 36, 0.28);
+      --glass-border: rgba(255, 255, 255, 0.22);
+      --glass-shine: rgba(255, 255, 255, 0.18);
       --accent: #00e5ff;
-      --accent-glow: rgba(0, 229, 255, 0.35);
+      --accent-glow: rgba(0, 229, 255, 0.45);
       --ucl-blue: #3b82f6;
       --ucl-glow: rgba(59, 130, 246, 0.55);
       --gold: #ffd700;
       --text: #f8fafc;
-      --muted: #8fa0be;
+      --muted: #cbd5e1;
 
       --win: #22c55e;
       --draw: #94a3b8;
       --loss: #ef4444;
-      --notplayed: #334155;
+      --notplayed: #475569;
     }
 
     * {
@@ -46,25 +47,22 @@
     }
 
     body {
-      background: radial-gradient(circle at 50% 5%, #16264c 0%, #080e1b 55%, #03060d 100%);
+      background: #030712 url('theme-bg.jpg') center top / cover fixed no-repeat;
       min-height: 100vh;
       color: var(--text);
       padding-bottom: 95px;
       overflow-x: hidden;
+      position: relative;
     }
 
+    /* Ambient Liquid Backdrop Glow Layer */
     body::before {
       content: "";
       position: fixed;
-      top: -90px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 320px;
-      height: 320px;
-      background: radial-gradient(circle, rgba(0, 229, 255, 0.22) 0%, transparent 70%);
-      filter: blur(55px);
-      z-index: 0;
+      inset: 0;
+      background: radial-gradient(circle at 50% 10%, rgba(0, 229, 255, 0.12) 0%, rgba(3, 7, 18, 0.45) 85%);
       pointer-events: none;
+      z-index: 0;
     }
 
     header {
@@ -72,10 +70,10 @@
       top: 0;
       z-index: 50;
       background: var(--glass-bg);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
       border-bottom: 1px solid var(--glass-border);
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4), inset 0 1px 0 var(--glass-shine);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), inset 0 1px 1px var(--glass-shine);
       padding: 14px 20px;
       text-align: center;
       position: relative;
@@ -86,7 +84,7 @@
       font-weight: 900;
       letter-spacing: 2px;
       text-transform: uppercase;
-      background: linear-gradient(135deg, #ffffff 30%, var(--accent) 100%);
+      background: linear-gradient(135deg, #ffffff 40%, var(--accent) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       text-shadow: 0 0 16px var(--accent-glow);
@@ -116,16 +114,17 @@
       right: 16px;
       top: 50%;
       transform: translateY(-50%);
-      background: rgba(59, 130, 246, 0.2);
-      border: 1px solid var(--ucl-blue);
+      background: rgba(59, 130, 246, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.3);
       color: #fff;
       padding: 6px 12px;
       border-radius: 12px;
       font-size: 11px;
       font-weight: 800;
       cursor: pointer;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 0 12px var(--ucl-glow);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 4px 16px var(--ucl-glow);
       align-items: center;
       gap: 6px;
     }
@@ -144,26 +143,29 @@
     #page-ucl {
       position: relative;
       background: 
-        linear-gradient(rgba(5, 11, 26, 0.75), rgba(4, 8, 20, 0.85)),
+        linear-gradient(rgba(5, 11, 26, 0.65), rgba(4, 8, 20, 0.75)),
         url('ucl-bg.jpg') center/cover no-repeat;
-      border: 1px solid rgba(59, 130, 246, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.25);
       border-radius: 20px;
       padding: 14px;
-      box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.8), 0 10px 30px rgba(0, 0, 0, 0.4);
+      box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.65), 0 12px 36px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
     }
 
+    /* LIQUID GLASS SURFACE CARDS */
     .league-banner {
-      background: var(--glass-card);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(14, 24, 52, 0.3) 100%);
+      backdrop-filter: blur(22px) saturate(160%);
+      -webkit-backdrop-filter: blur(22px) saturate(160%);
       border: 1px solid var(--glass-border);
-      border-radius: 16px;
+      border-radius: 18px;
       padding: 14px 18px;
       margin-bottom: 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), inset 0 1px 1px var(--glass-shine);
     }
 
     .league-title-label {
@@ -175,6 +177,7 @@
       display: flex;
       align-items: center;
       gap: 5px;
+      text-shadow: 0 0 10px var(--accent-glow);
     }
 
     .league-title-name {
@@ -187,32 +190,33 @@
     }
 
     .season-tag {
-      background: rgba(0, 229, 255, 0.12);
-      border: 1px solid var(--accent);
+      background: rgba(0, 229, 255, 0.16);
+      border: 1px solid rgba(0, 229, 255, 0.55);
       color: var(--accent);
       font-size: 11px;
       font-weight: 800;
-      padding: 5px 10px;
+      padding: 5px 11px;
       border-radius: 20px;
       text-transform: uppercase;
+      box-shadow: 0 0 12px rgba(0, 229, 255, 0.2);
     }
 
     .hero-leader-card {
-      background: var(--glass-card);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(10, 20, 44, 0.35) 100%);
+      backdrop-filter: blur(24px) saturate(170%);
+      -webkit-backdrop-filter: blur(24px) saturate(170%);
       border: 1px solid var(--glass-border);
       border-radius: 18px;
       padding: 16px 18px;
       margin-bottom: 14px;
-      box-shadow: 0 10px 32px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4), inset 0 1px 1px var(--glass-shine);
       position: relative;
     }
 
     .hero-leader-card::after {
       content: "";
       position: absolute;
-      top: 0; right: 0; width: 80px; height: 80px;
+      top: 0; right: 0; width: 90px; height: 90px;
       background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
       pointer-events: none;
     }
@@ -224,6 +228,7 @@
       text-transform: uppercase;
       letter-spacing: 1.2px;
       margin-bottom: 8px;
+      text-shadow: 0 0 8px var(--accent-glow);
     }
 
     .hero-row {
@@ -252,6 +257,7 @@
       font-weight: 900;
       color: var(--accent);
       line-height: 1;
+      text-shadow: 0 0 12px var(--accent-glow);
     }
 
     .hero-pts-label {
@@ -283,21 +289,21 @@
     }
 
     .champion-subcard {
-      background: var(--glass-card);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.09) 0%, rgba(10, 18, 38, 0.32) 100%);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
       border: 1px solid var(--glass-border);
       border-radius: 16px;
       padding: 14px 14px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 1px 1px var(--glass-shine);
       min-height: 110px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
     }
 
-    .champ-card-league { border-color: rgba(255, 215, 0, 0.3); }
-    .champ-card-ucl { border-color: rgba(59, 130, 246, 0.4); }
+    .champ-card-league { border-color: rgba(255, 215, 0, 0.4); }
+    .champ-card-ucl { border-color: rgba(59, 130, 246, 0.45); }
 
     .champ-sub-title {
       font-size: 11px;
@@ -325,14 +331,14 @@
     }
 
     .prediction-card {
-      background: var(--glass-card);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(10, 20, 44, 0.32) 100%);
+      backdrop-filter: blur(24px) saturate(170%);
+      -webkit-backdrop-filter: blur(24px) saturate(170%);
       border: 1px solid var(--glass-border);
       border-radius: 18px;
       padding: 16px 14px;
       margin-bottom: 14px;
-      box-shadow: 0 10px 32px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4), inset 0 1px 1px var(--glass-shine);
     }
 
     .prediction-header {
@@ -348,6 +354,7 @@
       color: var(--accent);
       text-transform: uppercase;
       letter-spacing: 1.2px;
+      text-shadow: 0 0 8px var(--accent-glow);
     }
 
     .prediction-subtext {
@@ -364,7 +371,7 @@
       min-height: 210px;
       padding: 10px 4px 4px 4px;
       gap: 8px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
       overflow-x: auto;
     }
 
@@ -390,7 +397,7 @@
     .graph-logo-slot .team-badge {
       width: 32px;
       height: 32px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
     }
 
     .graph-team-name {
@@ -408,15 +415,15 @@
     .graph-bar-track {
       width: 32px;
       height: 130px;
-      background: rgba(7, 12, 24, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(7, 14, 30, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 8px;
       position: relative;
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
       overflow: hidden;
-      box-shadow: inset 0 2px 6px rgba(0,0,0,0.5);
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.5);
     }
 
     .graph-bar-fill {
@@ -425,12 +432,12 @@
       border-radius: 7px 7px 0 0;
       transition: height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
-      box-shadow: 0 0 14px var(--accent-glow);
+      box-shadow: 0 0 16px var(--accent-glow);
     }
 
     .graph-bar-fill.leader-bar {
       background: linear-gradient(180deg, var(--gold) 0%, #f59e0b 100%);
-      box-shadow: 0 0 16px rgba(255, 215, 0, 0.5);
+      box-shadow: 0 0 18px rgba(255, 215, 0, 0.55);
     }
 
     .graph-percentage-label {
@@ -443,13 +450,13 @@
     }
 
     .table-card {
-      background: var(--glass-card);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(10, 18, 38, 0.3) 100%);
+      backdrop-filter: blur(24px) saturate(170%);
+      -webkit-backdrop-filter: blur(24px) saturate(170%);
       border: 1px solid var(--glass-border);
       border-radius: 18px;
       padding: 12px 6px;
-      box-shadow: 0 10px 32px rgba(0, 0, 0, 0.45), inset 0 1px 1px var(--glass-shine);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4), inset 0 1px 1px var(--glass-shine);
       overflow-x: auto;
       margin-bottom: 14px;
     }
@@ -469,13 +476,13 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
       font-weight: 700;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     td {
       padding: 11px 6px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-      color: #e2e8f0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: #f1f5f9;
       font-weight: 600;
     }
 
@@ -491,7 +498,7 @@
       width: 3.5px;
       background: var(--ucl-blue);
       border-radius: 3px;
-      box-shadow: 0 0 8px var(--ucl-glow);
+      box-shadow: 0 0 10px var(--ucl-glow);
     }
 
     .team-col {
@@ -506,7 +513,7 @@
       width: 26px;
       height: 26px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #1f2d4e, #11192e);
+      background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(15,25,48,0.6));
       border: 1px solid var(--glass-border);
       display: inline-flex;
       align-items: center;
@@ -516,12 +523,14 @@
       color: #fff;
       object-fit: cover;
       flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
     }
 
     .pts-col {
       color: var(--accent);
       font-weight: 900;
       font-size: 14px;
+      text-shadow: 0 0 10px var(--accent-glow);
     }
 
     .gd-positive { color: #34d399; }
@@ -543,10 +552,10 @@
       flex-shrink: 0;
     }
 
-    .badge-win { background: var(--win); color: #fff; }
+    .badge-win { background: var(--win); color: #fff; box-shadow: 0 0 8px rgba(34,197,94,0.4); }
     .badge-draw { background: var(--draw); color: #fff; }
-    .badge-loss { background: var(--loss); color: #fff; }
-    .badge-unplayed { background: transparent; border: 2px solid #475569; }
+    .badge-loss { background: var(--loss); color: #fff; box-shadow: 0 0 8px rgba(239,68,68,0.4); }
+    .badge-unplayed { background: transparent; border: 2px solid rgba(255,255,255,0.25); }
 
     .status-badge svg {
       width: 10px;
@@ -561,12 +570,12 @@
     .legend-card {
       margin-top: 14px;
       padding: 14px 18px;
-      background: var(--glass-card);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(10, 18, 38, 0.28) 100%);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--glass-border);
       border-radius: 16px;
-      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 1px 1px var(--glass-shine);
     }
 
     .legend-heading {
@@ -598,11 +607,14 @@
 
     .match-toggle-bar {
       display: flex;
-      background: rgba(10, 16, 32, 0.7);
+      background: rgba(8, 16, 36, 0.35);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
       border: 1px solid var(--glass-border);
       border-radius: 14px;
       padding: 4px;
       margin-bottom: 16px;
+      box-shadow: inset 0 1px 1px var(--glass-shine);
     }
 
     .match-toggle-btn {
@@ -620,9 +632,10 @@
     }
 
     .match-toggle-btn.active {
-      background: rgba(0, 229, 255, 0.15);
+      background: rgba(0, 229, 255, 0.2);
       color: var(--accent);
-      box-shadow: inset 0 0 10px rgba(0, 229, 255, 0.25);
+      border: 1px solid rgba(0, 229, 255, 0.4);
+      box-shadow: 0 0 12px var(--accent-glow);
     }
 
     .match-date-header {
@@ -647,26 +660,28 @@
     }
 
     .comp-league {
-      background: rgba(0, 229, 255, 0.15);
+      background: rgba(0, 229, 255, 0.18);
       color: var(--accent);
       border: 1px solid var(--accent);
+      box-shadow: 0 0 8px rgba(0, 229, 255, 0.2);
     }
 
     .comp-ucl {
-      background: rgba(59, 130, 246, 0.2);
+      background: rgba(59, 130, 246, 0.22);
       color: var(--ucl-blue);
       border: 1px solid var(--ucl-blue);
+      box-shadow: 0 0 8px var(--ucl-glow);
     }
 
     .match-glass-card {
-      background: var(--glass-card);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.09) 0%, rgba(8, 16, 36, 0.3) 100%);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
       border: 1px solid var(--glass-border);
       border-radius: 16px;
       padding: 12px 16px;
       margin-bottom: 10px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 1px 1px var(--glass-shine);
       display: flex;
       flex-direction: column;
       gap: 8px;
@@ -686,7 +701,7 @@
       gap: 10px;
     }
 
-    /* ORIGINAL CLEAN SCORE BOX LOOK */
+    /* CLEAN SCORE DISPLAY */
     .score-box {
       font-size: 16px;
       font-weight: 900;
@@ -695,11 +710,11 @@
       text-align: right;
     }
 
-    .score-box.winner { color: var(--accent); }
+    .score-box.winner { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
 
     .vs-pill {
-      background: rgba(0, 229, 255, 0.1);
-      border: 1px solid var(--glass-border);
+      background: rgba(0, 229, 255, 0.12);
+      border: 1px solid rgba(0, 229, 255, 0.35);
       color: var(--accent);
       font-size: 11px;
       font-weight: 800;
@@ -730,10 +745,12 @@
     }
 
     .bracket-match {
-      background: rgba(14, 22, 42, 0.85);
-      border: 1px solid var(--ucl-blue);
-      box-shadow: 0 4px 20px var(--ucl-glow);
-      border-radius: 12px;
+      background: rgba(14, 22, 42, 0.45);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(59, 130, 246, 0.6);
+      box-shadow: 0 6px 24px var(--ucl-glow), inset 0 1px 1px var(--glass-shine);
+      border-radius: 14px;
       padding: 10px 14px;
       position: relative;
     }
@@ -747,7 +764,7 @@
       font-size: 13px;
     }
 
-    .bracket-row:first-child { border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+    .bracket-row:first-child { border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
     .bracket-score { font-size: 15px; font-weight: 900; color: #fff; }
 
     .bracket-connector {
@@ -755,18 +772,19 @@
       height: 18px;
       background: var(--ucl-blue);
       margin-left: 24px;
-      box-shadow: 0 0 8px var(--ucl-blue);
+      box-shadow: 0 0 10px var(--ucl-blue);
     }
 
-    /* REDUCED SIZE UCL TROPHY PODIUM */
     .ucl-trophy-podium {
       text-align: center;
-      padding: 12px 14px 14px 14px;
-      background: radial-gradient(circle at center, rgba(59, 130, 246, 0.2) 0%, rgba(10, 16, 32, 0.95) 75%);
-      border: 1px solid rgba(59, 130, 246, 0.55);
+      padding: 14px 14px 16px 14px;
+      background: radial-gradient(circle at center, rgba(59, 130, 246, 0.25) 0%, rgba(8, 16, 36, 0.4) 75%);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(59, 130, 246, 0.6);
       border-radius: 18px;
       margin-top: 16px;
-      box-shadow: 0 0 25px var(--ucl-glow);
+      box-shadow: 0 10px 30px var(--ucl-glow), inset 0 1px 1px var(--glass-shine);
     }
 
     .ucl-trophy-3d {
@@ -777,7 +795,7 @@
       display: block;
       outline: none;
       --poster-color: transparent;
-      filter: drop-shadow(0 0 16px rgba(59, 130, 246, 0.65));
+      filter: drop-shadow(0 0 18px rgba(59, 130, 246, 0.7));
     }
 
     .podium-winner-name {
@@ -799,26 +817,27 @@
       font-size: 10px;
       letter-spacing: 3px;
       text-transform: uppercase;
-      background: linear-gradient(135deg, #0b1536 0%, #1e3a8a 50%, #0d1b46 100%);
+      background: linear-gradient(135deg, rgba(11, 21, 54, 0.6) 0%, rgba(30, 58, 138, 0.6) 100%);
       color: #ffd700;
-      border: 1.5px solid rgba(255, 215, 0, 0.65);
-      box-shadow: 0 0 14px rgba(255, 215, 0, 0.4), inset 0 0 6px rgba(0, 229, 255, 0.3);
+      border: 1.5px solid rgba(255, 215, 0, 0.75);
+      box-shadow: 0 0 16px rgba(255, 215, 0, 0.45), inset 0 0 8px rgba(0, 229, 255, 0.35);
       text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
     }
 
-    /* MANAGERS PROFILE CARD (CLEAN WITHOUT THE AVATAR BOX) */
+    /* MANAGERS PROFILE CARD (LIQUID GLASS SETUP) */
     .manager-showcase-block {
       margin-bottom: 20px;
     }
 
     .manager-profile-card {
-      background: var(--glass-card);
-      backdrop-filter: blur(16px);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(10, 18, 38, 0.3) 100%);
+      backdrop-filter: blur(24px) saturate(170%);
+      -webkit-backdrop-filter: blur(24px) saturate(170%);
       border: 1px solid var(--glass-border);
       border-radius: 18px;
       padding: 14px 18px;
       margin-bottom: 8px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), inset 0 1px 1px var(--glass-shine);
     }
 
     .manager-info-grid {
@@ -856,18 +875,21 @@
 
     .mgr-value.team-val {
       color: var(--accent);
+      text-shadow: 0 0 8px var(--accent-glow);
     }
 
-    /* COMPACT SHOWCASE ROOM WITH SIZED-UP TROPHIES */
+    /* COMPACT SHOWCASE ROOM (LIQUID GLASS) */
     .trophy-room-showcase-wrap {
       position: relative;
       width: 100%;
       min-height: 104px;
-      background: rgba(5, 10, 24, 0.75);
-      border: 1px solid rgba(0, 229, 255, 0.35);
-      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(6, 12, 28, 0.32) 100%);
+      backdrop-filter: blur(24px) saturate(170%);
+      -webkit-backdrop-filter: blur(24px) saturate(170%);
+      border: 1px solid var(--glass-border);
+      border-radius: 18px;
       overflow-x: auto;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.85), inset 0 0 20px rgba(0, 0, 0, 0.9);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 1px 1px var(--glass-shine);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -895,7 +917,7 @@
       width: auto;
       max-width: 72px;
       object-fit: contain;
-      filter: drop-shadow(0 0 12px rgba(0, 229, 255, 0.55));
+      filter: drop-shadow(0 0 14px rgba(0, 229, 255, 0.6));
       display: block;
       transition: transform 0.2s ease;
     }
@@ -906,7 +928,7 @@
       color: #ffffff;
       margin-top: 4px;
       letter-spacing: 0.5px;
-      text-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
     }
 
     .empty-showcase-text {
@@ -917,7 +939,7 @@
       text-transform: uppercase;
     }
 
-    /* USER-FRIENDLY REORGANIZED ADMIN HUB */
+    /* REORGANIZED ADMIN HUB (LIQUID GLASS) */
     .admin-subnav-pills {
       display: flex;
       gap: 6px;
@@ -929,34 +951,38 @@
     .admin-subnav-pills::-webkit-scrollbar { display: none; }
 
     .admin-pill-btn {
-      background: rgba(14, 22, 42, 0.8);
+      background: rgba(14, 24, 52, 0.35);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--glass-border);
       color: var(--muted);
       padding: 8px 14px;
-      border-radius: 12px;
+      border-radius: 14px;
       font-size: 11px;
       font-weight: 800;
       white-space: nowrap;
       cursor: pointer;
       text-transform: uppercase;
       transition: all 0.2s ease;
+      box-shadow: inset 0 1px 1px var(--glass-shine);
     }
 
     .admin-pill-btn.active {
-      background: rgba(0, 229, 255, 0.16);
+      background: rgba(0, 229, 255, 0.25);
       border-color: var(--accent);
-      color: var(--accent);
-      box-shadow: 0 0 12px var(--accent-glow);
+      color: #fff;
+      box-shadow: 0 0 16px var(--accent-glow);
     }
 
     .admin-section-pane {
       display: none;
-      background: var(--glass-card);
-      backdrop-filter: blur(16px);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(8, 16, 36, 0.35) 100%);
+      backdrop-filter: blur(24px) saturate(170%);
+      -webkit-backdrop-filter: blur(24px) saturate(170%);
       border: 1px solid var(--glass-border);
       border-radius: 18px;
       padding: 16px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4), inset 0 1px 1px var(--glass-shine);
     }
     .admin-section-pane.active { display: block; }
 
@@ -970,8 +996,9 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       padding-bottom: 8px;
+      text-shadow: 0 0 10px var(--accent-glow);
     }
 
     .form-group { margin-bottom: 14px; }
@@ -987,12 +1014,15 @@
     input, select {
       width: 100%;
       padding: 10px 12px;
-      background: rgba(7, 12, 24, 0.85);
+      background: rgba(6, 12, 28, 0.4);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       border: 1px solid var(--glass-border);
       color: #fff;
-      border-radius: 8px;
+      border-radius: 10px;
       font-size: 13px;
       outline: none;
+      box-shadow: inset 0 1px 1px var(--glass-shine);
     }
 
     .btn {
@@ -1001,16 +1031,17 @@
       background: var(--accent);
       color: #03060d;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       font-weight: 800;
       font-size: 12px;
       text-transform: uppercase;
       cursor: pointer;
       margin-top: 6px;
+      box-shadow: 0 0 14px var(--accent-glow);
     }
 
-    .btn-danger { background: var(--loss); color: #fff; }
-    .btn-gold { background: var(--gold); color: #03060d; }
+    .btn-danger { background: var(--loss); color: #fff; box-shadow: 0 0 14px rgba(239, 68, 68, 0.4); }
+    .btn-gold { background: var(--gold); color: #03060d; box-shadow: 0 0 14px rgba(255, 215, 0, 0.45); }
 
     .bottom-nav {
       position: fixed;
@@ -1019,16 +1050,16 @@
       right: 10px;
       max-width: 540px;
       margin: auto;
-      background: rgba(14, 20, 38, 0.78);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      background: rgba(10, 18, 38, 0.35);
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
       border: 1px solid var(--glass-border);
-      border-radius: 24px;
+      border-radius: 26px;
       padding: 8px 6px;
       display: flex;
       justify-content: space-around;
       align-items: center;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), inset 0 1px 1px var(--glass-shine);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45), inset 0 1px 1px var(--glass-shine);
       z-index: 100;
     }
 
@@ -1046,7 +1077,7 @@
       font-weight: 700;
       text-transform: uppercase;
       padding: 6px 8px;
-      border-radius: 12px;
+      border-radius: 14px;
       transition: all 0.25s ease;
     }
 
@@ -1059,8 +1090,9 @@
 
     .nav-item.active {
       color: var(--accent);
-      background: rgba(0, 229, 255, 0.12);
-      box-shadow: inset 0 0 10px rgba(0, 229, 255, 0.2);
+      background: rgba(0, 229, 255, 0.2);
+      border: 1px solid rgba(0, 229, 255, 0.4);
+      box-shadow: 0 0 14px var(--accent-glow);
     }
 
     .nav-item.active svg {
@@ -1310,7 +1342,7 @@
       </div>
     </div>
 
-    <!-- MANAGERS TAB (CLEAN MANAGER INFO & BIGGER TROPHIES) -->
+    <!-- MANAGERS TAB -->
     <div id="page-managers" class="view-card">
       <div class="league-banner">
         <div>
@@ -1365,7 +1397,7 @@
           <select id="adminManagerTeamSelect"></select>
         </div>
 
-        <div style="background:rgba(0,229,255,0.06); padding:12px; border-radius:12px; border:1px solid rgba(0,229,255,0.2); margin-bottom:14px;">
+        <div style="background:rgba(0,229,255,0.08); padding:12px; border-radius:12px; border:1px solid rgba(0,229,255,0.3); margin-bottom:14px;">
           <div style="font-size:11px; font-weight:800; color:var(--accent); margin-bottom:10px; text-transform:uppercase;">Trophies In Showcase</div>
           
           <div class="form-group">
@@ -1384,7 +1416,7 @@
           <button class="btn btn-danger" style="flex:1;" onclick="deleteSelectedManager()">Delete Manager</button>
         </div>
 
-        <div style="margin-top:14px; border-top:1px solid rgba(255,255,255,0.08); padding-top:10px;">
+        <div style="margin-top:14px; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
           <button class="btn btn-gold" onclick="addNewManagerPrompt()">+ Add New Manager</button>
         </div>
       </div>
@@ -1400,14 +1432,14 @@
           <button class="btn" onclick="addNewTeam()">Add Club</button>
         </div>
 
-        <div class="form-group" style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 12px;">
+        <div class="form-group" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px;">
           <label>Update Existing Club Logo</label>
           <select id="adminEditLogoTeamSelect" onchange="loadLogoForSelectedTeam()" style="margin-bottom: 6px;"></select>
           <input type="text" id="adminEditTeamLogoInput" placeholder="Filename (e.g. real-madrid.png)">
           <button class="btn" onclick="saveUpdatedTeamLogo()">Save New Logo</button>
         </div>
 
-        <div class="form-group" style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 12px;">
+        <div class="form-group" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px;">
           <label>Remove Club</label>
           <select id="adminDeleteTeamSelect" style="margin-bottom: 6px;"></select>
           <button class="btn btn-danger" onclick="deleteSelectedTeam()">Delete Selected Club</button>
@@ -1434,7 +1466,7 @@
           <button class="btn" onclick="scheduleFixture()">Schedule Match</button>
         </div>
 
-        <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.08); padding-top:12px;">
+        <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.1); padding-top:12px;">
           <label>Enter Full-Time Results</label>
           <div id="adminFixtureUpdateList"></div>
         </div>
@@ -1452,7 +1484,7 @@
           <input type="number" id="setSemiAScore" placeholder="Away Goals">
         </div>
 
-        <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.08); padding-top:10px;">
+        <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
           <label>Final Match Scores</label>
           <input type="text" id="setFinalHome" placeholder="Home Team (e.g. Real Madrid)" style="margin-bottom:4px;">
           <input type="number" id="setFinalHScore" placeholder="Home Goals" style="margin-bottom:4px;">
@@ -1460,7 +1492,7 @@
           <input type="number" id="setFinalAScore" placeholder="Away Goals">
         </div>
 
-        <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.08); padding-top:10px;">
+        <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
           <label>Crown UCL Champion</label>
           <select id="setUclChampSelect" style="margin-bottom:6px;"></select>
           <button class="btn btn-gold" onclick="updateUclKnockouts()">Save & Award UCL 🏆</button>
@@ -1493,19 +1525,19 @@
           </select>
         </div>
 
-        <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.08); padding-top:10px;">
+        <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
           <label>Past Season Winners (Home Screen)</label>
           <input type="text" id="adminLastLeagueChampInput" placeholder="Last Season League Winner" style="margin-bottom:4px;">
           <input type="text" id="adminLastUclChampInput" placeholder="Last Season UCL Winner" style="margin-bottom:6px;">
           <button class="btn" onclick="updatePastChampions()">Save Past Winners</button>
         </div>
 
-        <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.08); padding-top:12px;">
+        <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.1); padding-top:12px;">
           <label style="color:var(--gold);">Finalize Season & Crown League Champion</label>
           <button class="btn btn-gold" onclick="finishCurrentSeason()">🏆 Crown #1 Team & End Season</button>
         </div>
 
-        <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.08); padding-top:10px;">
+        <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
           <label style="color:var(--loss);">Reset Match Statistics</label>
           <button class="btn btn-danger" onclick="restartLeagueData()">⚠️ Reset All Results To 0</button>
         </div>
@@ -2286,7 +2318,7 @@
 
       const adminFixList = document.getElementById('adminFixtureUpdateList');
       adminFixList.innerHTML = (state.fixtures || []).map((f, i) => `
-        <div style="background:rgba(0,0,0,0.35); padding:12px; border-radius:12px; margin-bottom:8px; border:1px solid rgba(255,255,255,0.06);">
+        <div style="background:rgba(6,12,28,0.4); backdrop-filter:blur(14px); padding:12px; border-radius:12px; margin-bottom:8px; border:1px solid var(--glass-border);">
           <div style="font-size:11px; font-weight:800; color:${f.comp === 'ucl' ? 'var(--ucl-blue)' : 'var(--accent)'}; margin-bottom:4px; text-transform:uppercase;">
             ${f.comp === 'ucl' ? '⭐ UEFA Champions League' : '🏆 League Match'}
           </div>
