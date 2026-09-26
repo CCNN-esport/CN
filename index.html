@@ -19,30 +19,34 @@
 
   <style>
     :root {
-      /* LIQUID GLASS THEME VARIABLES */
-      --glass-bg: rgba(10, 18, 38, 0.32);
-      --glass-card: rgba(8, 16, 36, 0.28);
-      --glass-border: rgba(255, 255, 255, 0.22);
-      --glass-shine: rgba(255, 255, 255, 0.18);
+      /* ULTRA-TRANSPARENT iOS LIQUID GLASS VARIABLES */
+      --glass-bg: rgba(255, 255, 255, 0.08);
+      --glass-card: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.28);
+      --glass-specular: rgba(255, 255, 255, 0.35);
+      --glass-shine: rgba(255, 255, 255, 0.16);
       --accent: #00e5ff;
-      --accent-glow: rgba(0, 229, 255, 0.45);
+      --accent-glow: rgba(0, 229, 255, 0.4);
       --ucl-blue: #3b82f6;
       --ucl-glow: rgba(59, 130, 246, 0.55);
       --gold: #ffd700;
-      --text: #f8fafc;
-      --muted: #cbd5e1;
+      --text: #ffffff;
+      --muted: rgba(240, 246, 255, 0.7);
 
       --win: #22c55e;
       --draw: #94a3b8;
       --loss: #ef4444;
-      --notplayed: #475569;
+      --notplayed: rgba(255, 255, 255, 0.2);
+
+      /* iOS Apple Spring Bezier */
+      --ios-spring: cubic-bezier(0.32, 0.72, 0, 1);
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, sans-serif;
       -webkit-tap-highlight-color: transparent;
     }
 
@@ -50,33 +54,38 @@
       background: #030712 url('theme-bg.jpg') center top / cover fixed no-repeat;
       min-height: 100vh;
       color: var(--text);
-      padding-bottom: 95px;
+      padding-bottom: 98px;
       overflow-x: hidden;
       position: relative;
     }
 
-    /* Ambient Liquid Backdrop Glow Layer */
     body::before {
       content: "";
       position: fixed;
       inset: 0;
-      background: radial-gradient(circle at 50% 10%, rgba(0, 229, 255, 0.12) 0%, rgba(3, 7, 18, 0.45) 85%);
+      background: radial-gradient(circle at 50% 8%, rgba(0, 229, 255, 0.1) 0%, rgba(3, 7, 18, 0.3) 85%);
       pointer-events: none;
       z-index: 0;
+    }
+
+    /* iOS Glass Reflex Animation */
+    @keyframes liquidRefract {
+      0% { opacity: 0; transform: translateY(12px) scale(0.985); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     header {
       position: sticky;
       top: 0;
       z-index: 50;
-      background: var(--glass-bg);
-      backdrop-filter: blur(24px) saturate(180%);
-      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(32px) saturate(210%);
+      -webkit-backdrop-filter: blur(32px) saturate(210%);
       border-bottom: 1px solid var(--glass-border);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), inset 0 1px 1px var(--glass-shine);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.25), inset 0 1px 0 var(--glass-specular);
       padding: 14px 20px;
       text-align: center;
-      position: relative;
+      transition: background 0.35s var(--ios-spring);
     }
 
     .website-name {
@@ -84,10 +93,10 @@
       font-weight: 900;
       letter-spacing: 2px;
       text-transform: uppercase;
-      background: linear-gradient(135deg, #ffffff 40%, var(--accent) 100%);
+      background: linear-gradient(180deg, #ffffff 30%, rgba(255, 255, 255, 0.65) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 16px var(--accent-glow);
+      text-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
     }
 
     .live-indicator {
@@ -114,19 +123,24 @@
       right: 16px;
       top: 50%;
       transform: translateY(-50%);
-      background: rgba(59, 130, 246, 0.25);
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      background: rgba(59, 130, 246, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.35);
       color: #fff;
       padding: 6px 12px;
-      border-radius: 12px;
+      border-radius: 14px;
       font-size: 11px;
       font-weight: 800;
       cursor: pointer;
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      box-shadow: 0 4px 16px var(--ucl-glow);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 4px 16px var(--ucl-glow), inset 0 1px 0 rgba(255, 255, 255, 0.4);
       align-items: center;
       gap: 6px;
+      transition: transform 0.25s var(--ios-spring);
+    }
+
+    .ucl-music-toggle-btn:active {
+      transform: translateY(-50%) scale(0.92);
     }
 
     .content-area {
@@ -137,35 +151,51 @@
       margin: auto;
     }
 
-    .view-card { display: none; }
+    .view-card { 
+      display: none; 
+      animation: liquidRefract 0.42s var(--ios-spring) forwards;
+    }
     .view-card.active { display: block; }
 
     #page-ucl {
       position: relative;
       background: 
-        linear-gradient(rgba(5, 11, 26, 0.65), rgba(4, 8, 20, 0.75)),
+        linear-gradient(rgba(5, 11, 26, 0.35), rgba(4, 8, 20, 0.45)),
         url('ucl-bg.jpg') center/cover no-repeat;
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      border-radius: 20px;
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
       padding: 14px;
-      box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.65), 0 12px 36px rgba(0, 0, 0, 0.4);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35), inset 0 1px 1px var(--glass-specular);
+      backdrop-filter: blur(30px) saturate(190%);
+      -webkit-backdrop-filter: blur(30px) saturate(190%);
     }
 
-    /* LIQUID GLASS SURFACE CARDS */
+    /* LIQUID GLASS ULTRA-TRANSPARENT CARD STYLING */
+    .league-banner,
+    .hero-leader-card,
+    .champion-subcard,
+    .prediction-card,
+    .table-card,
+    .legend-card,
+    .match-glass-card,
+    .manager-profile-card,
+    .trophy-room-showcase-wrap,
+    .admin-section-pane {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.03) 100%) !important;
+      backdrop-filter: blur(32px) saturate(210%) !important;
+      -webkit-backdrop-filter: blur(32px) saturate(210%) !important;
+      border: 1px solid var(--glass-border) !important;
+      box-shadow: 0 12px 34px rgba(0, 0, 0, 0.25), inset 0 1px 1px var(--glass-specular) !important;
+      transition: transform 0.3s var(--ios-spring), box-shadow 0.3s var(--ios-spring);
+    }
+
     .league-banner {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(14, 24, 52, 0.3) 100%);
-      backdrop-filter: blur(22px) saturate(160%);
-      -webkit-backdrop-filter: blur(22px) saturate(160%);
-      border: 1px solid var(--glass-border);
-      border-radius: 18px;
+      border-radius: 20px;
       padding: 14px 18px;
       margin-bottom: 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), inset 0 1px 1px var(--glass-shine);
     }
 
     .league-title-label {
@@ -177,7 +207,7 @@
       display: flex;
       align-items: center;
       gap: 5px;
-      text-shadow: 0 0 10px var(--accent-glow);
+      text-shadow: 0 0 12px var(--accent-glow);
     }
 
     .league-title-name {
@@ -190,35 +220,22 @@
     }
 
     .season-tag {
-      background: rgba(0, 229, 255, 0.16);
-      border: 1px solid rgba(0, 229, 255, 0.55);
+      background: rgba(0, 229, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.3);
       color: var(--accent);
       font-size: 11px;
       font-weight: 800;
-      padding: 5px 11px;
-      border-radius: 20px;
+      padding: 5px 12px;
+      border-radius: 22px;
       text-transform: uppercase;
-      box-shadow: 0 0 12px rgba(0, 229, 255, 0.2);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3), 0 0 10px rgba(0, 229, 255, 0.2);
     }
 
     .hero-leader-card {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(10, 20, 44, 0.35) 100%);
-      backdrop-filter: blur(24px) saturate(170%);
-      -webkit-backdrop-filter: blur(24px) saturate(170%);
-      border: 1px solid var(--glass-border);
-      border-radius: 18px;
+      border-radius: 22px;
       padding: 16px 18px;
       margin-bottom: 14px;
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4), inset 0 1px 1px var(--glass-shine);
       position: relative;
-    }
-
-    .hero-leader-card::after {
-      content: "";
-      position: absolute;
-      top: 0; right: 0; width: 90px; height: 90px;
-      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
-      pointer-events: none;
     }
 
     .hero-label {
@@ -289,21 +306,13 @@
     }
 
     .champion-subcard {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.09) 0%, rgba(10, 18, 38, 0.32) 100%);
-      backdrop-filter: blur(22px);
-      -webkit-backdrop-filter: blur(22px);
-      border: 1px solid var(--glass-border);
-      border-radius: 16px;
+      border-radius: 20px;
       padding: 14px 14px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 1px 1px var(--glass-shine);
       min-height: 110px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
     }
-
-    .champ-card-league { border-color: rgba(255, 215, 0, 0.4); }
-    .champ-card-ucl { border-color: rgba(59, 130, 246, 0.45); }
 
     .champ-sub-title {
       font-size: 11px;
@@ -331,14 +340,9 @@
     }
 
     .prediction-card {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(10, 20, 44, 0.32) 100%);
-      backdrop-filter: blur(24px) saturate(170%);
-      -webkit-backdrop-filter: blur(24px) saturate(170%);
-      border: 1px solid var(--glass-border);
-      border-radius: 18px;
+      border-radius: 22px;
       padding: 16px 14px;
       margin-bottom: 14px;
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4), inset 0 1px 1px var(--glass-shine);
     }
 
     .prediction-header {
@@ -403,7 +407,7 @@
     .graph-team-name {
       font-size: 10px;
       font-weight: 800;
-      color: #e2e8f0;
+      color: #f1f5f9;
       text-transform: uppercase;
       text-align: center;
       max-width: 60px;
@@ -415,22 +419,22 @@
     .graph-bar-track {
       width: 32px;
       height: 130px;
-      background: rgba(7, 14, 30, 0.45);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 10px;
       position: relative;
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
       overflow: hidden;
-      box-shadow: inset 0 2px 8px rgba(0,0,0,0.5);
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.3);
     }
 
     .graph-bar-fill {
       width: 100%;
-      background: linear-gradient(180deg, var(--accent) 0%, rgba(0, 150, 255, 0.8) 100%);
-      border-radius: 7px 7px 0 0;
-      transition: height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      background: linear-gradient(180deg, var(--accent) 0%, rgba(0, 150, 255, 0.75) 100%);
+      border-radius: 8px 8px 0 0;
+      transition: height 0.8s var(--ios-spring);
       position: relative;
       box-shadow: 0 0 16px var(--accent-glow);
     }
@@ -450,13 +454,8 @@
     }
 
     .table-card {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(10, 18, 38, 0.3) 100%);
-      backdrop-filter: blur(24px) saturate(170%);
-      -webkit-backdrop-filter: blur(24px) saturate(170%);
-      border: 1px solid var(--glass-border);
-      border-radius: 18px;
+      border-radius: 22px;
       padding: 12px 6px;
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4), inset 0 1px 1px var(--glass-shine);
       overflow-x: auto;
       margin-bottom: 14px;
     }
@@ -476,13 +475,13 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
       font-weight: 700;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
     }
 
     td {
       padding: 11px 6px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      color: #f1f5f9;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      color: #ffffff;
       font-weight: 600;
     }
 
@@ -513,7 +512,7 @@
       width: 26px;
       height: 26px;
       border-radius: 50%;
-      background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(15,25,48,0.6));
+      background: rgba(255, 255, 255, 0.15);
       border: 1px solid var(--glass-border);
       display: inline-flex;
       align-items: center;
@@ -523,7 +522,7 @@
       color: #fff;
       object-fit: cover;
       flex-shrink: 0;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
     }
 
     .pts-col {
@@ -555,7 +554,7 @@
     .badge-win { background: var(--win); color: #fff; box-shadow: 0 0 8px rgba(34,197,94,0.4); }
     .badge-draw { background: var(--draw); color: #fff; }
     .badge-loss { background: var(--loss); color: #fff; box-shadow: 0 0 8px rgba(239,68,68,0.4); }
-    .badge-unplayed { background: transparent; border: 2px solid rgba(255,255,255,0.25); }
+    .badge-unplayed { background: transparent; border: 2px solid rgba(255,255,255,0.3); }
 
     .status-badge svg {
       width: 10px;
@@ -570,18 +569,13 @@
     .legend-card {
       margin-top: 14px;
       padding: 14px 18px;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(10, 18, 38, 0.28) 100%);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--glass-border);
-      border-radius: 16px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 1px 1px var(--glass-shine);
+      border-radius: 20px;
     }
 
     .legend-heading {
       font-size: 14px;
       font-weight: 700;
-      color: #e2e8f0;
+      color: #f1f5f9;
       margin-bottom: 12px;
     }
 
@@ -590,7 +584,7 @@
       align-items: center;
       gap: 12px;
       font-size: 14px;
-      color: #cbd5e1;
+      color: #e2e8f0;
       font-weight: 500;
       margin-bottom: 10px;
     }
@@ -607,14 +601,14 @@
 
     .match-toggle-bar {
       display: flex;
-      background: rgba(8, 16, 36, 0.35);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(24px) saturate(200%);
+      -webkit-backdrop-filter: blur(24px) saturate(200%);
       border: 1px solid var(--glass-border);
-      border-radius: 14px;
+      border-radius: 16px;
       padding: 4px;
       margin-bottom: 16px;
-      box-shadow: inset 0 1px 1px var(--glass-shine);
+      box-shadow: inset 0 1px 1px var(--glass-specular);
     }
 
     .match-toggle-btn {
@@ -625,17 +619,17 @@
       font-size: 12px;
       font-weight: 800;
       padding: 8px;
-      border-radius: 10px;
+      border-radius: 12px;
       cursor: pointer;
       text-transform: uppercase;
-      transition: all 0.25s ease;
+      transition: all 0.28s var(--ios-spring);
     }
 
     .match-toggle-btn.active {
-      background: rgba(0, 229, 255, 0.2);
-      color: var(--accent);
-      border: 1px solid rgba(0, 229, 255, 0.4);
-      box-shadow: 0 0 12px var(--accent-glow);
+      background: rgba(255, 255, 255, 0.18);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15), inset 0 1px 1px var(--glass-specular);
     }
 
     .match-date-header {
@@ -662,26 +656,21 @@
     .comp-league {
       background: rgba(0, 229, 255, 0.18);
       color: var(--accent);
-      border: 1px solid var(--accent);
-      box-shadow: 0 0 8px rgba(0, 229, 255, 0.2);
+      border: 1px solid rgba(0, 229, 255, 0.4);
+      box-shadow: 0 0 8px rgba(0, 229, 255, 0.25);
     }
 
     .comp-ucl {
-      background: rgba(59, 130, 246, 0.22);
+      background: rgba(59, 130, 246, 0.24);
       color: var(--ucl-blue);
-      border: 1px solid var(--ucl-blue);
+      border: 1px solid rgba(59, 130, 246, 0.5);
       box-shadow: 0 0 8px var(--ucl-glow);
     }
 
     .match-glass-card {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.09) 0%, rgba(8, 16, 36, 0.3) 100%);
-      backdrop-filter: blur(22px);
-      -webkit-backdrop-filter: blur(22px);
-      border: 1px solid var(--glass-border);
-      border-radius: 16px;
+      border-radius: 20px;
       padding: 12px 16px;
       margin-bottom: 10px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 1px 1px var(--glass-shine);
       display: flex;
       flex-direction: column;
       gap: 8px;
@@ -701,26 +690,31 @@
       gap: 10px;
     }
 
-    /* CLEAN SCORE DISPLAY */
     .score-box {
       font-size: 16px;
       font-weight: 900;
       color: var(--text);
       min-width: 24px;
       text-align: right;
+      transition: transform 0.2s var(--ios-spring);
+    }
+
+    .score-box:active {
+      transform: scale(0.9);
     }
 
     .score-box.winner { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
 
     .vs-pill {
-      background: rgba(0, 229, 255, 0.12);
-      border: 1px solid rgba(0, 229, 255, 0.35);
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.25);
       color: var(--accent);
       font-size: 11px;
       font-weight: 800;
       padding: 3px 8px;
-      border-radius: 6px;
+      border-radius: 8px;
       align-self: center;
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3);
     }
 
     .ucl-knockout-wrapper {
@@ -745,12 +739,12 @@
     }
 
     .bracket-match {
-      background: rgba(14, 22, 42, 0.45);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(59, 130, 246, 0.6);
-      box-shadow: 0 6px 24px var(--ucl-glow), inset 0 1px 1px var(--glass-shine);
-      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid rgba(59, 130, 246, 0.5);
+      box-shadow: 0 8px 24px var(--ucl-glow), inset 0 1px 1px var(--glass-specular);
+      border-radius: 18px;
       padding: 10px 14px;
       position: relative;
     }
@@ -764,7 +758,7 @@
       font-size: 13px;
     }
 
-    .bracket-row:first-child { border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+    .bracket-row:first-child { border-bottom: 1px solid rgba(255, 255, 255, 0.12); }
     .bracket-score { font-size: 15px; font-weight: 900; color: #fff; }
 
     .bracket-connector {
@@ -777,14 +771,14 @@
 
     .ucl-trophy-podium {
       text-align: center;
-      padding: 14px 14px 16px 14px;
-      background: radial-gradient(circle at center, rgba(59, 130, 246, 0.25) 0%, rgba(8, 16, 36, 0.4) 75%);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
+      padding: 16px 14px 18px 14px;
+      background: radial-gradient(circle at center, rgba(59, 130, 246, 0.2) 0%, rgba(255, 255, 255, 0.05) 75%);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
       border: 1px solid rgba(59, 130, 246, 0.6);
-      border-radius: 18px;
+      border-radius: 24px;
       margin-top: 16px;
-      box-shadow: 0 10px 30px var(--ucl-glow), inset 0 1px 1px var(--glass-shine);
+      box-shadow: 0 12px 36px var(--ucl-glow), inset 0 1px 1px var(--glass-specular);
     }
 
     .ucl-trophy-3d {
@@ -811,33 +805,28 @@
       display: inline-block;
       margin-top: 6px;
       padding: 4px 18px;
-      border-radius: 20px;
+      border-radius: 22px;
       font-family: 'Montserrat', 'Cinzel', serif;
       font-weight: 900;
       font-size: 10px;
       letter-spacing: 3px;
       text-transform: uppercase;
-      background: linear-gradient(135deg, rgba(11, 21, 54, 0.6) 0%, rgba(30, 58, 138, 0.6) 100%);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(30, 58, 138, 0.4) 100%);
       color: #ffd700;
       border: 1.5px solid rgba(255, 215, 0, 0.75);
-      box-shadow: 0 0 16px rgba(255, 215, 0, 0.45), inset 0 0 8px rgba(0, 229, 255, 0.35);
+      box-shadow: 0 0 16px rgba(255, 215, 0, 0.45), inset 0 0 8px rgba(255, 255, 255, 0.4);
       text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
     }
 
-    /* MANAGERS PROFILE CARD (LIQUID GLASS SETUP) */
+    /* MANAGERS PROFILE CARD */
     .manager-showcase-block {
       margin-bottom: 20px;
     }
 
     .manager-profile-card {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(10, 18, 38, 0.3) 100%);
-      backdrop-filter: blur(24px) saturate(170%);
-      -webkit-backdrop-filter: blur(24px) saturate(170%);
-      border: 1px solid var(--glass-border);
-      border-radius: 18px;
+      border-radius: 20px;
       padding: 14px 18px;
       margin-bottom: 8px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), inset 0 1px 1px var(--glass-shine);
     }
 
     .manager-info-grid {
@@ -878,18 +867,13 @@
       text-shadow: 0 0 8px var(--accent-glow);
     }
 
-    /* COMPACT SHOWCASE ROOM (LIQUID GLASS) */
+    /* COMPACT SHOWCASE ROOM */
     .trophy-room-showcase-wrap {
       position: relative;
       width: 100%;
       min-height: 104px;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(6, 12, 28, 0.32) 100%);
-      backdrop-filter: blur(24px) saturate(170%);
-      -webkit-backdrop-filter: blur(24px) saturate(170%);
-      border: 1px solid var(--glass-border);
-      border-radius: 18px;
+      border-radius: 20px;
       overflow-x: auto;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 1px 1px var(--glass-shine);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -910,6 +894,11 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+      transition: transform 0.3s var(--ios-spring);
+    }
+
+    .trophy-display-unit:active {
+      transform: scale(0.94);
     }
 
     .trophy-image-item {
@@ -917,9 +906,8 @@
       width: auto;
       max-width: 72px;
       object-fit: contain;
-      filter: drop-shadow(0 0 14px rgba(0, 229, 255, 0.6));
+      filter: drop-shadow(0 0 16px rgba(0, 229, 255, 0.65));
       display: block;
-      transition: transform 0.2s ease;
     }
 
     .trophy-count-clean {
@@ -939,10 +927,10 @@
       text-transform: uppercase;
     }
 
-    /* REORGANIZED ADMIN HUB (LIQUID GLASS) */
+    /* REORGANIZED ADMIN HUB */
     .admin-subnav-pills {
       display: flex;
-      gap: 6px;
+      gap: 8px;
       overflow-x: auto;
       padding-bottom: 10px;
       margin-bottom: 14px;
@@ -951,38 +939,38 @@
     .admin-subnav-pills::-webkit-scrollbar { display: none; }
 
     .admin-pill-btn {
-      background: rgba(14, 24, 52, 0.35);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--glass-border);
       color: var(--muted);
-      padding: 8px 14px;
-      border-radius: 14px;
+      padding: 9px 15px;
+      border-radius: 16px;
       font-size: 11px;
       font-weight: 800;
       white-space: nowrap;
       cursor: pointer;
       text-transform: uppercase;
-      transition: all 0.2s ease;
-      box-shadow: inset 0 1px 1px var(--glass-shine);
+      transition: all 0.28s var(--ios-spring);
+      box-shadow: inset 0 1px 1px var(--glass-specular);
+    }
+
+    .admin-pill-btn:active {
+      transform: scale(0.94);
     }
 
     .admin-pill-btn.active {
-      background: rgba(0, 229, 255, 0.25);
-      border-color: var(--accent);
+      background: rgba(255, 255, 255, 0.22);
+      border-color: rgba(255, 255, 255, 0.5);
       color: #fff;
-      box-shadow: 0 0 16px var(--accent-glow);
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.2), inset 0 1px 1px var(--glass-specular);
     }
 
     .admin-section-pane {
       display: none;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(8, 16, 36, 0.35) 100%);
-      backdrop-filter: blur(24px) saturate(170%);
-      -webkit-backdrop-filter: blur(24px) saturate(170%);
-      border: 1px solid var(--glass-border);
-      border-radius: 18px;
+      border-radius: 22px;
       padding: 16px;
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4), inset 0 1px 1px var(--glass-shine);
+      animation: liquidRefract 0.35s var(--ios-spring) forwards;
     }
     .admin-section-pane.active { display: block; }
 
@@ -996,7 +984,7 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
       padding-bottom: 8px;
       text-shadow: 0 0 10px var(--accent-glow);
     }
@@ -1013,53 +1001,78 @@
 
     input, select {
       width: 100%;
-      padding: 10px 12px;
-      background: rgba(6, 12, 28, 0.4);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+      padding: 11px 13px;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--glass-border);
       color: #fff;
-      border-radius: 10px;
+      border-radius: 14px;
       font-size: 13px;
       outline: none;
-      box-shadow: inset 0 1px 1px var(--glass-shine);
+      box-shadow: inset 0 1px 1px var(--glass-specular);
+      transition: border-color 0.25s var(--ios-spring), background 0.25s var(--ios-spring);
+    }
+
+    input:focus, select:focus {
+      border-color: rgba(255, 255, 255, 0.6);
+      background: rgba(255, 255, 255, 0.12);
     }
 
     .btn {
       width: 100%;
-      padding: 10px 14px;
-      background: var(--accent);
-      color: #03060d;
-      border: none;
-      border-radius: 10px;
+      padding: 11px 14px;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 14px;
       font-weight: 800;
       font-size: 12px;
       text-transform: uppercase;
       cursor: pointer;
       margin-top: 6px;
-      box-shadow: 0 0 14px var(--accent-glow);
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.2), inset 0 1px 1px var(--glass-specular);
+      transition: transform 0.22s var(--ios-spring), background 0.22s var(--ios-spring);
     }
 
-    .btn-danger { background: var(--loss); color: #fff; box-shadow: 0 0 14px rgba(239, 68, 68, 0.4); }
-    .btn-gold { background: var(--gold); color: #03060d; box-shadow: 0 0 14px rgba(255, 215, 0, 0.45); }
+    .btn:active {
+      transform: scale(0.96);
+    }
 
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.25);
+      border-color: rgba(239, 68, 68, 0.5);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(239, 68, 68, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-gold {
+      background: rgba(255, 215, 0, 0.22);
+      border-color: rgba(255, 215, 0, 0.5);
+      color: #ffd700;
+      box-shadow: 0 4px 16px rgba(255, 215, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    }
+
+    /* iOS BOTTOM NAVIGATION BAR */
     .bottom-nav {
       position: fixed;
       bottom: 12px;
-      left: 10px;
-      right: 10px;
+      left: 12px;
+      right: 12px;
       max-width: 540px;
       margin: auto;
-      background: rgba(10, 18, 38, 0.35);
-      backdrop-filter: blur(28px) saturate(180%);
-      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      background: rgba(255, 255, 255, 0.09);
+      backdrop-filter: blur(34px) saturate(210%);
+      -webkit-backdrop-filter: blur(34px) saturate(210%);
       border: 1px solid var(--glass-border);
-      border-radius: 26px;
+      border-radius: 28px;
       padding: 8px 6px;
       display: flex;
       justify-content: space-around;
       align-items: center;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45), inset 0 1px 1px var(--glass-shine);
+      box-shadow: 0 14px 44px rgba(0, 0, 0, 0.3), inset 0 1px 1px var(--glass-specular);
       z-index: 100;
     }
 
@@ -1076,28 +1089,33 @@
       font-size: 9px;
       font-weight: 700;
       text-transform: uppercase;
-      padding: 6px 8px;
-      border-radius: 14px;
-      transition: all 0.25s ease;
+      padding: 6px 10px;
+      border-radius: 16px;
+      transition: all 0.3s var(--ios-spring);
     }
 
     .nav-item svg {
       width: 20px;
       height: 20px;
       stroke: var(--muted);
-      transition: all 0.25s ease;
+      transition: transform 0.3s var(--ios-spring), stroke 0.3s var(--ios-spring);
+    }
+
+    .nav-item:active {
+      transform: scale(0.88);
     }
 
     .nav-item.active {
-      color: var(--accent);
-      background: rgba(0, 229, 255, 0.2);
-      border: 1px solid rgba(0, 229, 255, 0.4);
-      box-shadow: 0 0 14px var(--accent-glow);
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15), inset 0 1px 1px var(--glass-specular);
     }
 
     .nav-item.active svg {
-      stroke: var(--accent);
-      filter: drop-shadow(0 0 8px var(--accent));
+      stroke: #ffffff;
+      transform: scale(1.08);
+      filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
     }
   </style>
 </head>
@@ -1253,7 +1271,7 @@
           <div class="league-title-label" style="color:var(--ucl-blue);">⭐ UEFA CHAMPIONS LEAGUE</div>
           <div class="league-title-name">UCL Group Stage</div>
         </div>
-        <div class="season-tag" style="border-color:var(--ucl-blue); color:var(--ucl-blue);">Group A</div>
+        <div class="season-tag" style="border-color:rgba(59, 130, 246, 0.5); color:var(--ucl-blue);">Group A</div>
       </div>
 
       <div class="table-card">
@@ -1361,7 +1379,7 @@
           <div class="league-title-label">🔒 CCNN CONTROL HUB</div>
           <div class="league-title-name">Admin Settings</div>
         </div>
-        <button onclick="lockAdmin()" style="background:transparent; border:1px solid var(--loss); color:var(--loss); padding:4px 8px; border-radius:6px; font-size:10px; font-weight:800; cursor:pointer;">LOCK 🔒</button>
+        <button onclick="lockAdmin()" style="background:rgba(239, 68, 68, 0.2); border:1px solid rgba(239, 68, 68, 0.5); color:#fff; padding:4px 10px; border-radius:12px; font-size:10px; font-weight:800; cursor:pointer;">LOCK 🔒</button>
       </div>
 
       <!-- Quick category sub-navigation -->
@@ -1397,7 +1415,7 @@
           <select id="adminManagerTeamSelect"></select>
         </div>
 
-        <div style="background:rgba(0,229,255,0.08); padding:12px; border-radius:12px; border:1px solid rgba(0,229,255,0.3); margin-bottom:14px;">
+        <div style="background:rgba(255, 255, 255, 0.08); padding:12px; border-radius:16px; border:1px solid var(--glass-border); margin-bottom:14px; box-shadow: inset 0 1px 1px var(--glass-specular);">
           <div style="font-size:11px; font-weight:800; color:var(--accent); margin-bottom:10px; text-transform:uppercase;">Trophies In Showcase</div>
           
           <div class="form-group">
@@ -1412,11 +1430,11 @@
         </div>
 
         <div style="display:flex; gap:8px;">
-          <button class="btn" style="flex:1;" onclick="saveSelectedManager()">Save Manager Changes</button>
+          <button class="btn" style="flex:1;" onclick="saveSelectedManager()">Save Changes</button>
           <button class="btn btn-danger" style="flex:1;" onclick="deleteSelectedManager()">Delete Manager</button>
         </div>
 
-        <div style="margin-top:14px; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
+        <div style="margin-top:14px; border-top:1px solid rgba(255,255,255,0.12); padding-top:10px;">
           <button class="btn btn-gold" onclick="addNewManagerPrompt()">+ Add New Manager</button>
         </div>
       </div>
@@ -1432,14 +1450,14 @@
           <button class="btn" onclick="addNewTeam()">Add Club</button>
         </div>
 
-        <div class="form-group" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px;">
+        <div class="form-group" style="border-top: 1px solid rgba(255,255,255,0.12); padding-top: 12px;">
           <label>Update Existing Club Logo</label>
           <select id="adminEditLogoTeamSelect" onchange="loadLogoForSelectedTeam()" style="margin-bottom: 6px;"></select>
           <input type="text" id="adminEditTeamLogoInput" placeholder="Filename (e.g. real-madrid.png)">
           <button class="btn" onclick="saveUpdatedTeamLogo()">Save New Logo</button>
         </div>
 
-        <div class="form-group" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px;">
+        <div class="form-group" style="border-top: 1px solid rgba(255,255,255,0.12); padding-top: 12px;">
           <label>Remove Club</label>
           <select id="adminDeleteTeamSelect" style="margin-bottom: 6px;"></select>
           <button class="btn btn-danger" onclick="deleteSelectedTeam()">Delete Selected Club</button>
@@ -1466,7 +1484,7 @@
           <button class="btn" onclick="scheduleFixture()">Schedule Match</button>
         </div>
 
-        <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.1); padding-top:12px;">
+        <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.12); padding-top:12px;">
           <label>Enter Full-Time Results</label>
           <div id="adminFixtureUpdateList"></div>
         </div>
@@ -1484,7 +1502,7 @@
           <input type="number" id="setSemiAScore" placeholder="Away Goals">
         </div>
 
-        <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
+        <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.12); padding-top:10px;">
           <label>Final Match Scores</label>
           <input type="text" id="setFinalHome" placeholder="Home Team (e.g. Real Madrid)" style="margin-bottom:4px;">
           <input type="number" id="setFinalHScore" placeholder="Home Goals" style="margin-bottom:4px;">
@@ -1492,7 +1510,7 @@
           <input type="number" id="setFinalAScore" placeholder="Away Goals">
         </div>
 
-        <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
+        <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.12); padding-top:10px;">
           <label>Crown UCL Champion</label>
           <select id="setUclChampSelect" style="margin-bottom:6px;"></select>
           <button class="btn btn-gold" onclick="updateUclKnockouts()">Save & Award UCL 🏆</button>
@@ -1525,19 +1543,19 @@
           </select>
         </div>
 
-        <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
+        <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.12); padding-top:10px;">
           <label>Past Season Winners (Home Screen)</label>
           <input type="text" id="adminLastLeagueChampInput" placeholder="Last Season League Winner" style="margin-bottom:4px;">
           <input type="text" id="adminLastUclChampInput" placeholder="Last Season UCL Winner" style="margin-bottom:6px;">
           <button class="btn" onclick="updatePastChampions()">Save Past Winners</button>
         </div>
 
-        <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.1); padding-top:12px;">
+        <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.12); padding-top:12px;">
           <label style="color:var(--gold);">Finalize Season & Crown League Champion</label>
           <button class="btn btn-gold" onclick="finishCurrentSeason()">🏆 Crown #1 Team & End Season</button>
         </div>
 
-        <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
+        <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.12); padding-top:10px;">
           <label style="color:var(--loss);">Reset Match Statistics</label>
           <button class="btn btn-danger" onclick="restartLeagueData()">⚠️ Reset All Results To 0</button>
         </div>
@@ -1907,7 +1925,6 @@
         time: f.time
       });
 
-      // Remove from upcoming fixtures
       state.fixtures.splice(fixIndex, 1);
       saveState();
     }
@@ -2167,7 +2184,7 @@
         document.getElementById('uclWinnerName').textContent = state.ucl.champion || 'TBD';
       }
 
-      // FIXTURES (ORIGINAL CLEAN DESIGN - TAP SCORE/DASH TO RECORD IF ADMIN)
+      // FIXTURES
       const fixContainer = document.getElementById('sub-fixtures');
       fixContainer.innerHTML = (state.fixtures || []).map((f, i) => {
         const isUcl = f.comp === 'ucl';
@@ -2180,12 +2197,12 @@
             <span>${f.time}</span>
             <span class="comp-pill ${isUcl ? 'comp-ucl' : 'comp-league'}">${isUcl ? 'UCL Match' : 'League Match'}</span>
           </div>
-          <div class="match-glass-card" style="${isUcl ? 'border-color:rgba(59,130,246,0.4);' : ''}">
+          <div class="match-glass-card" style="${isUcl ? 'border-color:rgba(59,130,246,0.5);' : ''}">
             <div class="team-row">
               <div class="team-info">${renderTeamBadge(hTeam, isUcl ? 'border-color:var(--ucl-blue);' : '')}<span>${hTeam.name}</span></div>
               <span class="score-box" ${clickAction}>-</span>
             </div>
-            <span class="vs-pill" style="${isUcl ? 'color:var(--ucl-blue); border-color:var(--ucl-blue); background:rgba(59,130,246,0.1);' : ''}">VS</span>
+            <span class="vs-pill" style="${isUcl ? 'color:var(--ucl-blue); border-color:var(--ucl-blue); background:rgba(59,130,246,0.15);' : ''}">VS</span>
             <div class="team-row">
               <div class="team-info">${renderTeamBadge(aTeam, isUcl ? 'border-color:var(--ucl-blue);' : '')}<span>${aTeam.name}</span></div>
               <span class="score-box" ${clickAction}>-</span>
@@ -2194,7 +2211,7 @@
         `;
       }).join('') || '<p style="text-align:center; color:var(--muted); padding:20px;">No upcoming fixtures.</p>';
 
-      // RESULTS (ORIGINAL CLEAN DESIGN - TAP NUMBER TO EDIT IF ADMIN)
+      // RESULTS
       const resContainer = document.getElementById('sub-results');
       resContainer.innerHTML = (state.results || []).map((r, i) => {
         const isUcl = r.comp === 'ucl';
@@ -2220,7 +2237,7 @@
         `;
       }).join('') || '<p style="text-align:center; color:var(--muted); padding:20px;">No results recorded.</p>';
 
-      // RENDER MANAGERS TAB WITH BIGGER TROPHIES & COMPACT SHOWCASE
+      // RENDER MANAGERS TAB
       const managersList = document.getElementById('managersListContainer');
       managersList.innerHTML = (state.managers || []).map((mgr) => {
         const mgrTeam = getTeam(mgr.teamId);
@@ -2228,7 +2245,6 @@
 
         let trophiesHtml = '';
 
-        // 1. UCL Trophy (Larger size)
         if (trophies.ucl && trophies.ucl > 0) {
           trophiesHtml += `
             <div class="trophy-display-unit">
@@ -2238,7 +2254,6 @@
           `;
         }
 
-        // 2. Super League Trophy (Larger size)
         if (trophies.league && trophies.league > 0) {
           trophiesHtml += `
             <div class="trophy-display-unit">
@@ -2273,7 +2288,6 @@
               </div>
             </div>
 
-            <!-- Compact Showcase Room Frame with Sized-Up Trophies -->
             <div class="trophy-room-showcase-wrap">
               <div class="trophies-row-container">
                 ${trophiesHtml}
@@ -2318,7 +2332,7 @@
 
       const adminFixList = document.getElementById('adminFixtureUpdateList');
       adminFixList.innerHTML = (state.fixtures || []).map((f, i) => `
-        <div style="background:rgba(6,12,28,0.4); backdrop-filter:blur(14px); padding:12px; border-radius:12px; margin-bottom:8px; border:1px solid var(--glass-border);">
+        <div style="background:rgba(255,255,255,0.06); backdrop-filter:blur(20px); padding:12px; border-radius:14px; margin-bottom:8px; border:1px solid var(--glass-border); box-shadow: inset 0 1px 1px var(--glass-specular);">
           <div style="font-size:11px; font-weight:800; color:${f.comp === 'ucl' ? 'var(--ucl-blue)' : 'var(--accent)'}; margin-bottom:4px; text-transform:uppercase;">
             ${f.comp === 'ucl' ? '⭐ UEFA Champions League' : '🏆 League Match'}
           </div>
@@ -2327,7 +2341,7 @@
             <input type="number" id="hScore_${i}" placeholder="Home" style="width:75px;">
             <span>-</span>
             <input type="number" id="aScore_${i}" placeholder="Away" style="width:75px;">
-            <button class="btn" style="margin:0; flex:1;" onclick="submitMatchScore(${i})">Submit Result</button>
+            <button class="btn" style="margin:0; flex:1;" onclick="submitMatchScore(${i})">Submit</button>
           </div>
         </div>
       `).join('') || '<div style="color:var(--muted); font-size:12px;">No matches awaiting score entry.</div>';
