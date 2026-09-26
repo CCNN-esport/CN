@@ -686,15 +686,57 @@
       gap: 10px;
     }
 
+    /* DIRECT IN-PLACE SCORE EDITING STYLES */
     .score-box {
       font-size: 16px;
       font-weight: 900;
       color: var(--text);
-      min-width: 24px;
+      min-width: 30px;
       text-align: right;
+      padding: 3px 6px;
+      border-radius: 6px;
+      transition: all 0.2s ease;
     }
 
     .score-box.winner { color: var(--accent); }
+
+    .score-box.admin-editable-score {
+      cursor: pointer;
+      background: rgba(0, 229, 255, 0.08);
+      border: 1px dashed rgba(0, 229, 255, 0.4);
+      color: var(--accent);
+    }
+
+    .score-box.admin-editable-score:hover {
+      background: rgba(0, 229, 255, 0.22);
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .match-action-hint {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 4px;
+      padding-top: 4px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .quick-score-btn {
+      background: rgba(0, 229, 255, 0.15);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+
+    .quick-score-btn:hover {
+      background: var(--accent);
+      color: #020612;
+    }
 
     .vs-pill {
       background: rgba(0, 229, 255, 0.1);
@@ -857,7 +899,7 @@
       color: var(--accent);
     }
 
-    /* COMPACT SHOWCASE ROOM WITH SLIGHTLY LARGER TROPHIES */
+    /* COMPACT SHOWCASE ROOM WITH SIZED-UP TROPHIES */
     .trophy-room-showcase-wrap {
       position: relative;
       width: 100%;
@@ -889,7 +931,6 @@
       flex-shrink: 0;
     }
 
-    /* INCREASED TROPHY SIZE */
     .trophy-image-item {
       height: 60px;
       width: auto;
@@ -900,7 +941,6 @@
       transition: transform 0.2s ease;
     }
 
-    /* CLEAN PLAIN WHITE COUNT TAG */
     .trophy-count-clean {
       font-size: 13px;
       font-weight: 900;
@@ -1197,7 +1237,7 @@
       </div>
     </div>
 
-    <!-- MATCHES TAB -->
+    <!-- MATCHES TAB (DIRECT SCORE ENTRY FOR UNLOCKED ADMINS) -->
     <div id="page-fixtures" class="view-card">
       <div class="league-banner">
         <div>
@@ -1671,7 +1711,6 @@
           }
         }
 
-        // Backward compatibility migration for multiple trophy counters
         state.managers.forEach((m) => {
           if (!m.trophies) {
             m.trophies = {
@@ -1821,6 +1860,7 @@
       isAdminUnlocked = false;
       localStorage.removeItem('ccnn_admin_logged_in');
       alert("Admin locked!");
+      renderAll();
       switchTab('home');
     }
 
@@ -1839,6 +1879,82 @@
 
     function getTeam(id) {
       return state.teams.find(t => t.id === id) || { name: 'Unknown Club', logo: '' };
+    }
+
+    // DIRECT MATCHES TAB SCORE ENTRY (ADMIN-ONLY)
+    function promptDirectFixtureScore(fixIndex) {
+      if (!isAdminUnlocked) {
+        alert("🔒 Admin access required to record scores!");
+        return;
+      }
+
+      const f = state.fixtures[fixIndex];
+      if (!f) return;
+
+      const hTeam = getTeam(f.homeId);
+      const aTeam = getTeam(f.awayId);
+
+      const hVal = prompt(`Enter goals scored by ${hTeam.name}:`, "0");
+      if (hVal === null) return;
+
+      const aVal = prompt(`Enter goals scored by ${aTeam.name}:`, "0");
+      if (aVal === null) return;
+
+      const hScore = parseInt(hVal);
+      const aScore = parseInt(aVal);
+
+      if (isNaN(hScore) || isNaN(aScore) || hScore < 0 || aScore < 0) {
+        alert("Please enter valid positive numbers for goals.");
+        return;
+      }
+
+      if (!state.results) state.results = [];
+      state.results.push({
+        id: Date.now().toString(),
+        comp: f.comp,
+        homeId: f.homeId,
+        awayId: f.awayId,
+        hScore: hScore,
+        aScore: aScore,
+        time: f.time
+      });
+
+      // Remove from upcoming fixtures
+      state.fixtures.splice(fixIndex, 1);
+      saveState();
+      alert(`Score submitted: ${hTeam.name} ${hScore} - ${aScore} ${aTeam.name}. Standings updated!`);
+    }
+
+    function promptDirectResultEdit(resIndex) {
+      if (!isAdminUnlocked) {
+        alert("🔒 Admin access required to edit full-time scores!");
+        return;
+      }
+
+      const r = state.results[resIndex];
+      if (!r) return;
+
+      const hTeam = getTeam(r.homeId);
+      const aTeam = getTeam(r.awayId);
+
+      const hVal = prompt(`Edit goals for ${hTeam.name}:`, r.hScore);
+      if (hVal === null) return;
+
+      const aVal = prompt(`Edit goals for ${aTeam.name}:`, r.aScore);
+      if (aVal === null) return;
+
+      const hScore = parseInt(hVal);
+      const aScore = parseInt(aVal);
+
+      if (isNaN(hScore) || isNaN(aScore) || hScore < 0 || aScore < 0) {
+        alert("Please enter valid numbers.");
+        return;
+      }
+
+      r.hScore = hScore;
+      r.aScore = aScore;
+      saveState();
+      alert(`Result updated: ${hTeam.name} ${hScore} - ${aScore} ${aTeam.name}. Table recalculated!`);
     }
 
     // CHRONOLOGICAL MATCH SEQUENCE ENGINE
@@ -2068,44 +2184,70 @@
         document.getElementById('uclWinnerName').textContent = state.ucl.champion || 'TBD';
       }
 
-      // Fixtures
+      // FIXTURES (WITH CLICK-TO-EDIT FOR ADMINS)
       const fixContainer = document.getElementById('sub-fixtures');
-      fixContainer.innerHTML = (state.fixtures || []).map(f => {
+      fixContainer.innerHTML = (state.fixtures || []).map((f, i) => {
         const isUcl = f.comp === 'ucl';
         const hTeam = getTeam(f.homeId);
         const aTeam = getTeam(f.awayId);
+        const editableClass = isAdminUnlocked ? 'admin-editable-score' : '';
+        const clickHandler = isAdminUnlocked ? `onclick="promptDirectFixtureScore(${i})"` : '';
+        const adminBtn = isAdminUnlocked 
+          ? `<div class="match-action-hint"><span style="font-size:9.5px; color:var(--accent); font-weight:800;">ADMIN UNLOCKED</span><button class="quick-score-btn" onclick="promptDirectFixtureScore(${i})">Enter Score ✎</button></div>` 
+          : '';
+
         return `
           <div class="match-date-header">
             <span>${f.time}</span>
             <span class="comp-pill ${isUcl ? 'comp-ucl' : 'comp-league'}">${isUcl ? 'UCL Match' : 'League Match'}</span>
           </div>
           <div class="match-glass-card" style="${isUcl ? 'border-color:rgba(59,130,246,0.4);' : ''}">
-            <div class="team-row"><div class="team-info">${renderTeamBadge(hTeam, isUcl ? 'border-color:var(--ucl-blue);' : '')}<span>${hTeam.name}</span></div><span class="score-box">-</span></div>
+            <div class="team-row">
+              <div class="team-info">${renderTeamBadge(hTeam, isUcl ? 'border-color:var(--ucl-blue);' : '')}<span>${hTeam.name}</span></div>
+              <span class="score-box ${editableClass}" ${clickHandler} title="${isAdminUnlocked ? 'Click to record score' : ''}">-</span>
+            </div>
             <span class="vs-pill" style="${isUcl ? 'color:var(--ucl-blue); border-color:var(--ucl-blue); background:rgba(59,130,246,0.1);' : ''}">VS</span>
-            <div class="team-row"><div class="team-info">${renderTeamBadge(aTeam, isUcl ? 'border-color:var(--ucl-blue);' : '')}<span>${aTeam.name}</span></div><span class="score-box">-</span></div>
+            <div class="team-row">
+              <div class="team-info">${renderTeamBadge(aTeam, isUcl ? 'border-color:var(--ucl-blue);' : '')}<span>${aTeam.name}</span></div>
+              <span class="score-box ${editableClass}" ${clickHandler} title="${isAdminUnlocked ? 'Click to record score' : ''}">-</span>
+            </div>
+            ${adminBtn}
           </div>
         `;
       }).join('') || '<p style="text-align:center; color:var(--muted); padding:20px;">No upcoming fixtures.</p>';
 
-      // Results
+      // RESULTS (WITH CLICK-TO-EDIT NUMBERS FOR ADMINS)
       const resContainer = document.getElementById('sub-results');
-      resContainer.innerHTML = (state.results || []).map(r => {
+      resContainer.innerHTML = (state.results || []).map((r, i) => {
         const isUcl = r.comp === 'ucl';
         const hTeam = getTeam(r.homeId);
         const aTeam = getTeam(r.awayId);
+        const editableClass = isAdminUnlocked ? 'admin-editable-score' : '';
+        const clickHandler = isAdminUnlocked ? `onclick="promptDirectResultEdit(${i})"` : '';
+        const adminBtn = isAdminUnlocked 
+          ? `<div class="match-action-hint"><span style="font-size:9.5px; color:var(--muted);">Tap score to modify</span><button class="quick-score-btn" onclick="promptDirectResultEdit(${i})">Edit ✎</button></div>` 
+          : '';
+
         return `
           <div class="match-date-header">
             <span style="color:var(--win); font-weight:800; letter-spacing:0.5px;">FULL TIME</span>
             <span class="comp-pill ${isUcl ? 'comp-ucl' : 'comp-league'}">${isUcl ? 'UCL' : 'League'}</span>
           </div>
           <div class="match-glass-card">
-            <div class="team-row"><div class="team-info">${renderTeamBadge(hTeam)}<span>${hTeam.name}</span></div><span class="score-box ${r.hScore > r.aScore ? 'winner' : ''}">${r.hScore}</span></div>
-            <div class="team-row"><div class="team-info">${renderTeamBadge(aTeam)}<span>${aTeam.name}</span></div><span class="score-box ${r.aScore > r.hScore ? 'winner' : ''}">${r.aScore}</span></div>
+            <div class="team-row">
+              <div class="team-info">${renderTeamBadge(hTeam)}<span>${hTeam.name}</span></div>
+              <span class="score-box ${editableClass} ${r.hScore > r.aScore ? 'winner' : ''}" ${clickHandler} title="${isAdminUnlocked ? 'Click to edit' : ''}">${r.hScore}</span>
+            </div>
+            <div class="team-row">
+              <div class="team-info">${renderTeamBadge(aTeam)}<span>${aTeam.name}</span></div>
+              <span class="score-box ${editableClass} ${r.aScore > r.hScore ? 'winner' : ''}" ${clickHandler} title="${isAdminUnlocked ? 'Click to edit' : ''}">${r.aScore}</span>
+            </div>
+            ${adminBtn}
           </div>
         `;
       }).join('') || '<p style="text-align:center; color:var(--muted); padding:20px;">No results recorded.</p>';
 
-      // RENDER MANAGERS TAB WITH BIGGER TROPHIES & USER-FRIENDLY SHOWCASE
+      // RENDER MANAGERS TAB WITH BIGGER TROPHIES & COMPACT SHOWCASE
       const managersList = document.getElementById('managersListContainer');
       managersList.innerHTML = (state.managers || []).map((mgr) => {
         const mgrTeam = getTeam(mgr.teamId);
