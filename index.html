@@ -686,57 +686,16 @@
       gap: 10px;
     }
 
-    /* DIRECT IN-PLACE SCORE EDITING STYLES */
+    /* ORIGINAL CLEAN SCORE BOX LOOK */
     .score-box {
       font-size: 16px;
       font-weight: 900;
       color: var(--text);
-      min-width: 30px;
+      min-width: 24px;
       text-align: right;
-      padding: 3px 6px;
-      border-radius: 6px;
-      transition: all 0.2s ease;
     }
 
     .score-box.winner { color: var(--accent); }
-
-    .score-box.admin-editable-score {
-      cursor: pointer;
-      background: rgba(0, 229, 255, 0.08);
-      border: 1px dashed rgba(0, 229, 255, 0.4);
-      color: var(--accent);
-    }
-
-    .score-box.admin-editable-score:hover {
-      background: rgba(0, 229, 255, 0.22);
-      box-shadow: 0 0 10px var(--accent-glow);
-    }
-
-    .match-action-hint {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 4px;
-      padding-top: 4px;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .quick-score-btn {
-      background: rgba(0, 229, 255, 0.15);
-      border: 1px solid var(--accent);
-      color: var(--accent);
-      font-size: 10px;
-      font-weight: 800;
-      padding: 3px 10px;
-      border-radius: 8px;
-      cursor: pointer;
-      text-transform: uppercase;
-    }
-
-    .quick-score-btn:hover {
-      background: var(--accent);
-      color: #020612;
-    }
 
     .vs-pill {
       background: rgba(0, 229, 255, 0.1);
@@ -958,7 +917,7 @@
       text-transform: uppercase;
     }
 
-    /* REDESIGNED USER-FRIENDLY ADMIN HUB */
+    /* USER-FRIENDLY REORGANIZED ADMIN HUB */
     .admin-subnav-pills {
       display: flex;
       gap: 6px;
@@ -1237,7 +1196,7 @@
       </div>
     </div>
 
-    <!-- MATCHES TAB (DIRECT SCORE ENTRY FOR UNLOCKED ADMINS) -->
+    <!-- MATCHES TAB -->
     <div id="page-fixtures" class="view-card">
       <div class="league-banner">
         <div>
@@ -1881,12 +1840,9 @@
       return state.teams.find(t => t.id === id) || { name: 'Unknown Club', logo: '' };
     }
 
-    // DIRECT MATCHES TAB SCORE ENTRY (ADMIN-ONLY)
+    // DIRECT SCORE EDITING FOR ADMINS (ORIGINAL LOOK PRESERVED)
     function promptDirectFixtureScore(fixIndex) {
-      if (!isAdminUnlocked) {
-        alert("🔒 Admin access required to record scores!");
-        return;
-      }
+      if (!isAdminUnlocked) return;
 
       const f = state.fixtures[fixIndex];
       if (!f) return;
@@ -1922,14 +1878,10 @@
       // Remove from upcoming fixtures
       state.fixtures.splice(fixIndex, 1);
       saveState();
-      alert(`Score submitted: ${hTeam.name} ${hScore} - ${aScore} ${aTeam.name}. Standings updated!`);
     }
 
     function promptDirectResultEdit(resIndex) {
-      if (!isAdminUnlocked) {
-        alert("🔒 Admin access required to edit full-time scores!");
-        return;
-      }
+      if (!isAdminUnlocked) return;
 
       const r = state.results[resIndex];
       if (!r) return;
@@ -1954,7 +1906,6 @@
       r.hScore = hScore;
       r.aScore = aScore;
       saveState();
-      alert(`Result updated: ${hTeam.name} ${hScore} - ${aScore} ${aTeam.name}. Table recalculated!`);
     }
 
     // CHRONOLOGICAL MATCH SEQUENCE ENGINE
@@ -2184,17 +2135,13 @@
         document.getElementById('uclWinnerName').textContent = state.ucl.champion || 'TBD';
       }
 
-      // FIXTURES (WITH CLICK-TO-EDIT FOR ADMINS)
+      // FIXTURES (ORIGINAL CLEAN DESIGN - TAP SCORE/DASH TO RECORD IF ADMIN)
       const fixContainer = document.getElementById('sub-fixtures');
       fixContainer.innerHTML = (state.fixtures || []).map((f, i) => {
         const isUcl = f.comp === 'ucl';
         const hTeam = getTeam(f.homeId);
         const aTeam = getTeam(f.awayId);
-        const editableClass = isAdminUnlocked ? 'admin-editable-score' : '';
-        const clickHandler = isAdminUnlocked ? `onclick="promptDirectFixtureScore(${i})"` : '';
-        const adminBtn = isAdminUnlocked 
-          ? `<div class="match-action-hint"><span style="font-size:9.5px; color:var(--accent); font-weight:800;">ADMIN UNLOCKED</span><button class="quick-score-btn" onclick="promptDirectFixtureScore(${i})">Enter Score ✎</button></div>` 
-          : '';
+        const clickAction = isAdminUnlocked ? `onclick="promptDirectFixtureScore(${i})"` : '';
 
         return `
           <div class="match-date-header">
@@ -2204,29 +2151,24 @@
           <div class="match-glass-card" style="${isUcl ? 'border-color:rgba(59,130,246,0.4);' : ''}">
             <div class="team-row">
               <div class="team-info">${renderTeamBadge(hTeam, isUcl ? 'border-color:var(--ucl-blue);' : '')}<span>${hTeam.name}</span></div>
-              <span class="score-box ${editableClass}" ${clickHandler} title="${isAdminUnlocked ? 'Click to record score' : ''}">-</span>
+              <span class="score-box" ${clickAction}>-</span>
             </div>
             <span class="vs-pill" style="${isUcl ? 'color:var(--ucl-blue); border-color:var(--ucl-blue); background:rgba(59,130,246,0.1);' : ''}">VS</span>
             <div class="team-row">
               <div class="team-info">${renderTeamBadge(aTeam, isUcl ? 'border-color:var(--ucl-blue);' : '')}<span>${aTeam.name}</span></div>
-              <span class="score-box ${editableClass}" ${clickHandler} title="${isAdminUnlocked ? 'Click to record score' : ''}">-</span>
+              <span class="score-box" ${clickAction}>-</span>
             </div>
-            ${adminBtn}
           </div>
         `;
       }).join('') || '<p style="text-align:center; color:var(--muted); padding:20px;">No upcoming fixtures.</p>';
 
-      // RESULTS (WITH CLICK-TO-EDIT NUMBERS FOR ADMINS)
+      // RESULTS (ORIGINAL CLEAN DESIGN - TAP NUMBER TO EDIT IF ADMIN)
       const resContainer = document.getElementById('sub-results');
       resContainer.innerHTML = (state.results || []).map((r, i) => {
         const isUcl = r.comp === 'ucl';
         const hTeam = getTeam(r.homeId);
         const aTeam = getTeam(r.awayId);
-        const editableClass = isAdminUnlocked ? 'admin-editable-score' : '';
-        const clickHandler = isAdminUnlocked ? `onclick="promptDirectResultEdit(${i})"` : '';
-        const adminBtn = isAdminUnlocked 
-          ? `<div class="match-action-hint"><span style="font-size:9.5px; color:var(--muted);">Tap score to modify</span><button class="quick-score-btn" onclick="promptDirectResultEdit(${i})">Edit ✎</button></div>` 
-          : '';
+        const clickAction = isAdminUnlocked ? `onclick="promptDirectResultEdit(${i})"` : '';
 
         return `
           <div class="match-date-header">
@@ -2236,13 +2178,12 @@
           <div class="match-glass-card">
             <div class="team-row">
               <div class="team-info">${renderTeamBadge(hTeam)}<span>${hTeam.name}</span></div>
-              <span class="score-box ${editableClass} ${r.hScore > r.aScore ? 'winner' : ''}" ${clickHandler} title="${isAdminUnlocked ? 'Click to edit' : ''}">${r.hScore}</span>
+              <span class="score-box ${r.hScore > r.aScore ? 'winner' : ''}" ${clickAction}>${r.hScore}</span>
             </div>
             <div class="team-row">
               <div class="team-info">${renderTeamBadge(aTeam)}<span>${aTeam.name}</span></div>
-              <span class="score-box ${editableClass} ${r.aScore > r.hScore ? 'winner' : ''}" ${clickHandler} title="${isAdminUnlocked ? 'Click to edit' : ''}">${r.aScore}</span>
+              <span class="score-box ${r.aScore > r.hScore ? 'winner' : ''}" ${clickAction}>${r.aScore}</span>
             </div>
-            ${adminBtn}
           </div>
         `;
       }).join('') || '<p style="text-align:center; color:var(--muted); padding:20px;">No results recorded.</p>';
