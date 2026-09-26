@@ -805,7 +805,7 @@
       text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
     }
 
-    /* MANAGERS PROFILE CARD (WITHOUT THE AVATAR BOX) */
+    /* MANAGERS PROFILE CARD (CLEAN WITHOUT THE AVATAR BOX) */
     .manager-showcase-block {
       margin-bottom: 20px;
     }
@@ -820,7 +820,6 @@
       box-shadow: 0 8px 25px rgba(0, 0, 0, 0.45);
     }
 
-    /* Straight aligned colons via CSS Grid */
     .manager-info-grid {
       display: grid;
       grid-template-columns: 110px 12px 1fr;
@@ -858,12 +857,12 @@
       color: var(--accent);
     }
 
-    /* COMPACT SHOWCASE ROOM (~90px HEIGHT MATCHING RED LINE) */
+    /* COMPACT SHOWCASE ROOM WITH SLIGHTLY LARGER TROPHIES */
     .trophy-room-showcase-wrap {
       position: relative;
       width: 100%;
-      height: 92px;
-      background: rgba(5, 10, 24, 0.7);
+      min-height: 104px;
+      background: rgba(5, 10, 24, 0.75);
       border: 1px solid rgba(0, 229, 255, 0.35);
       border-radius: 16px;
       overflow-x: auto;
@@ -871,14 +870,14 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 6px 14px;
+      padding: 8px 16px;
     }
 
     .trophies-row-container {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 28px;
+      gap: 32px;
       width: 100%;
     }
 
@@ -890,17 +889,18 @@
       flex-shrink: 0;
     }
 
-    /* 2D TROPHY IMAGE MODEL */
+    /* INCREASED TROPHY SIZE */
     .trophy-image-item {
-      height: 48px;
+      height: 60px;
       width: auto;
-      max-width: 58px;
+      max-width: 72px;
       object-fit: contain;
-      filter: drop-shadow(0 0 10px rgba(0, 229, 255, 0.45));
+      filter: drop-shadow(0 0 12px rgba(0, 229, 255, 0.55));
       display: block;
+      transition: transform 0.2s ease;
     }
 
-    /* CLEAN PLAIN WHITE COUNT TAG (NO EMOJI, NO OUTLINE BOX) */
+    /* CLEAN PLAIN WHITE COUNT TAG */
     .trophy-count-clean {
       font-size: 13px;
       font-weight: 900;
@@ -918,33 +918,62 @@
       text-transform: uppercase;
     }
 
-    .admin-accordion {
-      background: var(--glass-card);
-      border: 1px solid var(--glass-border);
-      border-radius: 14px;
-      margin-bottom: 12px;
-      overflow: hidden;
-    }
-
-    .admin-accordion-header {
-      padding: 14px 16px;
+    /* REDESIGNED USER-FRIENDLY ADMIN HUB */
+    .admin-subnav-pills {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
-      font-size: 13px;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 10px;
+      margin-bottom: 14px;
+      scrollbar-width: none;
+    }
+    .admin-subnav-pills::-webkit-scrollbar { display: none; }
+
+    .admin-pill-btn {
+      background: rgba(14, 22, 42, 0.8);
+      border: 1px solid var(--glass-border);
+      color: var(--muted);
+      padding: 8px 14px;
+      border-radius: 12px;
+      font-size: 11px;
       font-weight: 800;
+      white-space: nowrap;
+      cursor: pointer;
       text-transform: uppercase;
+      transition: all 0.2s ease;
+    }
+
+    .admin-pill-btn.active {
+      background: rgba(0, 229, 255, 0.16);
+      border-color: var(--accent);
       color: var(--accent);
+      box-shadow: 0 0 12px var(--accent-glow);
     }
 
-    .admin-accordion-body {
-      padding: 14px 16px;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    .admin-section-pane {
       display: none;
+      background: var(--glass-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     }
+    .admin-section-pane.active { display: block; }
 
-    .admin-accordion-body.open { display: block; }
+    .admin-pane-title {
+      font-size: 13px;
+      font-weight: 900;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 8px;
+    }
 
     .form-group { margin-bottom: 14px; }
     .form-group label {
@@ -1282,7 +1311,7 @@
       </div>
     </div>
 
-    <!-- MANAGERS TAB (CLEAN MANAGER INFO & 2D TROPHY IMAGE SHOWCASE) -->
+    <!-- MANAGERS TAB (CLEAN MANAGER INFO & BIGGER TROPHIES) -->
     <div id="page-managers" class="view-card">
       <div class="league-banner">
         <div>
@@ -1294,208 +1323,192 @@
       <div id="managersListContainer"></div>
     </div>
 
-    <!-- ADMIN TAB -->
+    <!-- USER-FRIENDLY REORGANIZED ADMIN TAB -->
     <div id="page-admin" class="view-card">
       <div class="league-banner">
         <div>
-          <div class="league-title-label">🔒 CCNN CONTROL</div>
+          <div class="league-title-label">🔒 CCNN CONTROL HUB</div>
           <div class="league-title-name">Admin Settings</div>
         </div>
         <button onclick="lockAdmin()" style="background:transparent; border:1px solid var(--loss); color:var(--loss); padding:4px 8px; border-radius:6px; font-size:10px; font-weight:800; cursor:pointer;">LOCK 🔒</button>
       </div>
 
-      <!-- 1. ADD TEAM -->
-      <div class="admin-accordion">
-        <div class="admin-accordion-header" onclick="toggleAccordion(this)">
-          <span>1. Add Team</span>
-          <span>▾</span>
-        </div>
-        <div class="admin-accordion-body open">
-          <div class="form-group">
-            <label>Add New Team</label>
-            <input type="text" id="adminNewTeamName" placeholder="Club Name (e.g. Arsenal)" style="margin-bottom:6px;">
-            <input type="text" id="adminNewTeamLogo" placeholder="Logo filename (e.g. arsenal.png or URL)">
-            <button class="btn" onclick="addNewTeam()">Add Club</button>
-          </div>
-
-          <div class="form-group" style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 10px;">
-            <label>Update Team Logo</label>
-            <select id="adminEditLogoTeamSelect" onchange="loadLogoForSelectedTeam()" style="margin-bottom: 6px;"></select>
-            <input type="text" id="adminEditTeamLogoInput" placeholder="Filename (e.g. real-madrid.png)">
-            <button class="btn" onclick="saveUpdatedTeamLogo()">Update Logo</button>
-          </div>
-
-          <div class="form-group" style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 10px;">
-            <label>Delete Team from League</label>
-            <select id="adminDeleteTeamSelect" style="margin-bottom: 6px;"></select>
-            <button class="btn btn-danger" onclick="deleteSelectedTeam()">Remove Team</button>
-          </div>
-        </div>
+      <!-- Quick category sub-navigation -->
+      <div class="admin-subnav-pills">
+        <button class="admin-pill-btn active" onclick="switchAdminSection('managers', this)">🏆 Managers</button>
+        <button class="admin-pill-btn" onclick="switchAdminSection('teams', this)">🛡️ Teams</button>
+        <button class="admin-pill-btn" onclick="switchAdminSection('fixtures', this)">⚽ Fixtures</button>
+        <button class="admin-pill-btn" onclick="switchAdminSection('ucl', this)">⭐ UCL Stage</button>
+        <button class="admin-pill-btn" onclick="switchAdminSection('league', this)">⚙️ League & Season</button>
       </div>
 
-      <!-- 2. LEAGUE -->
-      <div class="admin-accordion">
-        <div class="admin-accordion-header" onclick="toggleAccordion(this)">
-          <span>2. League</span>
-          <span>▾</span>
+      <!-- 1. MANAGERS & TROPHIES SECTION -->
+      <div id="admin-sec-managers" class="admin-section-pane active">
+        <div class="admin-pane-title">🏆 Manager Profiles & Trophy Showcase</div>
+        
+        <div class="form-group">
+          <label>Select Manager</label>
+          <select id="adminSelectManagerToEdit" onchange="populateManagerForm()"></select>
         </div>
-        <div class="admin-accordion-body">
-          <div class="form-group">
-            <label>League Name</label>
-            <input type="text" id="adminLeagueNameInput" placeholder="e.g. CCNN Super League">
-            <button class="btn" onclick="updateLeagueName()">Save League Name</button>
-          </div>
 
-          <div class="form-group">
-            <label>Edit Season Number / Name</label>
-            <input type="text" id="adminSeasonInput" placeholder="e.g. Season 1 or Season 2">
-            <button class="btn" onclick="updateSeasonName()">Save Season</button>
-          </div>
-
-          <div class="form-group">
-            <label>UCL Qualification Spots</label>
-            <select id="adminUclSpotsSelect" onchange="updateUclSpots()">
-              <option value="1">Top 1 Team</option>
-              <option value="2">Top 2 Teams</option>
-              <option value="3">Top 3 Teams</option>
-              <option value="4" selected>Top 4 Teams</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>Finish Season & Award League Trophy</label>
-            <button class="btn btn-gold" onclick="finishCurrentSeason()">🏆 Finish League & Crown #1</button>
-          </div>
-
-          <div class="form-group">
-            <label>Reset League Results</label>
-            <button class="btn btn-danger" onclick="restartLeagueData()">⚠️ Restart League</button>
-          </div>
+        <div class="form-group">
+          <label>Manager Name</label>
+          <input type="text" id="adminManagerNameInput" placeholder="Name">
         </div>
-      </div>
 
-      <!-- 3. MATCH FIXTURES -->
-      <div class="admin-accordion">
-        <div class="admin-accordion-header" onclick="toggleAccordion(this)">
-          <span>3. Match Fixtures</span>
-          <span>▾</span>
+        <div class="form-group">
+          <label>Playstyle</label>
+          <input type="text" id="adminManagerPlaystyleInput" placeholder="e.g. Quick Counter">
         </div>
-        <div class="admin-accordion-body">
-          <div class="form-group">
-            <label>Competition Type</label>
-            <select id="fixtureCompType" style="margin-bottom:6px;">
-              <option value="league">League Match</option>
-              <option value="ucl">UEFA Champions League Match</option>
-            </select>
-            <label>Schedule Match</label>
-            <select id="fixtureHomeTeam" style="margin-bottom:6px;"></select>
-            <select id="fixtureAwayTeam" style="margin-bottom:6px;"></select>
-            <input type="text" id="fixtureDateInput" placeholder="Date/Time (e.g. Sat, 8:00 PM)">
-            <button class="btn" onclick="scheduleFixture()">Save Fixture</button>
-          </div>
 
-          <div class="form-group">
-            <label>Update Scorecards</label>
-            <div id="adminFixtureUpdateList"></div>
-          </div>
+        <div class="form-group">
+          <label>Current Team</label>
+          <select id="adminManagerTeamSelect"></select>
         </div>
-      </div>
 
-      <!-- 4. UCL -->
-      <div class="admin-accordion">
-        <div class="admin-accordion-header" onclick="toggleAccordion(this)">
-          <span>4. UCL</span>
-          <span>▾</span>
-        </div>
-        <div class="admin-accordion-body">
+        <div style="background:rgba(0,229,255,0.06); padding:12px; border-radius:12px; border:1px solid rgba(0,229,255,0.2); margin-bottom:14px;">
+          <div style="font-size:11px; font-weight:800; color:var(--accent); margin-bottom:10px; text-transform:uppercase;">Trophies In Showcase</div>
+          
           <div class="form-group">
-            <label>Semi Final Scores</label>
-            <input type="text" id="setSemiHome" placeholder="Home Team (e.g. Real)" style="margin-bottom:4px;">
-            <input type="number" id="setSemiHScore" placeholder="Score" style="margin-bottom:4px;">
-            <input type="text" id="setSemiAway" placeholder="Away Team (e.g. Monaco)" style="margin-bottom:4px;">
-            <input type="number" id="setSemiAScore" placeholder="Score">
-          </div>
-          <div class="form-group">
-            <label>Final Scores</label>
-            <input type="text" id="setFinalHome" placeholder="Home Team (e.g. Real Madrid)" style="margin-bottom:4px;">
-            <input type="number" id="setFinalHScore" placeholder="Score" style="margin-bottom:4px;">
-            <input type="text" id="setFinalAway" placeholder="Away Team" style="margin-bottom:4px;">
-            <input type="number" id="setFinalAScore" placeholder="Score">
-          </div>
-          <div class="form-group">
-            <label>Crown UCL Champion (Adds to UCL Titles)</label>
-            <select id="setUclChampSelect" style="margin-bottom:6px;"></select>
-            <button class="btn btn-gold" onclick="updateUclKnockouts()">Award UCL Trophy 🏆</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- 5. MANAGERS SECTION (MULTIPLE TROPHY COUNTS) -->
-      <div class="admin-accordion">
-        <div class="admin-accordion-header" onclick="toggleAccordion(this)">
-          <span>5. Managers & Multiple Trophies</span>
-          <span>▾</span>
-        </div>
-        <div class="admin-accordion-body">
-          <div class="form-group">
-            <label>Select Manager to Edit</label>
-            <select id="adminSelectManagerToEdit" onchange="populateManagerForm()"></select>
-          </div>
-
-          <div class="form-group">
-            <label>Name :</label>
-            <input type="text" id="adminManagerNameInput" placeholder="Manager Name">
-          </div>
-
-          <div class="form-group">
-            <label>Playstyle :</label>
-            <input type="text" id="adminManagerPlaystyleInput" placeholder="e.g. Quick Counter / Possession">
-          </div>
-
-          <div class="form-group">
-            <label>Current Team :</label>
-            <select id="adminManagerTeamSelect"></select>
-          </div>
-
-          <!-- MULTIPLE TROPHIES COUNTERS -->
-          <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.1); padding-top:12px;">
-            <label style="color:var(--accent);">UEFA Champions League (ucl-trophy.png) Count :</label>
+            <label style="color:var(--text);">UEFA Champions League (ucl-trophy.png) Count :</label>
             <input type="number" id="adminManagerUclCount" min="0" placeholder="0">
           </div>
 
-          <div class="form-group">
+          <div class="form-group" style="margin-bottom:0;">
             <label style="color:var(--gold);">Super League Trophy (league-trophy.png) Count :</label>
             <input type="number" id="adminManagerLeagueCount" min="0" placeholder="0">
           </div>
+        </div>
 
-          <div style="display:flex; gap:8px;">
-            <button class="btn" style="flex:1;" onclick="saveSelectedManager()">Save Changes</button>
-            <button class="btn btn-danger" style="flex:1;" onclick="deleteSelectedManager()">Delete</button>
-          </div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn" style="flex:1;" onclick="saveSelectedManager()">Save Manager Changes</button>
+          <button class="btn btn-danger" style="flex:1;" onclick="deleteSelectedManager()">Delete Manager</button>
+        </div>
 
-          <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.1); margin-top:16px; padding-top:12px;">
-            <label>Add New Manager</label>
-            <button class="btn btn-gold" onclick="addNewManagerPrompt()">+ Add New Manager</button>
-          </div>
+        <div style="margin-top:14px; border-top:1px solid rgba(255,255,255,0.08); padding-top:10px;">
+          <button class="btn btn-gold" onclick="addNewManagerPrompt()">+ Add New Manager</button>
         </div>
       </div>
 
-      <!-- 6. HOME PAGE -->
-      <div class="admin-accordion">
-        <div class="admin-accordion-header" onclick="toggleAccordion(this)">
-          <span>6. Home Page</span>
-          <span>▾</span>
+      <!-- 2. TEAMS SECTION -->
+      <div id="admin-sec-teams" class="admin-section-pane">
+        <div class="admin-pane-title">🛡️ Club & Team Management</div>
+
+        <div class="form-group">
+          <label>Add New Club</label>
+          <input type="text" id="adminNewTeamName" placeholder="Club Name (e.g. Arsenal)" style="margin-bottom:6px;">
+          <input type="text" id="adminNewTeamLogo" placeholder="Logo filename (e.g. arsenal.png or URL)">
+          <button class="btn" onclick="addNewTeam()">Add Club</button>
         </div>
-        <div class="admin-accordion-body">
-          <div class="form-group">
-            <label>Last Season League Champion</label>
-            <input type="text" id="adminLastLeagueChampInput" placeholder="e.g. Real Madrid">
-          </div>
-          <div class="form-group">
-            <label>Last Season UCL Champion</label>
-            <input type="text" id="adminLastUclChampInput" placeholder="e.g. Real Madrid">
-            <button class="btn" onclick="updatePastChampions()">Save Past Champions</button>
-          </div>
+
+        <div class="form-group" style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 12px;">
+          <label>Update Existing Club Logo</label>
+          <select id="adminEditLogoTeamSelect" onchange="loadLogoForSelectedTeam()" style="margin-bottom: 6px;"></select>
+          <input type="text" id="adminEditTeamLogoInput" placeholder="Filename (e.g. real-madrid.png)">
+          <button class="btn" onclick="saveUpdatedTeamLogo()">Save New Logo</button>
+        </div>
+
+        <div class="form-group" style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 12px;">
+          <label>Remove Club</label>
+          <select id="adminDeleteTeamSelect" style="margin-bottom: 6px;"></select>
+          <button class="btn btn-danger" onclick="deleteSelectedTeam()">Delete Selected Club</button>
+        </div>
+      </div>
+
+      <!-- 3. FIXTURES & RESULTS SECTION -->
+      <div id="admin-sec-fixtures" class="admin-section-pane">
+        <div class="admin-pane-title">⚽ Fixture Scheduler & Scorecard Entry</div>
+
+        <div class="form-group">
+          <label>Competition</label>
+          <select id="fixtureCompType" style="margin-bottom:6px;">
+            <option value="league">League Match</option>
+            <option value="ucl">UEFA Champions League Match</option>
+          </select>
+
+          <label>Teams</label>
+          <select id="fixtureHomeTeam" style="margin-bottom:6px;"></select>
+          <select id="fixtureAwayTeam" style="margin-bottom:6px;"></select>
+
+          <label>Match Time / Date</label>
+          <input type="text" id="fixtureDateInput" placeholder="e.g. Sat, 8:00 PM">
+          <button class="btn" onclick="scheduleFixture()">Schedule Match</button>
+        </div>
+
+        <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.08); padding-top:12px;">
+          <label>Enter Full-Time Results</label>
+          <div id="adminFixtureUpdateList"></div>
+        </div>
+      </div>
+
+      <!-- 4. UCL KNOCKOUTS SECTION -->
+      <div id="admin-sec-ucl" class="admin-section-pane">
+        <div class="admin-pane-title">⭐ UCL Knockouts & Crown Champion</div>
+
+        <div class="form-group">
+          <label>Semi Final Scores</label>
+          <input type="text" id="setSemiHome" placeholder="Home Team (e.g. Real)" style="margin-bottom:4px;">
+          <input type="number" id="setSemiHScore" placeholder="Home Goals" style="margin-bottom:4px;">
+          <input type="text" id="setSemiAway" placeholder="Away Team (e.g. Monaco)" style="margin-bottom:4px;">
+          <input type="number" id="setSemiAScore" placeholder="Away Goals">
+        </div>
+
+        <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.08); padding-top:10px;">
+          <label>Final Match Scores</label>
+          <input type="text" id="setFinalHome" placeholder="Home Team (e.g. Real Madrid)" style="margin-bottom:4px;">
+          <input type="number" id="setFinalHScore" placeholder="Home Goals" style="margin-bottom:4px;">
+          <input type="text" id="setFinalAway" placeholder="Away Team (e.g. Sparta FC)" style="margin-bottom:4px;">
+          <input type="number" id="setFinalAScore" placeholder="Away Goals">
+        </div>
+
+        <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.08); padding-top:10px;">
+          <label>Crown UCL Champion</label>
+          <select id="setUclChampSelect" style="margin-bottom:6px;"></select>
+          <button class="btn btn-gold" onclick="updateUclKnockouts()">Save & Award UCL 🏆</button>
+        </div>
+      </div>
+
+      <!-- 5. LEAGUE & SEASON SETTINGS -->
+      <div id="admin-sec-league" class="admin-section-pane">
+        <div class="admin-pane-title">⚙️ League Rules & Season Finisher</div>
+
+        <div class="form-group">
+          <label>League Name</label>
+          <input type="text" id="adminLeagueNameInput" placeholder="e.g. CCNN Super League">
+          <button class="btn" onclick="updateLeagueName()">Save League Title</button>
+        </div>
+
+        <div class="form-group">
+          <label>Current Season</label>
+          <input type="text" id="adminSeasonInput" placeholder="e.g. Season 1">
+          <button class="btn" onclick="updateSeasonName()">Save Season</button>
+        </div>
+
+        <div class="form-group">
+          <label>UCL Spots (Top X Qualified)</label>
+          <select id="adminUclSpotsSelect" onchange="updateUclSpots()">
+            <option value="1">Top 1 Club</option>
+            <option value="2">Top 2 Clubs</option>
+            <option value="3">Top 3 Clubs</option>
+            <option value="4" selected>Top 4 Clubs</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.08); padding-top:10px;">
+          <label>Past Season Winners (Home Screen)</label>
+          <input type="text" id="adminLastLeagueChampInput" placeholder="Last Season League Winner" style="margin-bottom:4px;">
+          <input type="text" id="adminLastUclChampInput" placeholder="Last Season UCL Winner" style="margin-bottom:6px;">
+          <button class="btn" onclick="updatePastChampions()">Save Past Winners</button>
+        </div>
+
+        <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.08); padding-top:12px;">
+          <label style="color:var(--gold);">Finalize Season & Crown League Champion</label>
+          <button class="btn btn-gold" onclick="finishCurrentSeason()">🏆 Crown #1 Team & End Season</button>
+        </div>
+
+        <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.08); padding-top:10px;">
+          <label style="color:var(--loss);">Reset Match Statistics</label>
+          <button class="btn btn-danger" onclick="restartLeagueData()">⚠️ Reset All Results To 0</button>
         </div>
       </div>
 
@@ -1586,8 +1599,8 @@
           playstyle: 'Quick Counter',
           teamId: '3',
           trophies: {
-            ucl: 1,
-            league: 0
+            ucl: 4,
+            league: 4
           }
         },
         {
@@ -1651,14 +1664,14 @@
               name: state.manager.name || 'Nasif',
               playstyle: 'Quick Counter',
               teamId: state.manager.teamId || '3',
-              trophies: { ucl: 1, league: 0 }
+              trophies: { ucl: 4, league: 4 }
             }];
           } else {
             state.managers = defaultState.managers;
           }
         }
 
-        // Backward compatibility migration for trophies structure
+        // Backward compatibility migration for multiple trophy counters
         state.managers.forEach((m) => {
           if (!m.trophies) {
             m.trophies = {
@@ -1743,9 +1756,16 @@
       });
     }
 
-    // ==========================================================
+    // ADMIN SUB-SECTION CONTROLLER
+    function switchAdminSection(sectionKey, btnEl) {
+      document.querySelectorAll('.admin-pill-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.admin-section-pane').forEach(p => p.classList.remove('active'));
+      btnEl.classList.add('active');
+      const target = document.getElementById('admin-sec-' + sectionKey);
+      if (target) target.classList.add('active');
+    }
+
     // TAB SWITCHING & AUTH
-    // ==========================================================
     function switchTab(tabKey) {
       if (tabKey === 'admin' && !isAdminUnlocked) {
         const pass = prompt("🔒 Enter Admin Password:");
@@ -1802,11 +1822,6 @@
       localStorage.removeItem('ccnn_admin_logged_in');
       alert("Admin locked!");
       switchTab('home');
-    }
-
-    function toggleAccordion(el) {
-      const body = el.nextElementSibling;
-      body.classList.toggle('open');
     }
 
     function toggleMatches(subTab, btnEl) {
@@ -2090,7 +2105,7 @@
         `;
       }).join('') || '<p style="text-align:center; color:var(--muted); padding:20px;">No results recorded.</p>';
 
-      // RENDER MANAGERS TAB WITH 2D TROPHY IMAGES & COMPACT SHOWCASE
+      // RENDER MANAGERS TAB WITH BIGGER TROPHIES & USER-FRIENDLY SHOWCASE
       const managersList = document.getElementById('managersListContainer');
       managersList.innerHTML = (state.managers || []).map((mgr) => {
         const mgrTeam = getTeam(mgr.teamId);
@@ -2098,21 +2113,21 @@
 
         let trophiesHtml = '';
 
-        // 1. UCL Trophy (if won >= 1)
+        // 1. UCL Trophy (Larger size)
         if (trophies.ucl && trophies.ucl > 0) {
           trophiesHtml += `
             <div class="trophy-display-unit">
-              <img src="ucl-trophy.png" alt="UCL Trophy" class="trophy-image-item">
+              <img src="ucl-trophy.png" alt="UCL Trophy" class="trophy-image-item" onerror="this.style.display='none'">
               <div class="trophy-count-clean">x${trophies.ucl}</div>
             </div>
           `;
         }
 
-        // 2. Super League Trophy (if won >= 1)
+        // 2. Super League Trophy (Larger size)
         if (trophies.league && trophies.league > 0) {
           trophiesHtml += `
             <div class="trophy-display-unit">
-              <img src="league-trophy.png" alt="League Trophy" class="trophy-image-item">
+              <img src="league-trophy.png" alt="League Trophy" class="trophy-image-item" onerror="this.style.display='none'">
               <div class="trophy-count-clean">x${trophies.league}</div>
             </div>
           `;
@@ -2143,7 +2158,7 @@
               </div>
             </div>
 
-            <!-- Compact Showcase Room Frame with 2D Images & Clean White Count -->
+            <!-- Compact Showcase Room Frame with Sized-Up Trophies -->
             <div class="trophy-room-showcase-wrap">
               <div class="trophies-row-container">
                 ${trophiesHtml}
@@ -2188,16 +2203,16 @@
 
       const adminFixList = document.getElementById('adminFixtureUpdateList');
       adminFixList.innerHTML = (state.fixtures || []).map((f, i) => `
-        <div style="background:rgba(0,0,0,0.3); padding:10px; border-radius:10px; margin-bottom:8px;">
+        <div style="background:rgba(0,0,0,0.35); padding:12px; border-radius:12px; margin-bottom:8px; border:1px solid rgba(255,255,255,0.06);">
           <div style="font-size:11px; font-weight:800; color:${f.comp === 'ucl' ? 'var(--ucl-blue)' : 'var(--accent)'}; margin-bottom:4px; text-transform:uppercase;">
             ${f.comp === 'ucl' ? '⭐ UEFA Champions League' : '🏆 League Match'}
           </div>
-          <div style="font-size:13px; font-weight:700; margin-bottom:6px;">${getTeam(f.homeId).name} vs ${getTeam(f.awayId).name}</div>
+          <div style="font-size:13px; font-weight:700; margin-bottom:8px;">${getTeam(f.homeId).name} vs ${getTeam(f.awayId).name}</div>
           <div style="display:flex; gap:8px; align-items:center;">
-            <input type="number" id="hScore_${i}" placeholder="Home" style="width:65px;">
+            <input type="number" id="hScore_${i}" placeholder="Home" style="width:75px;">
             <span>-</span>
-            <input type="number" id="aScore_${i}" placeholder="Away" style="width:65px;">
-            <button class="btn" style="margin:0; flex:1;" onclick="submitMatchScore(${i})">Save</button>
+            <input type="number" id="aScore_${i}" placeholder="Away" style="width:75px;">
+            <button class="btn" style="margin:0; flex:1;" onclick="submitMatchScore(${i})">Submit Result</button>
           </div>
         </div>
       `).join('') || '<div style="color:var(--muted); font-size:12px;">No matches awaiting score entry.</div>';
