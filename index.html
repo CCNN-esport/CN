@@ -348,10 +348,10 @@
       margin-top: 4px;
     }
 
-    /* SOCIAL MEDIA CARD & SWIPE CAROUSEL */
+    /* SOCIAL MEDIA CARD & SWIPE CAROUSEL (CLEAN BACKGROUNDS, TEXT CONTENT REMOVED) */
     .social-media-card {
       border-radius: 20px;
-      padding: 12px 14px;
+      padding: 12px 14px 10px 14px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -371,7 +371,9 @@
       align-items: center;
       gap: 6px;
       text-shadow: 0 0 10px var(--accent-glow);
-      margin-bottom: 8px;
+      margin-bottom: 6px;
+      position: relative;
+      z-index: 5;
     }
 
     .social-carousel-viewport {
@@ -382,54 +384,51 @@
       -webkit-overflow-scrolling: touch;
       flex: 1;
       width: 100%;
+      border-radius: 14px;
+      position: relative;
+      z-index: 2;
     }
     .social-carousel-viewport::-webkit-scrollbar { display: none; }
 
     .social-slide {
       flex: 0 0 100%;
       width: 100%;
+      height: 100%;
       scroll-snap-align: start;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 2px 2px 6px 2px;
+      border-radius: 14px;
+      background-position: center center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.4);
     }
 
-    .social-author-tag {
-      font-size: 10px;
-      font-weight: 800;
-      color: var(--gold);
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
+    /* Applied user wallpaper files */
+    .social-slide-1 {
+      background-image: linear-gradient(180deg, rgba(3, 7, 18, 0.2) 0%, rgba(3, 7, 18, 0.5) 100%), url('Social-bg-1.jpg');
     }
 
-    .social-tweet-text {
-      font-size: 12.5px;
-      line-height: 1.45;
-      font-weight: 600;
-      color: #f8fafc;
-      text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    .social-slide-2 {
+      background-image: linear-gradient(180deg, rgba(3, 7, 18, 0.2) 0%, rgba(3, 7, 18, 0.5) 100%), url('social-bg-2.jpg');
     }
 
-    /* 3 PAGINATION DOTS */
+    /* 2 PAGINATION DOTS TRACKING THE 2 UPLOADED BACKGROUNDS */
     .social-dots-indicator {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
       padding-top: 8px;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      position: relative;
+      z-index: 5;
     }
 
     .social-dot {
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.28);
       cursor: pointer;
       transition: all 0.25s var(--ios-spring);
     }
@@ -1289,41 +1288,22 @@
           </div>
         </div>
 
-        <!-- SOCIAL MEDIA COLUMN (3-PAGE SWIPEABLE CAROUSEL WITH DOTS) -->
+        <!-- SOCIAL MEDIA COLUMN (CLEAN SWIPEABLE CAROUSEL FOR YOUR BACKGROUNDS) -->
         <div class="social-media-card">
           <div class="social-header-title">💬 Social Media</div>
           
           <div class="social-carousel-viewport" id="socialViewport" onscroll="handleSocialScroll()">
-            <!-- Slide 1 -->
-            <div class="social-slide">
-              <div class="social-author-tag">🔥 Pundit Reaction</div>
-              <div class="social-tweet-text">
-                "Nasif's tactical masterclass keeps Sparta untouchable at the top! Are we witnessing an invincible season?"
-              </div>
-            </div>
+            <!-- Slide 1: Uses Social-bg-1.jpg -->
+            <div class="social-slide social-slide-1"></div>
 
-            <!-- Slide 2 -->
-            <div class="social-slide">
-              <div class="social-author-tag">🦁 Zlatan Quote</div>
-              <div class="social-tweet-text">
-                "Zlatan doesn't play in CCNN Super League because Zlatan wants the other teams to have a chance."
-              </div>
-            </div>
-
-            <!-- Slide 3 -->
-            <div class="social-slide">
-              <div class="social-author-tag">👀 Fan Outcry</div>
-              <div class="social-tweet-text">
-                "Another weekend, another disaster. Fans outside the arena are demanding immediate answers from management!"
-              </div>
-            </div>
+            <!-- Slide 2: Uses social-bg-2.jpg -->
+            <div class="social-slide social-slide-2"></div>
           </div>
 
-          <!-- 3 Pagination Dots -->
+          <!-- 2 Pagination Dots -->
           <div class="social-dots-indicator">
             <span class="social-dot active" onclick="goToSocialSlide(0)"></span>
             <span class="social-dot" onclick="goToSocialSlide(1)"></span>
-            <span class="social-dot" onclick="goToSocialSlide(2)"></span>
           </div>
         </div>
       </div>
