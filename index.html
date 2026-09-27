@@ -68,7 +68,6 @@
       z-index: 0;
     }
 
-    /* iOS Glass Reflex Animation */
     @keyframes liquidRefract {
       0% { opacity: 0; transform: translateY(12px) scale(0.985); }
       100% { opacity: 1; transform: translateY(0) scale(1); }
@@ -170,7 +169,7 @@
       -webkit-backdrop-filter: blur(30px) saturate(190%);
     }
 
-    /* LIQUID GLASS ULTRA-TRANSPARENT CARD STYLING */
+    /* LIQUID GLASS SURFACE CARDS */
     .league-banner,
     .hero-leader-card,
     .champion-subcard,
@@ -180,6 +179,7 @@
     .match-glass-card,
     .manager-profile-card,
     .trophy-room-showcase-wrap,
+    .social-media-card,
     .admin-section-pane {
       background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.03) 100%) !important;
       backdrop-filter: blur(32px) saturate(210%) !important;
@@ -298,24 +298,33 @@
       gap: 4px;
     }
 
-    .champions-grid {
+    /* 2-COLUMN SECTION: STACKED CHAMPIONS ON LEFT + SOCIAL MEDIA ON RIGHT */
+    .home-mid-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
       margin-bottom: 14px;
+      align-items: stretch;
+    }
+
+    .stacked-champs-column {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      height: 100%;
     }
 
     .champion-subcard {
       border-radius: 20px;
-      padding: 14px 14px;
-      min-height: 110px;
+      padding: 12px 14px;
+      flex: 1;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
     }
 
     .champ-sub-title {
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.8px;
@@ -323,11 +332,11 @@
     }
 
     .champ-sub-name {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 900;
       color: #fff;
       text-transform: uppercase;
-      margin-top: 6px;
+      margin-top: 4px;
       line-height: 1.2;
     }
 
@@ -336,7 +345,100 @@
       font-weight: 800;
       text-transform: uppercase;
       display: inline-block;
-      margin-top: 6px;
+      margin-top: 4px;
+    }
+
+    /* SOCIAL MEDIA CARD & SWIPE CAROUSEL */
+    .social-media-card {
+      border-radius: 20px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+      min-height: 220px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .social-header-title {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-shadow: 0 0 10px var(--accent-glow);
+      margin-bottom: 8px;
+    }
+
+    .social-carousel-viewport {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      flex: 1;
+      width: 100%;
+    }
+    .social-carousel-viewport::-webkit-scrollbar { display: none; }
+
+    .social-slide {
+      flex: 0 0 100%;
+      width: 100%;
+      scroll-snap-align: start;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 2px 2px 6px 2px;
+    }
+
+    .social-author-tag {
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .social-tweet-text {
+      font-size: 12.5px;
+      line-height: 1.45;
+      font-weight: 600;
+      color: #f8fafc;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    }
+
+    /* 3 PAGINATION DOTS */
+    .social-dots-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .social-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.25);
+      cursor: pointer;
+      transition: all 0.25s var(--ios-spring);
+    }
+
+    .social-dot.active {
+      width: 18px;
+      border-radius: 8px;
+      background: var(--accent);
+      box-shadow: 0 0 10px var(--accent);
     }
 
     .prediction-card {
@@ -1163,24 +1265,65 @@
         </div>
       </div>
 
-      <div class="champions-grid">
-        <div class="champion-subcard champ-card-league">
-          <div>
-            <div class="champ-sub-title">Last Season Champion</div>
-            <div class="champ-sub-name" id="homeLastLeagueChamp">Real Madrid</div>
+      <!-- MID GRID: STACKED CHAMPIONS ON LEFT + SOCIAL MEDIA ON RIGHT -->
+      <div class="home-mid-grid">
+        <div class="stacked-champs-column">
+          <div class="champion-subcard champ-card-league">
+            <div>
+              <div class="champ-sub-title">Last Season Champion</div>
+              <div class="champ-sub-name" id="homeLastLeagueChamp">Real Madrid</div>
+            </div>
+            <div>
+              <span class="champ-badge-tag" style="color:var(--gold);">🏆 League Winner</span>
+            </div>
           </div>
-          <div>
-            <span class="champ-badge-tag" style="color:var(--gold);">🏆 League Winner</span>
+
+          <div class="champion-subcard champ-card-ucl">
+            <div>
+              <div class="champ-sub-title">Last UCL Champion</div>
+              <div class="champ-sub-name" id="homeLastUclChamp">Real Madrid</div>
+            </div>
+            <div>
+              <span class="champ-badge-tag" style="color:var(--ucl-blue);">⭐ UCL Winner</span>
+            </div>
           </div>
         </div>
 
-        <div class="champion-subcard champ-card-ucl">
-          <div>
-            <div class="champ-sub-title">Last UCL Champion</div>
-            <div class="champ-sub-name" id="homeLastUclChamp">Real Madrid</div>
+        <!-- SOCIAL MEDIA COLUMN (3-PAGE SWIPEABLE CAROUSEL WITH DOTS) -->
+        <div class="social-media-card">
+          <div class="social-header-title">💬 Social Media</div>
+          
+          <div class="social-carousel-viewport" id="socialViewport" onscroll="handleSocialScroll()">
+            <!-- Slide 1 -->
+            <div class="social-slide">
+              <div class="social-author-tag">🔥 Pundit Reaction</div>
+              <div class="social-tweet-text">
+                "Nasif's tactical masterclass keeps Sparta untouchable at the top! Are we witnessing an invincible season?"
+              </div>
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="social-slide">
+              <div class="social-author-tag">🦁 Zlatan Quote</div>
+              <div class="social-tweet-text">
+                "Zlatan doesn't play in CCNN Super League because Zlatan wants the other teams to have a chance."
+              </div>
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="social-slide">
+              <div class="social-author-tag">👀 Fan Outcry</div>
+              <div class="social-tweet-text">
+                "Another weekend, another disaster. Fans outside the arena are demanding immediate answers from management!"
+              </div>
+            </div>
           </div>
-          <div>
-            <span class="champ-badge-tag" style="color:var(--ucl-blue);">⭐ UCL Winner</span>
+
+          <!-- 3 Pagination Dots -->
+          <div class="social-dots-indicator">
+            <span class="social-dot active" onclick="goToSocialSlide(0)"></span>
+            <span class="social-dot" onclick="goToSocialSlide(1)"></span>
+            <span class="social-dot" onclick="goToSocialSlide(2)"></span>
           </div>
         </div>
       </div>
@@ -1752,6 +1895,31 @@
       }
       const initial = team && team.name ? team.name.charAt(0) : '?';
       return `<span class="team-badge" style="${extraStyle}">${initial}</span>`;
+    }
+
+    // SOCIAL MEDIA CAROUSEL HANDLERS
+    function handleSocialScroll() {
+      const viewport = document.getElementById('socialViewport');
+      if (!viewport) return;
+      const scrollPos = viewport.scrollLeft;
+      const width = viewport.clientWidth;
+      const activeIdx = Math.round(scrollPos / width);
+
+      const dots = document.querySelectorAll('.social-dot');
+      dots.forEach((dot, idx) => {
+        if (idx === activeIdx) dot.classList.add('active');
+        else dot.classList.remove('active');
+      });
+    }
+
+    function goToSocialSlide(slideIdx) {
+      const viewport = document.getElementById('socialViewport');
+      if (!viewport) return;
+      const width = viewport.clientWidth;
+      viewport.scrollTo({
+        left: width * slideIdx,
+        behavior: 'smooth'
+      });
     }
 
     // 3D TROPHY SHADER FOR UCL TAB
