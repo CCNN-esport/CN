@@ -298,7 +298,7 @@
       gap: 4px;
     }
 
-    /* 2-COLUMN SECTION: STACKED CHAMPIONS ON LEFT + SOCIAL MEDIA ON RIGHT */
+    /* 2-COLUMN SECTION: STACKED CHAMPIONS ON LEFT + FULL-FIT SOCIAL MEDIA ON RIGHT */
     .home-mid-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -348,45 +348,28 @@
       margin-top: 4px;
     }
 
-    /* SOCIAL MEDIA CARD & SWIPE CAROUSEL (CLEAN BACKGROUNDS, TEXT CONTENT REMOVED) */
+    /* EDGE-TO-EDGE FULL FITTED SOCIAL MEDIA CARD */
     .social-media-card {
-      border-radius: 20px;
-      padding: 12px 14px 10px 14px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      border-radius: 20px !important;
+      padding: 0 !important;
       height: 100%;
       min-height: 220px;
       position: relative;
       overflow: hidden;
-    }
-
-    .social-header-title {
-      font-size: 11px;
-      font-weight: 800;
-      color: var(--accent);
-      text-transform: uppercase;
-      letter-spacing: 1.2px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      text-shadow: 0 0 10px var(--accent-glow);
-      margin-bottom: 6px;
-      position: relative;
-      z-index: 5;
+      border: 1px solid var(--glass-border) !important;
     }
 
     .social-carousel-viewport {
       display: flex;
+      width: 100%;
+      height: 100%;
       overflow-x: auto;
       scroll-snap-type: x mandatory;
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
-      flex: 1;
-      width: 100%;
-      border-radius: 14px;
-      position: relative;
-      z-index: 2;
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
     }
     .social-carousel-viewport::-webkit-scrollbar { display: none; }
 
@@ -395,42 +378,46 @@
       width: 100%;
       height: 100%;
       scroll-snap-align: start;
-      border-radius: 14px;
       background-position: center center;
       background-size: cover;
       background-repeat: no-repeat;
-      position: relative;
-      overflow: hidden;
-      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.4);
     }
 
-    /* Applied user wallpaper files */
     .social-slide-1 {
-      background-image: linear-gradient(180deg, rgba(3, 7, 18, 0.2) 0%, rgba(3, 7, 18, 0.5) 100%), url('Social-bg-1.jpg');
+      background-image: url('Social-bg-1.jpg');
     }
 
     .social-slide-2 {
-      background-image: linear-gradient(180deg, rgba(3, 7, 18, 0.2) 0%, rgba(3, 7, 18, 0.5) 100%), url('social-bg-2.jpg');
+      background-image: url('social-bg-2.jpg');
     }
 
-    /* 2 PAGINATION DOTS TRACKING THE 2 UPLOADED BACKGROUNDS */
+    .social-slide-3 {
+      background-image: url('social-bg-3.jpg');
+    }
+
+    /* FLOATING BOTTOM PAGINATION DOTS (3 PAGES) */
     .social-dots-indicator {
+      position: absolute;
+      bottom: 10px;
+      left: 0;
+      right: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      padding-top: 8px;
-      position: relative;
-      z-index: 5;
+      gap: 7px;
+      z-index: 10;
+      pointer-events: none;
     }
 
     .social-dot {
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.28);
+      background: rgba(255, 255, 255, 0.4);
       cursor: pointer;
+      pointer-events: auto;
       transition: all 0.25s var(--ios-spring);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
     }
 
     .social-dot.active {
@@ -1264,7 +1251,7 @@
         </div>
       </div>
 
-      <!-- MID GRID: STACKED CHAMPIONS ON LEFT + SOCIAL MEDIA ON RIGHT -->
+      <!-- MID GRID: STACKED CHAMPIONS ON LEFT + FULL-FIT SOCIAL MEDIA ON RIGHT -->
       <div class="home-mid-grid">
         <div class="stacked-champs-column">
           <div class="champion-subcard champ-card-league">
@@ -1288,22 +1275,24 @@
           </div>
         </div>
 
-        <!-- SOCIAL MEDIA COLUMN (CLEAN SWIPEABLE CAROUSEL FOR YOUR BACKGROUNDS) -->
+        <!-- SOCIAL MEDIA COLUMN (FULL-FIT EDGE-TO-EDGE 3-SLIDE CAROUSEL) -->
         <div class="social-media-card">
-          <div class="social-header-title">💬 Social Media</div>
-          
           <div class="social-carousel-viewport" id="socialViewport" onscroll="handleSocialScroll()">
             <!-- Slide 1: Uses Social-bg-1.jpg -->
             <div class="social-slide social-slide-1"></div>
 
             <!-- Slide 2: Uses social-bg-2.jpg -->
             <div class="social-slide social-slide-2"></div>
+
+            <!-- Slide 3: Uses social-bg-3.jpg -->
+            <div class="social-slide social-slide-3"></div>
           </div>
 
-          <!-- 2 Pagination Dots -->
+          <!-- 3 Floating Pagination Dots -->
           <div class="social-dots-indicator">
             <span class="social-dot active" onclick="goToSocialSlide(0)"></span>
             <span class="social-dot" onclick="goToSocialSlide(1)"></span>
+            <span class="social-dot" onclick="goToSocialSlide(2)"></span>
           </div>
         </div>
       </div>
@@ -1877,7 +1866,7 @@
       return `<span class="team-badge" style="${extraStyle}">${initial}</span>`;
     }
 
-    // SOCIAL MEDIA CAROUSEL HANDLERS
+    // SOCIAL MEDIA CAROUSEL HANDLERS (3 SLIDES)
     function handleSocialScroll() {
       const viewport = document.getElementById('socialViewport');
       if (!viewport) return;
