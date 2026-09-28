@@ -388,7 +388,6 @@
       padding: 14px 14px 34px 14px;
     }
 
-    /* Applied user wallpaper files with readability scrim */
     .social-slide-1 {
       background-image: linear-gradient(180deg, rgba(3, 7, 18, 0.15) 0%, rgba(3, 7, 18, 0.88) 85%), url('social-bg-1.jpg'), url('Social-bg-1.jpg');
     }
@@ -401,7 +400,6 @@
       background-image: linear-gradient(180deg, rgba(3, 7, 18, 0.15) 0%, rgba(3, 7, 18, 0.88) 85%), url('social-bg-3.jpg'), url('Social-bg-3.jpg');
     }
 
-    /* DYNAMIC FEED TYPOGRAPHY */
     .feed-tag {
       font-size: 9.5px;
       font-weight: 900;
@@ -424,7 +422,6 @@
       text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
     }
 
-    /* FLOATING BOTTOM PAGINATION DOTS (3 PAGES) */
     .social-dots-indicator {
       position: absolute;
       bottom: 10px;
@@ -1684,6 +1681,12 @@
         </div>
 
         <div class="form-group">
+          <label>Total Matches Per Team (Season Limit)</label>
+          <input type="number" id="adminMatchesPerTeamInput" min="1" placeholder="e.g. 10">
+          <button class="btn" onclick="updateMatchesPerTeam()">Save Matches Target</button>
+        </div>
+
+        <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.12); padding-top:10px;">
           <label>UCL Spots (Top X Qualified)</label>
           <select id="adminUclSpotsSelect" onchange="updateUclSpots()">
             <option value="1">Top 1 Club</option>
@@ -1788,6 +1791,7 @@
     let defaultState = {
       leagueName: 'CCNN Super League',
       season: 'Season 1',
+      matchesPerTeam: 10,
       lastLeagueChamp: 'Real Madrid',
       lastUclChamp: 'Real Madrid',
       uclSpots: 4,
@@ -1855,6 +1859,7 @@
         if (!state.fixtures) state.fixtures = [];
         if (!state.results) state.results = [];
         if (!state.ucl) state.ucl = defaultState.ucl;
+        if (!state.matchesPerTeam) state.matchesPerTeam = 10;
         
         if (!state.managers || !Array.isArray(state.managers)) {
           if (state.manager) {
@@ -1904,6 +1909,32 @@
       return `<span class="team-badge" style="${extraStyle}">${initial}</span>`;
     }
 
+    // HELPER: GET MANAGER ASSIGNED TO A TEAM
+    function getManagerForTeam(teamId) {
+      if (!state.managers) return null;
+      return state.managers.find(m => m.teamId === teamId);
+    }
+
+    // GET HYBRID DISPLAY NAME (Alternates between Team Name, Manager Name, or Both)
+    function getEntityName(teamId, format = 'mixed') {
+      const team = getTeam(teamId);
+      const mgr = getManagerForTeam(teamId);
+
+      if (!mgr) return team.name;
+
+      if (format === 'mgr') return mgr.name;
+      if (format === 'team') return team.name;
+      if (format === 'both') return `${mgr.name}'s ${team.name}`;
+
+      // Mixed randomized flavor
+      const styles = [
+        team.name,
+        mgr.name,
+        `${mgr.name}'s ${team.name}`
+      ];
+      return styles[Math.floor(Math.random() * styles.length)];
+    }
+
     // SOCIAL MEDIA CAROUSEL HANDLERS (3 SLIDES)
     function handleSocialScroll() {
       const viewport = document.getElementById('socialViewport');
@@ -1929,74 +1960,108 @@
       });
     }
 
-    // DYNAMIC MATCH-REACTIVE SOCIAL FEED ENGINE
+    // DYNAMIC MATCH & SEASON TARGET ENGINE
     function generateSocialFeed(standings) {
       const results = state.results || [];
       const leader = standings && standings.length > 0 ? standings[0] : null;
+      const second = standings && standings.length > 1 ? standings[1] : null;
+      const seasonTarget = state.matchesPerTeam || 10;
 
-      // 1. PAGE 1: OFFICIAL MEDIA REPORT
+      // 1. PAGE 1: OFFICIAL MEDIA REPORT (Considers Season Matches Limit & Standings)
       let mediaHeadline = "";
       if (results.length > 0) {
         const lastR = results[results.length - 1];
-        const hTeam = getTeam(lastR.homeId).name;
-        const aTeam = getTeam(lastR.awayId).name;
-        const hS = lastR.hScore;
-        const aS = lastR.aScore;
+        const hTeam = getTeam(lastR.homeId);
+        const aTeam = getTeam(lastR.awayId);
+        const hMgr = getManagerForTeam(lastR.homeId);
+        const aMgr = getManagerForTeam(lastR.awayId);
 
-        if (hS > aS) {
-          mediaHeadline = `"${hTeam} claim dominant ${hS}-${aS} victory over ${aTeam}. Title rivals under intense pressure as points gap widens."`;
-        } else if (aS > hS) {
-          mediaHeadline = `"${aTeam} stun ${hTeam} with a clinical ${aS}-${hS} away win. Serious defensive fractures exposed for the hosts."`;
+        const hEntity = hMgr ? (Math.random() > 0.5 ? `${hMgr.name}'s ${hTeam.name}` : hMgr.name) : hTeam.name;
+        const aEntity = aMgr ? (Math.random() > 0.5 ? `${aMgr.name}'s ${aTeam.name}` : aMgr.name) : aTeam.name;
+
+        const homeMatchesPlayed = (standings.find(t => t.id === lastR.homeId) || {}).p || 0;
+        const matchesRemaining = Math.max(0, seasonTarget - homeMatchesPlayed);
+
+        if (leader && second && matchesRemaining <= 2 && matchesRemaining > 0 && (leader.pts - second.pts >= 4)) {
+          const leaderMgr = getManagerForTeam(leader.id);
+          const leaderName = leaderMgr ? `${leaderMgr.name}'s ${leader.name}` : leader.name;
+          mediaHeadline = `"TITLE ON THE BRINK: ${leaderName} can mathematically seal the championship next matchweek with ${matchesRemaining} games remaining!"`;
+        } else if (matchesRemaining === 0) {
+          mediaHeadline = `"FINAL WHISTLE: The ${seasonTarget}-match campaign reaches conclusion. Standings locked as champions prepare to lift silverware."`;
+        } else if (lastR.hScore > lastR.aScore) {
+          mediaHeadline = `"STATEMENT VICTORY: ${hEntity} secure crucial 3 points beating ${aEntity} ${lastR.hScore}-${lastR.aScore}. ${matchesRemaining} games left in the season race."`;
+        } else if (lastR.aScore > lastR.hScore) {
+          mediaHeadline = `"UPSET AWAY: ${aEntity} stun ${hEntity} with a decisive ${lastR.aScore}-${lastR.hScore} win, blowing the top-4 qualification race wide open!"`;
         } else {
-          mediaHeadline = `"Deadlock in ${hTeam} vs ${aTeam} as tense ${hS}-${hS} draw leaves both sides dropping crucial title points."`;
+          mediaHeadline = `"POINTS SHARED: ${hEntity} and ${aEntity} settle for tense ${lastR.hScore}-${lastR.hScore} draw. Neither side takes advantage with ${matchesRemaining} matches to play."`;
         }
       } else if (leader) {
-        mediaHeadline = `"${leader.name} set the early benchmark in ${state.leagueName}. Can any challenger break their grip on #1?"`;
+        const lMgr = getManagerForTeam(leader.id);
+        const lName = lMgr ? `${lMgr.name}'s ${leader.name}` : leader.name;
+        mediaHeadline = `"SEASON PREVIEW: All clubs prepare for a grueling ${seasonTarget}-match campaign. ${lName} tipped as early favorites."`;
       } else {
-        mediaHeadline = `"New season kicks off with sky-high expectations as managers finalize opening match tactics."`;
+        mediaHeadline = `"The ${seasonTarget}-match championship race begins today with squads finalizing tactical formations."`;
       }
 
       // 2. PAGE 2: FANS TWITTER / X BANTER & MEME TROLLS
       let fanBanter = "";
       if (results.length > 0) {
         const lastR = results[results.length - 1];
-        const hTeam = getTeam(lastR.homeId).name;
-        const aTeam = getTeam(lastR.awayId).name;
-        const hS = lastR.hScore;
-        const aS = lastR.aScore;
+        const hTeam = getTeam(lastR.homeId);
+        const aTeam = getTeam(lastR.awayId);
+        const hMgr = getManagerForTeam(lastR.homeId);
+        const aMgr = getManagerForTeam(lastR.awayId);
 
-        if (hS > aS) {
-          const diff = hS - aS;
+        const hName = hMgr ? (Math.random() > 0.4 ? hMgr.name : hTeam.name) : hTeam.name;
+        const aName = aMgr ? (Math.random() > 0.4 ? aMgr.name : aTeam.name) : aTeam.name;
+
+        const homeStanding = standings.find(t => t.id === lastR.homeId);
+        const awayStanding = standings.find(t => t.id === lastR.awayId);
+        const remaining = Math.max(0, seasonTarget - (homeStanding ? homeStanding.p : 0));
+
+        if (lastR.hScore > lastR.aScore) {
+          const diff = lastR.hScore - lastR.aScore;
           if (diff >= 3) {
-            fanBanter = `@FanZone: "Did ${aTeam} even turn on their controller? Embarrassing ${hS}-${aS} defeat. Pack your bags! 💀 #ManagerOut"`;
+            fanBanter = `@FanZone: "${aName} got completely dismantled ${lastR.hScore}-${lastR.aScore} 💀 Delete club and unplug the router. Season's over with ${remaining} games left! #SackHim"`;
           } else {
-            fanBanter = `@GoalChant: "${hTeam} fans dancing in the streets! Tactically outclassed ${aTeam}. Keep crying about referee! 😂 #3Points"`;
+            fanBanter = `@KopVibe: "${hName} tactical masterclass today! ${aName} fans in pure tears crying about referee decisions 😂 #EzPoints"`;
           }
-        } else if (aS > hS) {
-          const diff = aS - hS;
+        } else if (lastR.aScore > lastR.hScore) {
+          const diff = lastR.aScore - lastR.hScore;
           if (diff >= 3) {
-            fanBanter = `@TacticsTalk: "Absolute destruction! ${aTeam} ran rings around them. Delete the club at this point 😭 #Unbelievable"`;
+            fanBanter = `@TacticsBanter: "Embarrassing display from ${hName}. Lost ${lastR.hScore}-${lastR.aScore} at home?! The fans outside the arena are demanding resignations right now."`;
           } else {
-            fanBanter = `@UltrasDaily: "${hTeam} conceded in the dying minutes. I watched 90 mins of pain for this?! SACK HIM TONIGHT."`;
+            fanBanter = `@MatchdayTroll: "${aName} stealing all 3 points in the 90th minute! ${hName} fans having a full meltdown on timeline 😭 #Robbery"`;
           }
         } else {
-          fanBanter = `@MidfieldMaestro: "0 creativity, 0 shots on target. A 90-minute cure for insomnia from both teams 😴 #BoreDraw"`;
+          fanBanter = `@UltrasWeekly: "90 minutes of pure defensive snoozefest between ${hName} and ${aName}. Both managers playing for 0-0. My eyes are bleeding."`;
         }
       } else {
-        fanBanter = `@LeagueFanatic: "Season hasn't even started and I'm already stressed. If we lose matchweek 1, I'm quitting Twitter."`;
+        fanBanter = `@eSportsFan: "New season starting, ${seasonTarget} matches ahead! If my team drops points on matchday 1, I'm logging off Twitter."`;
       }
 
-      // 3. PAGE 3: RETIRED PLAYERS & RETIRED MANAGERS ONLY (Pundit Verdicts)
-      const retiredQuotes = [
-        `Zlatan Ibrahimović: "Zlatan doesn't need to play here. If Zlatan played in this tournament, there would be no competition."`,
-        `Thierry Henry: "You can't give away goals like that at this level. You don't deserve the points if you don't fight for every yard."`,
-        `Sir Alex Ferguson: "Hard work will always beat talent when talent doesn't work hard. Some of these players need a wake-up call."`,
-        `Roy Keane: "Shocking performance. No hunger, no desire. If that were my squad, I wouldn't let them back on the team bus."`,
-        `Arsène Wenger: "Football is an art, but today we saw players rushing their decisions and losing complete tactical discipline."`
-      ];
+      // 3. PAGE 3: RETIRED PLAYERS & RETIRED LEGEND MANAGERS ONLY
+      let legendQuote = "";
+      if (results.length > 0) {
+        const lastR = results[results.length - 1];
+        const winnerTeamId = lastR.hScore > lastR.aScore ? lastR.homeId : (lastR.aScore > lastR.hScore ? lastR.awayId : null);
+        const loserTeamId = lastR.hScore > lastR.aScore ? lastR.awayId : (lastR.aScore > lastR.hScore ? lastR.homeId : null);
 
-      // Pick quote deterministically based on results count
-      const legendQuote = retiredQuotes[results.length % retiredQuotes.length];
+        const winnerEntity = winnerTeamId ? getEntityName(winnerTeamId) : "Both teams";
+        const loserEntity = loserTeamId ? getEntityName(loserTeamId) : "neither side";
+
+        const legendPool = [
+          `Zlatan Ibrahimović: "I watched ${winnerEntity} today. Good, but they are lucky Zlatan is retired. If Zlatan played this season, trophy would be mine already."`,
+          `Thierry Henry: "When you look at ${loserEntity}, there is no composure in the final third. You can't blame luck when you make those defensive mistakes."`,
+          `Sir Alex Ferguson: "In a ${seasonTarget}-game league, concentration is everything. What I saw from ${loserEntity} today lacked the grit and character needed to be champions."`,
+          `Roy Keane: "Absolute disgrace from ${loserEntity}. No hunger, no tackles, walking around like it's a friendly. If that were my squad, they'd be running laps until midnight."`,
+          `Arsène Wenger: "Football is about efficiency. ${winnerEntity} respected the game and took their chances with complete tactical maturity."`
+        ];
+
+        legendQuote = legendPool[results.length % legendPool.length];
+      } else {
+        legendQuote = `Sir Alex Ferguson: "A ${seasonTarget}-match season is a marathon, not a sprint. The managers who keep their heads will lift the title."`;
+      }
 
       const s1 = document.getElementById('feedSlide1');
       const s2 = document.getElementById('feedSlide2');
@@ -2178,7 +2243,6 @@
         time: f.time
       });
 
-      // Remove from upcoming fixtures
       state.fixtures.splice(fixIndex, 1);
       saveState();
     }
@@ -2339,7 +2403,7 @@
       document.getElementById('homeLastLeagueChamp').textContent = state.lastLeagueChamp || '--';
       document.getElementById('homeLastUclChamp').textContent = state.lastUclChamp || '--';
 
-      // Refresh Dynamic Social Media Feed
+      // Refresh Dynamic Social Media Feed with Manager & Target Integration
       generateSocialFeed(leagueTable);
 
       const predictions = calculateTitleProbabilities(leagueTable);
@@ -2566,6 +2630,7 @@
       document.getElementById('adminUclSpotsSelect').value = state.uclSpots;
       document.getElementById('adminLeagueNameInput').value = state.leagueName;
       document.getElementById('adminSeasonInput').value = state.season;
+      document.getElementById('adminMatchesPerTeamInput').value = state.matchesPerTeam || 10;
       document.getElementById('adminLastLeagueChampInput').value = state.lastLeagueChamp;
       document.getElementById('adminLastUclChampInput').value = state.lastUclChamp;
 
@@ -2681,6 +2746,14 @@
       state.season = val;
       saveState();
       alert('Season name updated live!');
+    }
+
+    function updateMatchesPerTeam() {
+      const val = parseInt(document.getElementById('adminMatchesPerTeamInput').value);
+      if (isNaN(val) || val <= 0) return alert('Enter a valid number of matches (minimum 1)');
+      state.matchesPerTeam = val;
+      saveState();
+      alert(`Season target set to ${val} matches per team!`);
     }
 
     function updatePastChampions() {
