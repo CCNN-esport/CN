@@ -198,6 +198,50 @@
       justify-content: space-between;
     }
 
+    /* HEROIC LEAGUE TAB BANNER UPGRADE */
+    .league-banner-heroic {
+      border-radius: 24px !important;
+      padding: 24px 22px !important;
+      margin-bottom: 16px !important;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(0, 229, 255, 0.14) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35), inset 0 1px 1.5px var(--glass-specular) !important;
+    }
+
+    .league-banner-heroic::after {
+      content: "";
+      position: absolute;
+      top: -30px;
+      right: -30px;
+      width: 140px;
+      height: 140px;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .league-banner-heroic .league-title-label {
+      font-size: 13px !important;
+      letter-spacing: 1.5px !important;
+      margin-bottom: 4px !important;
+    }
+
+    .league-banner-heroic .league-title-name {
+      font-size: 24px !important;
+      letter-spacing: 1px !important;
+      line-height: 1.2 !important;
+      text-shadow: 0 0 16px var(--accent-glow);
+    }
+
+    .league-banner-heroic .season-tag {
+      font-size: 12px !important;
+      padding: 7px 16px !important;
+      border-radius: 24px !important;
+      border: 1.5px solid rgba(0, 229, 255, 0.55) !important;
+      background: rgba(0, 229, 255, 0.18) !important;
+      box-shadow: 0 0 14px rgba(0, 229, 255, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.4) !important;
+    }
+
     .league-title-label {
       font-size: 11px;
       color: var(--accent);
@@ -1345,9 +1389,9 @@
       </div>
     </div>
 
-    <!-- LEAGUE TAB -->
+    <!-- LEAGUE TAB (ENHANCED BIG HEROIC BANNER) -->
     <div id="page-league" class="view-card">
-      <div class="league-banner">
+      <div class="league-banner league-banner-heroic">
         <div>
           <div class="league-title-label current-league-tag">🏆 CCNN SUPER LEAGUE</div>
           <div class="league-title-name" id="leagueHeaderName">CCNN Super League</div>
@@ -1915,7 +1959,7 @@
       return state.managers.find(m => m.teamId === teamId);
     }
 
-    // GET HYBRID DISPLAY NAME (Alternates between Team Name, Manager Name, or Both)
+    // GET HYBRID DISPLAY NAME
     function getEntityName(teamId, format = 'mixed') {
       const team = getTeam(teamId);
       const mgr = getManagerForTeam(teamId);
@@ -1926,7 +1970,6 @@
       if (format === 'team') return team.name;
       if (format === 'both') return `${mgr.name}'s ${team.name}`;
 
-      // Mixed randomized flavor
       const styles = [
         team.name,
         mgr.name,
@@ -1967,7 +2010,7 @@
       const second = standings && standings.length > 1 ? standings[1] : null;
       const seasonTarget = state.matchesPerTeam || 10;
 
-      // 1. PAGE 1: OFFICIAL MEDIA REPORT (Considers Season Matches Limit & Standings)
+      // 1. PAGE 1: OFFICIAL MEDIA REPORT
       let mediaHeadline = "";
       if (results.length > 0) {
         const lastR = results[results.length - 1];
@@ -2016,7 +2059,6 @@
         const aName = aMgr ? (Math.random() > 0.4 ? aMgr.name : aTeam.name) : aTeam.name;
 
         const homeStanding = standings.find(t => t.id === lastR.homeId);
-        const awayStanding = standings.find(t => t.id === lastR.awayId);
         const remaining = Math.max(0, seasonTarget - (homeStanding ? homeStanding.p : 0));
 
         if (lastR.hScore > lastR.aScore) {
@@ -2403,7 +2445,7 @@
       document.getElementById('homeLastLeagueChamp').textContent = state.lastLeagueChamp || '--';
       document.getElementById('homeLastUclChamp').textContent = state.lastUclChamp || '--';
 
-      // Refresh Dynamic Social Media Feed with Manager & Target Integration
+      // Refresh Dynamic Social Media Feed
       generateSocialFeed(leagueTable);
 
       const predictions = calculateTitleProbabilities(leagueTable);
