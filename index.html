@@ -73,6 +73,7 @@
       100% { opacity: 1; transform: translateY(0) scale(1); }
     }
 
+    /* COMPACT HEADER (SLIMMER RED LINE HEIGHT) */
     header {
       position: sticky;
       top: 0;
@@ -82,35 +83,36 @@
       -webkit-backdrop-filter: blur(32px) saturate(210%);
       border-bottom: 1px solid var(--glass-border);
       box-shadow: 0 4px 30px rgba(0, 0, 0, 0.25), inset 0 1px 0 var(--glass-specular);
-      padding: 14px 20px;
+      padding: 8px 16px;
       text-align: center;
       transition: background 0.35s var(--ios-spring);
     }
 
     .website-name {
-      font-size: 19px;
+      font-size: 16px;
       font-weight: 900;
-      letter-spacing: 2px;
+      letter-spacing: 1.5px;
       text-transform: uppercase;
       background: linear-gradient(180deg, #ffffff 30%, rgba(255, 255, 255, 0.65) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       text-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
+      line-height: 1.2;
     }
 
     .live-indicator {
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 800;
       color: var(--win);
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      margin-top: 2px;
+      margin-top: 1px;
     }
 
     .live-dot {
-      width: 7px;
-      height: 7px;
+      width: 6px;
+      height: 6px;
       background: var(--win);
       border-radius: 50%;
       box-shadow: 0 0 8px var(--win);
@@ -119,22 +121,22 @@
     .ucl-music-toggle-btn {
       display: none;
       position: absolute;
-      right: 16px;
+      right: 14px;
       top: 50%;
       transform: translateY(-50%);
       background: rgba(59, 130, 246, 0.2);
       border: 1px solid rgba(255, 255, 255, 0.35);
       color: #fff;
-      padding: 6px 12px;
-      border-radius: 14px;
-      font-size: 11px;
+      padding: 5px 10px;
+      border-radius: 12px;
+      font-size: 10px;
       font-weight: 800;
       cursor: pointer;
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       box-shadow: 0 4px 16px var(--ucl-glow), inset 0 1px 0 rgba(255, 255, 255, 0.4);
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       transition: transform 0.25s var(--ios-spring);
     }
 
@@ -145,7 +147,7 @@
     .content-area {
       position: relative;
       z-index: 1;
-      padding: 16px;
+      padding: 14px 16px;
       max-width: 680px;
       margin: auto;
     }
@@ -162,14 +164,14 @@
         linear-gradient(rgba(5, 11, 26, 0.35), rgba(4, 8, 20, 0.45)),
         url('ucl-bg.jpg') center/cover no-repeat;
       border: 1px solid var(--glass-border);
-      border-radius: 24px;
+      border-radius: 20px;
       padding: 14px;
       box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35), inset 0 1px 1px var(--glass-specular);
       backdrop-filter: blur(30px) saturate(190%);
       -webkit-backdrop-filter: blur(30px) saturate(190%);
     }
 
-    /* LIQUID GLASS SURFACE CARDS */
+    /* RESTORED CLEAN, NORMAL-SIZED GLASS CARDS */
     .league-banner,
     .hero-leader-card,
     .champion-subcard,
@@ -189,6 +191,7 @@
       transition: transform 0.3s var(--ios-spring), box-shadow 0.3s var(--ios-spring);
     }
 
+    /* NORMAL ORIGINAL BANNER SIZE ACROSS ALL TABS */
     .league-banner {
       border-radius: 20px;
       padding: 14px 18px;
@@ -196,50 +199,6 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-    }
-
-    /* HEROIC LEAGUE TAB BANNER UPGRADE */
-    .league-banner-heroic {
-      border-radius: 24px !important;
-      padding: 24px 22px !important;
-      margin-bottom: 16px !important;
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(135deg, rgba(0, 229, 255, 0.14) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35), inset 0 1px 1.5px var(--glass-specular) !important;
-    }
-
-    .league-banner-heroic::after {
-      content: "";
-      position: absolute;
-      top: -30px;
-      right: -30px;
-      width: 140px;
-      height: 140px;
-      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .league-banner-heroic .league-title-label {
-      font-size: 13px !important;
-      letter-spacing: 1.5px !important;
-      margin-bottom: 4px !important;
-    }
-
-    .league-banner-heroic .league-title-name {
-      font-size: 24px !important;
-      letter-spacing: 1px !important;
-      line-height: 1.2 !important;
-      text-shadow: 0 0 16px var(--accent-glow);
-    }
-
-    .league-banner-heroic .season-tag {
-      font-size: 12px !important;
-      padding: 7px 16px !important;
-      border-radius: 24px !important;
-      border: 1.5px solid rgba(0, 229, 255, 0.55) !important;
-      background: rgba(0, 229, 255, 0.18) !important;
-      box-shadow: 0 0 14px rgba(0, 229, 255, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.4) !important;
     }
 
     .league-title-label {
@@ -276,7 +235,7 @@
     }
 
     .hero-leader-card {
-      border-radius: 22px;
+      border-radius: 20px;
       padding: 16px 18px;
       margin-bottom: 14px;
       position: relative;
@@ -498,7 +457,7 @@
     }
 
     .prediction-card {
-      border-radius: 22px;
+      border-radius: 20px;
       padding: 16px 14px;
       margin-bottom: 14px;
     }
@@ -612,7 +571,7 @@
     }
 
     .table-card {
-      border-radius: 22px;
+      border-radius: 20px;
       padding: 12px 6px;
       overflow-x: auto;
       margin-bottom: 14px;
@@ -1389,9 +1348,9 @@
       </div>
     </div>
 
-    <!-- LEAGUE TAB (ENHANCED BIG HEROIC BANNER) -->
+    <!-- LEAGUE TAB (RESTORED TO CLEAN NORMAL SIZE LIKE BEFORE) -->
     <div id="page-league" class="view-card">
-      <div class="league-banner league-banner-heroic">
+      <div class="league-banner">
         <div>
           <div class="league-title-label current-league-tag">🏆 CCNN SUPER LEAGUE</div>
           <div class="league-title-name" id="leagueHeaderName">CCNN Super League</div>
@@ -1953,13 +1912,11 @@
       return `<span class="team-badge" style="${extraStyle}">${initial}</span>`;
     }
 
-    // HELPER: GET MANAGER ASSIGNED TO A TEAM
     function getManagerForTeam(teamId) {
       if (!state.managers) return null;
       return state.managers.find(m => m.teamId === teamId);
     }
 
-    // GET HYBRID DISPLAY NAME
     function getEntityName(teamId, format = 'mixed') {
       const team = getTeam(teamId);
       const mgr = getManagerForTeam(teamId);
@@ -1978,7 +1935,6 @@
       return styles[Math.floor(Math.random() * styles.length)];
     }
 
-    // SOCIAL MEDIA CAROUSEL HANDLERS (3 SLIDES)
     function handleSocialScroll() {
       const viewport = document.getElementById('socialViewport');
       if (!viewport) return;
@@ -2003,7 +1959,6 @@
       });
     }
 
-    // DYNAMIC MATCH & SEASON TARGET ENGINE
     function generateSocialFeed(standings) {
       const results = state.results || [];
       const leader = standings && standings.length > 0 ? standings[0] : null;
@@ -2114,7 +2069,6 @@
       if (s3) s3.textContent = legendQuote;
     }
 
-    // 3D TROPHY SHADER FOR UCL TAB
     const trophyViewer = document.getElementById('uclTrophyModel');
     if (trophyViewer) {
       trophyViewer.addEventListener('load', () => {
@@ -2164,7 +2118,6 @@
       });
     }
 
-    // ADMIN SUB-SECTION CONTROLLER
     function switchAdminSection(sectionKey, btnEl) {
       document.querySelectorAll('.admin-pill-btn').forEach(b => b.classList.remove('active'));
       document.querySelectorAll('.admin-section-pane').forEach(p => p.classList.remove('active'));
@@ -2173,7 +2126,6 @@
       if (target) target.classList.add('active');
     }
 
-    // TAB SWITCHING & AUTH
     function switchTab(tabKey) {
       if (tabKey === 'admin' && !isAdminUnlocked) {
         const pass = prompt("🔒 Enter Admin Password:");
@@ -2250,7 +2202,6 @@
       return state.teams.find(t => t.id === id) || { name: 'Unknown Club', logo: '' };
     }
 
-    // DIRECT SCORE EDITING FOR ADMINS (ORIGINAL LOOK PRESERVED)
     function promptDirectFixtureScore(fixIndex) {
       if (!isAdminUnlocked) return;
 
@@ -2317,7 +2268,6 @@
       saveState();
     }
 
-    // CHRONOLOGICAL MATCH SEQUENCE ENGINE
     function calculateStandingsForComp(compType, filterTeams = null) {
       const baseTeams = filterTeams || state.teams;
       const standings = baseTeams.map(t => ({
@@ -2445,7 +2395,6 @@
       document.getElementById('homeLastLeagueChamp').textContent = state.lastLeagueChamp || '--';
       document.getElementById('homeLastUclChamp').textContent = state.lastUclChamp || '--';
 
-      // Refresh Dynamic Social Media Feed
       generateSocialFeed(leagueTable);
 
       const predictions = calculateTitleProbabilities(leagueTable);
@@ -2711,7 +2660,6 @@
       `).join('') || '<div style="color:var(--muted); font-size:12px;">No matches awaiting score entry.</div>';
     }
 
-    // MANAGERS ADMIN CRUD LOGIC
     function populateManagerForm() {
       const idx = parseInt(document.getElementById('adminSelectManagerToEdit').value);
       if (isNaN(idx) || !state.managers || !state.managers[idx]) return;
