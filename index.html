@@ -349,7 +349,7 @@
       margin-top: 4px;
     }
 
-    /* SMALL PREVIEW COLUMN CARD */
+    /* SMALL PREVIEW COLUMN CARD WITH EXACT SPECIFIED BACKGROUND IMAGES */
     .social-media-card {
       border-radius: 20px !important;
       padding: 0 !important;
@@ -390,15 +390,18 @@
       padding: 14px 14px 34px 14px;
     }
 
-    /* The original distinct atmospheric backgrounds for the small column */
+    /* EXACT SPECIFIED LOCAL BACKGROUND FILES */
     #previewSlide0 {
-      background: linear-gradient(180deg, rgba(3,7,18,0.2) 0%, rgba(3,7,18,0.92) 80%), url('news-bg.jpg') center/cover no-repeat, #0f172a;
+      background-image: linear-gradient(180deg, rgba(3,7,18,0.25) 0%, rgba(3,7,18,0.92) 80%), url('social-bg-1.jpg');
+      background-color: #0f172a;
     }
     #previewSlide1 {
-      background: linear-gradient(180deg, rgba(3,7,18,0.2) 0%, rgba(3,7,18,0.92) 80%), url('fans-bg.jpg') center/cover no-repeat, #1e1b4b;
+      background-image: linear-gradient(180deg, rgba(3,7,18,0.25) 0%, rgba(3,7,18,0.92) 80%), url('social-bg-2.jpg');
+      background-color: #1e1b4b;
     }
     #previewSlide2 {
-      background: linear-gradient(180deg, rgba(3,7,18,0.2) 0%, rgba(3,7,18,0.92) 80%), url('legends-bg.jpg') center/cover no-repeat, #172554;
+      background-image: linear-gradient(180deg, rgba(3,7,18,0.25) 0%, rgba(3,7,18,0.92) 80%), url('social-bg-3.jpg');
+      background-color: #172554;
     }
 
     .tap-expand-hint {
@@ -1472,7 +1475,7 @@
           </div>
         </div>
 
-        <!-- SMALL PREVIEW COLUMN - RESTORED ORIGINAL BACKGROUNDS -->
+        <!-- SMALL PREVIEW COLUMN - USING EXACT LOCAL BACKGROUND IMAGES -->
         <div class="social-media-card" onclick="openCurrentSlideCategory()">
           <span class="tap-expand-hint">Tap to expand ↗</span>
           <div class="social-carousel-viewport" id="socialViewport" onscroll="handleSocialScroll(event)">
@@ -1704,7 +1707,7 @@
       <!-- SEPARATE TABS WITH DEDICATED AI & NEWS SECTION -->
       <div class="admin-subnav-pills">
         <button class="admin-pill-btn active" onclick="switchAdminSection('managers', this)">🏆 Managers</button>
-        <button class="admin-pill-btn" onclick="switchAdminSection('teams', this)">🛡️️ Teams</button>
+        <button class="admin-pill-btn" onclick="switchAdminSection('teams', this)">🛡 Teams</button>
         <button class="admin-pill-btn" onclick="switchAdminSection('fixtures', this)">⚽ Fixtures</button>
         <button class="admin-pill-btn" onclick="switchAdminSection('ucl', this)">⭐ UCL Stage</button>
         <button class="admin-pill-btn" onclick="switchAdminSection('league', this)">⚙️ League & Season</button>
@@ -1761,7 +1764,7 @@
 
       <!-- 2. TEAMS SECTION -->
       <div id="admin-sec-teams" class="admin-section-pane">
-        <div class="admin-pane-title">🛡️ Club & Team Management</div>
+        <div class="admin-pane-title">🛡 Club & Team Management</div>
 
         <div class="form-group">
           <label>Add New Club</label>
@@ -1904,7 +1907,7 @@
           <label>Live AI Content Generator</label>
           <button class="btn" onclick="triggerAiNewsGeneration()">⚡ Re-generate Media Feed Now</button>
           <span style="display:block; font-size:10px; color:var(--muted); margin-top:5px;">
-            Triggers Gemini text models + Pollinations AI images based on your latest matches and manager histories.
+            Generates 5+ Official News Reports and 5+ Twitter/X Fan Reactions based on live tournament drama.
           </span>
         </div>
       </div>
@@ -1924,7 +1927,7 @@
         <button class="modal-close-btn" onclick="closeExpandedFeedModal()">✕</button>
       </div>
       <div class="modal-scrollable-feed" id="modalFeedScrollContainer">
-        <!-- Strictly Isolated Category Stories (Only News OR Only Social OR Only Legends) -->
+        <!-- 5+ Filtered Category Stories (Scrollable) -->
       </div>
     </div>
   </div>
@@ -2139,7 +2142,7 @@
       return `https://image.pollinations.ai/prompt/${cleanPrompt}?width=640&height=880&nologo=true&seed=${Math.floor(Math.random() * 99999)}`;
     }
 
-    // MULTI-STORY GEMINI AI GENERATOR
+    // MULTI-STORY GEMINI AI GENERATOR: MINIMUM 5 NEWS + 5 SOCIAL MEDIA ITEMS
     async function triggerAiNewsGeneration() {
       const results = state.results || [];
       const standings = calculateStandingsForComp('league');
@@ -2184,16 +2187,16 @@ Latest Match Event:
 ${matchDesc}
 
 TASK:
-Generate a JSON array of 9 to 12 realistic items divided equally across 3 distinct categories:
-1. "category": "news" (Official breaking sports journalism, manager press conference quotes, tactical math, and title race pressure. 3 to 4 items).
-2. "category": "social" (Twitter/X fan channel tweets, trolls, fan meltdowns with hashtags like #ManagerOut or #Masterclass. 3 to 4 items).
-3. "category": "legend" (Hard-hitting pundit quotes from ONLY retired icons like Zlatan Ibrahimović, Sir Alex Ferguson, Roy Keane, Thierry Henry, Arsène Wenger. 3 to 4 items).
+Generate a rich JSON array of AT LEAST 13 distinct items divided into 3 categories:
+1. "category": "news" (MUST GENERATE 5 OR MORE ITEMS: Official match analysis, press conference quotes, tactical formation reviews, title race math, and dressing room debriefs).
+2. "category": "social" (MUST GENERATE 5 OR MORE ITEMS: Authentic Twitter/X fan channel reactions, memes, toxic fan meltdowns, controller excuses, and hashtags like #ManagerOut, #Masterclass, #SackHim).
+3. "category": "legend" (MUST GENERATE 3 OR MORE ITEMS: Quotes from retired icons ONLY like Zlatan Ibrahimović, Sir Alex Ferguson, Roy Keane, Thierry Henry, Arsène Wenger).
 
 Format:
 [
   {
     "category": "news",
-    "author": "SKY SPORTS BREAKING",
+    "author": "SKY SPORTS VERDICT",
     "text": "...",
     "imagePrompt": "..."
   },
@@ -2210,7 +2213,7 @@ Format:
     "imagePrompt": "..."
   }
 ]
-Return ONLY raw valid JSON array. No markdown backticks.
+Return ONLY a raw valid JSON array. No markdown backticks.
 `;
 
       try {
@@ -2235,7 +2238,7 @@ Return ONLY raw valid JSON array. No markdown backticks.
 
         if (Array.isArray(parsedFeed) && parsedFeed.length > 0) {
           state.aiFeed = parsedFeed.map(item => ({
-            category: item.category || item.type || 'news',
+            category: (item.category || item.type || 'news').toLowerCase(),
             author: item.author || 'CCNN SPORTSWIRE',
             text: item.text,
             imageUrl: createSportsImageUrl(item.imagePrompt || (homeTeam ? homeTeam.name : 'football action night stadium'))
@@ -2256,14 +2259,14 @@ Return ONLY raw valid JSON array. No markdown backticks.
       const left = Math.max(0, seasonLimit - matchesPlayed);
 
       const items = [
-        // Category: news
+        // Category: news (5+ items)
         {
           category: 'news',
           author: '🚨 SKY SPORTS VERDICT',
           text: lastMatch 
             ? `FULL-TIME: ${hName} clash with ${aName} ends ${lastMatch.hScore}-${lastMatch.aScore}. With ${left} matches remaining, the title race is on a knife edge.`
             : `SEASON OPENER: Managers finalize strategies as the ${seasonLimit}-match campaign kicks off with zero margin for error.`,
-          imageUrl: createSportsImageUrl((homeTeam ? homeTeam.name : 'football') + ' tactical match floodlights dramatic stadium')
+          imageUrl: createSportsImageUrl('football tactical match floodlights dramatic stadium')
         },
         {
           category: 'news',
@@ -2283,8 +2286,14 @@ Return ONLY raw valid JSON array. No markdown backticks.
           text: `Manager speaks out in heated press conference: "We didn't take our chances early on, but nobody writes us off with points still on the board."`,
           imageUrl: createSportsImageUrl('football press conference microphones manager serious')
         },
+        {
+          category: 'news',
+          author: '⚡ DRESSING ROOM REPORT',
+          text: `Late substitutions spark intense discussions inside the tunnel. Physical conditioning and mental focus become prime concerns for next week.`,
+          imageUrl: createSportsImageUrl('football locker room stadium tunnel lights')
+        },
 
-        // Category: social
+        // Category: social (5+ items)
         {
           category: 'social',
           author: '🔥 @TacticsBanter',
@@ -2311,8 +2320,14 @@ Return ONLY raw valid JSON array. No markdown backticks.
           text: `Bro really thought he was prime Mourinho with that park-the-bus tactic. Conceded 2 in 5 minutes! Pack your bags! 😂`,
           imageUrl: createSportsImageUrl('football fans laughing stadium meme atmosphere')
         },
+        {
+          category: 'social',
+          author: '📢 @RivalWatch',
+          text: `Watching rival fans have a complete mental breakdown on my timeline is pure therapy. Enjoy the mud! 🍿😭`,
+          imageUrl: createSportsImageUrl('football fans cheering floodlights party')
+        },
 
-        // Category: legend
+        // Category: legend (3 items)
         {
           category: 'legend',
           author: 'Roy Keane',
@@ -2330,12 +2345,6 @@ Return ONLY raw valid JSON array. No markdown backticks.
           author: 'Sir Alex Ferguson',
           text: `When you enter the final matches of a campaign, you don't play pretty football—you find a way to win. Some managers panic under pressure.`,
           imageUrl: createSportsImageUrl('veteran football manager pitch sideline serious focus')
-        },
-        {
-          category: 'legend',
-          author: 'Thierry Henry',
-          text: `You have to look at the defensive line on set pieces. That isn't bad luck—that's complete lack of focus at the highest level.`,
-          imageUrl: createSportsImageUrl('football analyst tv studio pundits discussing tactics')
         }
       ];
 
@@ -2379,14 +2388,13 @@ Return ONLY raw valid JSON array. No markdown backticks.
       }
     }
 
-    // EXPANDED 50% MODAL WITH STRICT CATEGORY ISOLATION
+    // EXPANDED 50% MODAL WITH STRICT CATEGORY ISOLATION & 5+ ITEMS SUPPORT
     function openCategorizedFeedModal(targetCat) {
       const modal = document.getElementById('expandedNewsModal');
       const container = document.getElementById('modalFeedScrollContainer');
       const titleMain = document.getElementById('modalCategoryTitle');
       const feed = state.aiFeed || [];
 
-      // STRICT NORMALIZER: Checks both .category and .type so they NEVER mix together
       function matchesCategory(item, cat) {
         const itemCat = (item.category || item.type || '').toLowerCase();
         if (cat === 'news') return itemCat === 'news' || itemCat === 'media' || itemCat === 'future';
@@ -2399,29 +2407,40 @@ Return ONLY raw valid JSON array. No markdown backticks.
 
       if (targetCat === 'news') {
         titleMain.textContent = "Official Media & News";
-        if (filteredFeed.length === 0) {
-          filteredFeed = [
+        if (filteredFeed.length < 5) {
+          const defaultNews = [
             {
               author: '🚨 SKY SPORTS VERDICT',
-              text: 'Tactical clash reshapes the table. Title fight heads into decisive remaining weeks.',
+              text: 'Tactical clash reshapes the table. Title fight heads into decisive remaining weeks with intense pressure.',
               imageUrl: createSportsImageUrl('football tactical match floodlights dramatic stadium')
             },
             {
               author: '📰 THE ATHLETIC DEBRIEF',
-              text: 'Press conference review: Managers analyze fine margins and remaining season points.',
+              text: 'Press conference review: Managers analyze fine margins and remaining season points in heated exchange.',
               imageUrl: createSportsImageUrl('football press conference microphones manager serious')
             },
             {
               author: '📊 TITLE RACE EQUATION',
               text: 'Standings calculation shows high pressure at the top with zero room for defensive slip-ups.',
               imageUrl: createSportsImageUrl('championship trophy golden confetti stadium celebration')
+            },
+            {
+              author: '⚡ DRESSING ROOM REPORT',
+              text: 'Squad morale assessed after physical 90 minutes. Tactical shifts planned for upcoming critical matchday.',
+              imageUrl: createSportsImageUrl('football locker room stadium tunnel lights')
+            },
+            {
+              author: '🎯 TACTICAL REWIND',
+              text: 'How wing play and set-piece marking determined the final outcome of the latest league clash.',
+              imageUrl: createSportsImageUrl('tactical manager dugout rain moody football scene')
             }
           ];
+          filteredFeed = [...filteredFeed, ...defaultNews].slice(0, 7);
         }
       } else if (targetCat === 'social') {
         titleMain.textContent = "Fans X / Social Media Feed";
-        if (filteredFeed.length === 0) {
-          filteredFeed = [
+        if (filteredFeed.length < 5) {
+          const defaultSocial = [
             {
               author: '🔥 @TacticsBanter',
               text: 'Unbelievable performance today! Fans dancing in the timeline. #Masterclass #Cooking',
@@ -2436,8 +2455,19 @@ Return ONLY raw valid JSON array. No markdown backticks.
               author: '⚡ @eSportsUltras',
               text: 'Another massive 3 points in the bag. Keep doubting our squad! #PureMentality',
               imageUrl: createSportsImageUrl('ecstatic football fans celebrating flares stands')
+            },
+            {
+              author: '💀 @TrollFootball',
+              text: 'Bro really thought he had prime Pep tactics. Conceded on the counter immediately! 😭 #Frauds',
+              imageUrl: createSportsImageUrl('football fans laughing stadium meme atmosphere')
+            },
+            {
+              author: '🍿 @MatchdayDrama',
+              text: 'Checking Twitter after a blowout match never disappoints. Absolute meltdown in the spaces! 😂',
+              imageUrl: createSportsImageUrl('football fans cheering floodlights party')
             }
           ];
+          filteredFeed = [...filteredFeed, ...defaultSocial].slice(0, 7);
         }
       } else {
         titleMain.textContent = "Legends & Pundits Verdict";
@@ -2730,7 +2760,7 @@ Return ONLY raw valid JSON array. No markdown backticks.
       document.getElementById('homeLastLeagueChamp').textContent = state.lastLeagueChamp || '--';
       document.getElementById('homeLastUclChamp').textContent = state.lastUclChamp || '--';
 
-      // RENDER COMPACT PREVIEW SLIDES WITH TEXT ONLY (ORIGINAL BACKGROUNDS PRESERVED)
+      // RENDER COMPACT PREVIEW SLIDES WITH TEXT (BACKGROUNDS MANAGED BY EXACT FILES)
       const feed = state.aiFeed || [];
       const newsItem = feed.find(i => (i.category === 'news' || i.type === 'media' || i.type === 'future')) || {
         text: 'Title battle heating up as managers navigate high-pressure fixtures.'
@@ -3206,7 +3236,7 @@ Return ONLY raw valid JSON array. No markdown backticks.
       state.ucl.semiAway = document.getElementById('setSemiAway').value || 'Monaco';
       state.ucl.semiAScore = parseInt(document.getElementById('setSemiAScore').value) || 0;
 
-      state.ucl.finalHome = document.getElementById('setFinalHome').value || 'Real Madrid';
+      state.finalHome = document.getElementById('setFinalHome').value || 'Real Madrid';
       state.ucl.finalHScore = parseInt(document.getElementById('setFinalHScore').value) || 0;
       state.ucl.finalAway = document.getElementById('setFinalAway').value || 'Sparta FC';
       state.ucl.finalAScore = parseInt(document.getElementById('setFinalAScore').value) || 0;
