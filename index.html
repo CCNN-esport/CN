@@ -73,7 +73,7 @@
       100% { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    /* COMPACT HEADER (SLIMMER RED LINE HEIGHT) */
+    /* COMPACT HEADER */
     header {
       position: sticky;
       top: 0;
@@ -171,7 +171,6 @@
       -webkit-backdrop-filter: blur(30px) saturate(190%);
     }
 
-    /* RESTORED CLEAN, NORMAL-SIZED GLASS CARDS */
     .league-banner,
     .hero-leader-card,
     .champion-subcard,
@@ -191,7 +190,6 @@
       transition: transform 0.3s var(--ios-spring), box-shadow 0.3s var(--ios-spring);
     }
 
-    /* NORMAL ORIGINAL BANNER SIZE ACROSS ALL TABS */
     .league-banner {
       border-radius: 20px;
       padding: 14px 18px;
@@ -301,7 +299,7 @@
       gap: 4px;
     }
 
-    /* 2-COLUMN SECTION: STACKED CHAMPIONS ON LEFT + FULL-FIT SOCIAL MEDIA ON RIGHT */
+    /* 2-COLUMN SECTION: STACKED CHAMPIONS ON LEFT + PREVIEW CARD ON RIGHT */
     .home-mid-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -351,7 +349,7 @@
       margin-top: 4px;
     }
 
-    /* EDGE-TO-EDGE FULL-FITTED SOCIAL MEDIA CARD & DYNAMIC FEED */
+    /* PREVIEW CARD CLICKABLE TO OPEN EXPANDED MODAL */
     .social-media-card {
       border-radius: 20px !important;
       padding: 0 !important;
@@ -360,6 +358,7 @@
       position: relative;
       overflow: hidden;
       border: 1px solid var(--glass-border) !important;
+      cursor: pointer;
     }
 
     .social-carousel-viewport {
@@ -391,16 +390,20 @@
       padding: 14px 14px 34px 14px;
     }
 
-    .social-slide-1 {
-      background-image: linear-gradient(180deg, rgba(3, 7, 18, 0.15) 0%, rgba(3, 7, 18, 0.88) 85%), url('social-bg-1.jpg'), url('Social-bg-1.jpg');
-    }
-
-    .social-slide-2 {
-      background-image: linear-gradient(180deg, rgba(3, 7, 18, 0.15) 0%, rgba(3, 7, 18, 0.88) 85%), url('social-bg-2.jpg'), url('Social-bg-2.jpg');
-    }
-
-    .social-slide-3 {
-      background-image: linear-gradient(180deg, rgba(3, 7, 18, 0.15) 0%, rgba(3, 7, 18, 0.88) 85%), url('social-bg-3.jpg'), url('Social-bg-3.jpg');
+    .tap-expand-hint {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 9px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #fff;
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 3px 8px;
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
     }
 
     .feed-tag {
@@ -435,7 +438,6 @@
       justify-content: center;
       gap: 7px;
       z-index: 10;
-      pointer-events: none;
     }
 
     .social-dot {
@@ -454,6 +456,153 @@
       border-radius: 8px;
       background: var(--accent);
       box-shadow: 0 0 10px var(--accent);
+    }
+
+    /* EXPANDED FEED POP-UP MODAL (NON FULL-SCREEN WITH BLUR) */
+    .news-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 7, 18, 0.72);
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      transition: opacity 0.3s var(--ios-spring);
+    }
+
+    .news-modal-overlay.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .news-modal-dialog {
+      width: 100%;
+      max-width: 480px;
+      height: 82vh;
+      max-height: 720px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.05) 100%);
+      backdrop-filter: blur(34px) saturate(210%);
+      -webkit-backdrop-filter: blur(34px) saturate(210%);
+      border: 1px solid rgba(255, 255, 255, 0.38);
+      border-radius: 26px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 1px var(--glass-specular);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transform: scale(0.94);
+      transition: transform 0.3s var(--ios-spring);
+    }
+
+    .news-modal-overlay.active .news-modal-dialog {
+      transform: scale(1);
+    }
+
+    .modal-header-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .modal-title-wrap {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-title-tag {
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .modal-title-main {
+      font-size: 16px;
+      font-weight: 900;
+      color: #fff;
+      text-transform: uppercase;
+    }
+
+    .modal-close-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4);
+    }
+
+    .modal-scrollable-feed {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      scrollbar-width: none;
+    }
+    .modal-scrollable-feed::-webkit-scrollbar { display: none; }
+
+    .modal-feed-card {
+      border-radius: 18px;
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      position: relative;
+      min-height: 170px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 14px;
+    }
+
+    .modal-feed-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(3, 7, 18, 0.1) 0%, rgba(3, 7, 18, 0.88) 75%);
+      z-index: 1;
+    }
+
+    .modal-card-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .modal-card-author {
+      font-size: 10px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .modal-card-body {
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.4;
+      color: #ffffff;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
     }
 
     .prediction-card {
@@ -984,7 +1133,6 @@
       text-shadow: 0 0 8px var(--accent-glow);
     }
 
-    /* COMPACT SHOWCASE ROOM */
     .trophy-room-showcase-wrap {
       position: relative;
       width: 100%;
@@ -1280,7 +1428,7 @@
         </div>
       </div>
 
-      <!-- MID GRID: STACKED CHAMPIONS ON LEFT + FULL-FIT SOCIAL MEDIA ON RIGHT -->
+      <!-- MID GRID: STACKED CHAMPIONS ON LEFT + PREVIEW CARD ON RIGHT -->
       <div class="home-mid-grid">
         <div class="stacked-champs-column">
           <div class="champion-subcard champ-card-league">
@@ -1304,30 +1452,31 @@
           </div>
         </div>
 
-        <!-- SOCIAL MEDIA COLUMN (FULL-FIT EDGE-TO-EDGE 3-SLIDE CAROUSEL) -->
-        <div class="social-media-card">
-          <div class="social-carousel-viewport" id="socialViewport" onscroll="handleSocialScroll()">
+        <!-- SOCIAL & MEDIA PREVIEW CARD (OPENS EXPANDED MODAL ON TAP) -->
+        <div class="social-media-card" onclick="openExpandedFeedModal()">
+          <span class="tap-expand-hint">Tap to expand ↗</span>
+          <div class="social-carousel-viewport" id="socialViewport" onscroll="handleSocialScroll(event)">
             <!-- Slide 1: Official Media News -->
-            <div class="social-slide social-slide-1">
+            <div class="social-slide" id="previewSlide1">
               <div class="feed-tag feed-tag-media">📰 Latest Breaking</div>
-              <div class="feed-body-text" id="feedSlide1">Loading latest match report...</div>
+              <div class="feed-body-text" id="feedSlide1">Loading real-time sports news...</div>
             </div>
 
             <!-- Slide 2: Fans X / Twitter Banter -->
-            <div class="social-slide social-slide-2">
+            <div class="social-slide" id="previewSlide2">
               <div class="feed-tag feed-tag-fan">🔥 Fan Banter</div>
               <div class="feed-body-text" id="feedSlide2">Loading fan reactions...</div>
             </div>
 
             <!-- Slide 3: Retired Icons & Legends Opinions -->
-            <div class="social-slide social-slide-3">
+            <div class="social-slide" id="previewSlide3">
               <div class="feed-tag feed-tag-legend">⭐ Legend's Verdict</div>
               <div class="feed-body-text" id="feedSlide3">Loading pundit quotes...</div>
             </div>
           </div>
 
           <!-- 3 Floating Pagination Dots -->
-          <div class="social-dots-indicator">
+          <div class="social-dots-indicator" onclick="event.stopPropagation()">
             <span class="social-dot active" onclick="goToSocialSlide(0)"></span>
             <span class="social-dot" onclick="goToSocialSlide(1)"></span>
             <span class="social-dot" onclick="goToSocialSlide(2)"></span>
@@ -1348,7 +1497,7 @@
       </div>
     </div>
 
-    <!-- LEAGUE TAB (RESTORED TO CLEAN NORMAL SIZE LIKE BEFORE) -->
+    <!-- LEAGUE TAB -->
     <div id="page-league" class="view-card">
       <div class="league-banner">
         <div>
@@ -1522,7 +1671,7 @@
       <div id="managersListContainer"></div>
     </div>
 
-    <!-- USER-FRIENDLY REORGANIZED ADMIN TAB -->
+    <!-- REORGANIZED ADMIN TAB -->
     <div id="page-admin" class="view-card">
       <div class="league-banner">
         <div>
@@ -1532,16 +1681,17 @@
         <button onclick="lockAdmin()" style="background:rgba(239, 68, 68, 0.2); border:1px solid rgba(239, 68, 68, 0.5); color:#fff; padding:4px 10px; border-radius:12px; font-size:10px; font-weight:800; cursor:pointer;">LOCK 🔒</button>
       </div>
 
-      <!-- Quick category sub-navigation -->
+      <!-- SEPARATE TABS WITH DEDICATED AI & NEWS SECTION -->
       <div class="admin-subnav-pills">
         <button class="admin-pill-btn active" onclick="switchAdminSection('managers', this)">🏆 Managers</button>
         <button class="admin-pill-btn" onclick="switchAdminSection('teams', this)">🛡️ Teams</button>
         <button class="admin-pill-btn" onclick="switchAdminSection('fixtures', this)">⚽ Fixtures</button>
         <button class="admin-pill-btn" onclick="switchAdminSection('ucl', this)">⭐ UCL Stage</button>
         <button class="admin-pill-btn" onclick="switchAdminSection('league', this)">⚙️ League & Season</button>
+        <button class="admin-pill-btn" onclick="switchAdminSection('ainews', this)">🤖 AI & News</button>
       </div>
 
-      <!-- 1. MANAGERS & TROPHIES SECTION -->
+      <!-- 1. MANAGERS SECTION -->
       <div id="admin-sec-managers" class="admin-section-pane active">
         <div class="admin-pane-title">🏆 Manager Profiles & Trophy Showcase</div>
         
@@ -1614,7 +1764,7 @@
         </div>
       </div>
 
-      <!-- 3. FIXTURES & RESULTS SECTION -->
+      <!-- 3. FIXTURES SECTION -->
       <div id="admin-sec-fixtures" class="admin-section-pane">
         <div class="admin-pane-title">⚽ Fixture Scheduler & Scorecard Entry</div>
 
@@ -1640,23 +1790,23 @@
         </div>
       </div>
 
-      <!-- 4. UCL KNOCKOUTS SECTION -->
+      <!-- 4. UCL SECTION -->
       <div id="admin-sec-ucl" class="admin-section-pane">
         <div class="admin-pane-title">⭐ UCL Knockouts & Crown Champion</div>
 
         <div class="form-group">
           <label>Semi Final Scores</label>
-          <input type="text" id="setSemiHome" placeholder="Home Team (e.g. Real)" style="margin-bottom:4px;">
+          <input type="text" id="setSemiHome" placeholder="Home Team" style="margin-bottom:4px;">
           <input type="number" id="setSemiHScore" placeholder="Home Goals" style="margin-bottom:4px;">
-          <input type="text" id="setSemiAway" placeholder="Away Team (e.g. Monaco)" style="margin-bottom:4px;">
+          <input type="text" id="setSemiAway" placeholder="Away Team" style="margin-bottom:4px;">
           <input type="number" id="setSemiAScore" placeholder="Away Goals">
         </div>
 
         <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.12); padding-top:10px;">
           <label>Final Match Scores</label>
-          <input type="text" id="setFinalHome" placeholder="Home Team (e.g. Real Madrid)" style="margin-bottom:4px;">
+          <input type="text" id="setFinalHome" placeholder="Home Team" style="margin-bottom:4px;">
           <input type="number" id="setFinalHScore" placeholder="Home Goals" style="margin-bottom:4px;">
-          <input type="text" id="setFinalAway" placeholder="Away Team (e.g. Sparta FC)" style="margin-bottom:4px;">
+          <input type="text" id="setFinalAway" placeholder="Away Team" style="margin-bottom:4px;">
           <input type="number" id="setFinalAScore" placeholder="Away Goals">
         </div>
 
@@ -1667,7 +1817,7 @@
         </div>
       </div>
 
-      <!-- 5. LEAGUE & SEASON SETTINGS -->
+      <!-- 5. LEAGUE RULES SECTION -->
       <div id="admin-sec-league" class="admin-section-pane">
         <div class="admin-pane-title">⚙️ League Rules & Season Finisher</div>
 
@@ -1700,7 +1850,7 @@
         </div>
 
         <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.12); padding-top:10px;">
-          <label>Past Season Winners (Home Screen)</label>
+          <label>Past Season Winners</label>
           <input type="text" id="adminLastLeagueChampInput" placeholder="Last Season League Winner" style="margin-bottom:4px;">
           <input type="text" id="adminLastUclChampInput" placeholder="Last Season UCL Winner" style="margin-bottom:6px;">
           <button class="btn" onclick="updatePastChampions()">Save Past Winners</button>
@@ -1717,9 +1867,47 @@
         </div>
       </div>
 
+      <!-- 6. SEPARATE DEDICATED AI & NEWS SETTINGS SECTION -->
+      <div id="admin-sec-ainews" class="admin-section-pane">
+        <div class="admin-pane-title">🤖 AI Newsroom & Cloud Configuration</div>
+
+        <div class="form-group">
+          <label style="color:var(--accent);">Private Google Gemini API Key</label>
+          <input type="password" id="adminGeminiKeyInput" placeholder="Paste your private Gemini API key">
+          <button class="btn btn-gold" onclick="saveGeminiApiKey()">🔒 Save Key Privately To Firebase</button>
+          <span style="display:block; font-size:10px; color:var(--muted); margin-top:5px;">
+            Stored securely inside your Realtime Database. Never exposed on GitHub.
+          </span>
+        </div>
+
+        <div class="form-group" style="border-top:1px solid rgba(255,255,255,0.12); padding-top:14px;">
+          <label>Live AI Content Generator</label>
+          <button class="btn" onclick="triggerAiNewsGeneration()">⚡ Re-generate Media Feed Now</button>
+          <span style="display:block; font-size:10px; color:var(--muted); margin-top:5px;">
+            Triggers Gemini text models + Pollinations AI images based on your latest matches and manager histories.
+          </span>
+        </div>
+      </div>
+
     </div>
 
   </main>
+
+  <!-- EXPANDED MULTI-NEWS MODAL WITH BLURRED BACKDROP -->
+  <div id="expandedNewsModal" class="news-modal-overlay" onclick="closeExpandedFeedModal()">
+    <div class="news-modal-dialog" onclick="event.stopPropagation()">
+      <div class="modal-header-strip">
+        <div class="modal-title-wrap">
+          <span class="modal-title-tag">CCNN SPORTSWIRE</span>
+          <span class="modal-title-main" id="modalCategoryTitle">Media & Fan Timeline</span>
+        </div>
+        <button class="modal-close-btn" onclick="closeExpandedFeedModal()">✕</button>
+      </div>
+      <div class="modal-scrollable-feed" id="modalFeedScrollContainer">
+        <!-- AI Generated Stories Streamed Here -->
+      </div>
+    </div>
+  </div>
 
   <!-- BOTTOM NAVIGATION -->
   <nav class="bottom-nav">
@@ -1775,6 +1963,10 @@
   </nav>
 
   <script>
+    // SECURE DYNAMIC GEMINI KEY (LOADED FROM PRIVATE FIREBASE, NEVER HARDCODED)
+    let GEMINI_API_KEY = "";
+
+    // FIREBASE INITIALIZATION
     const firebaseConfig = {
       apiKey: "AIzaSyBQ9Gt_u581RDoc4OlJ2yC-bk5SFqR-fC8",
       authDomain: "ccnn-esport.firebaseapp.com",
@@ -1798,36 +1990,29 @@
       lastLeagueChamp: 'Real Madrid',
       lastUclChamp: 'Real Madrid',
       uclSpots: 4,
+      geminiKey: "",
+      aiFeed: [],
       managers: [
         {
           id: '1',
           name: 'Nasif',
           playstyle: 'Quick Counter',
           teamId: '3',
-          trophies: {
-            ucl: 4,
-            league: 4
-          }
+          trophies: { ucl: 4, league: 4 }
         },
         {
           id: '2',
           name: 'Thameem',
           playstyle: 'Possession',
           teamId: '5',
-          trophies: {
-            ucl: 0,
-            league: 0
-          }
+          trophies: { ucl: 0, league: 0 }
         },
         {
           id: '3',
           name: 'shifan',
           playstyle: 'Quick Counter',
           teamId: '4',
-          trophies: {
-            ucl: 0,
-            league: 0
-          }
+          trophies: { ucl: 0, league: 0 }
         }
       ],
       teams: [
@@ -1861,21 +2046,16 @@
         if (!state.teams) state.teams = [];
         if (!state.fixtures) state.fixtures = [];
         if (!state.results) state.results = [];
+        if (!state.aiFeed) state.aiFeed = [];
         if (!state.ucl) state.ucl = defaultState.ucl;
         if (!state.matchesPerTeam) state.matchesPerTeam = 10;
         
+        if (state.geminiKey) {
+          GEMINI_API_KEY = state.geminiKey;
+        }
+
         if (!state.managers || !Array.isArray(state.managers)) {
-          if (state.manager) {
-            state.managers = [{
-              id: '1',
-              name: state.manager.name || 'Nasif',
-              playstyle: 'Quick Counter',
-              teamId: state.manager.teamId || '3',
-              trophies: { ucl: 4, league: 4 }
-            }];
-          } else {
-            state.managers = defaultState.managers;
-          }
+          state.managers = defaultState.managers;
         }
 
         state.managers.forEach((m) => {
@@ -1912,30 +2092,193 @@
       return `<span class="team-badge" style="${extraStyle}">${initial}</span>`;
     }
 
+    function getTeam(id) {
+      return (state.teams || []).find(t => t.id === id) || { name: 'Unknown Club', logo: '' };
+    }
+
     function getManagerForTeam(teamId) {
       if (!state.managers) return null;
       return state.managers.find(m => m.teamId === teamId);
     }
 
-    function getEntityName(teamId, format = 'mixed') {
-      const team = getTeam(teamId);
-      const mgr = getManagerForTeam(teamId);
-
-      if (!mgr) return team.name;
-
-      if (format === 'mgr') return mgr.name;
-      if (format === 'team') return team.name;
-      if (format === 'both') return `${mgr.name}'s ${team.name}`;
-
-      const styles = [
-        team.name,
-        mgr.name,
-        `${mgr.name}'s ${team.name}`
-      ];
-      return styles[Math.floor(Math.random() * styles.length)];
+    function getManagerHistoryString(mgr) {
+      if (!mgr) return 'No official manager registered';
+      const ucl = mgr.trophies?.ucl || 0;
+      const l = mgr.trophies?.league || 0;
+      const total = ucl + l;
+      if (total === 0) {
+        return `${mgr.name} has ZERO trophies in their career so far. Extreme trophy drought and intense sacking pressure.`;
+      }
+      return `${mgr.name} has won ${total} trophies (${l} Leagues, ${ucl} Champions Leagues). High pedigree with elite expectations.`;
     }
 
-    function handleSocialScroll() {
+    // POLLINATIONS AI URL-BASED SPORTS IMAGE GENERATOR
+    function createSportsImageUrl(promptKeywords) {
+      const cleanPrompt = encodeURIComponent(`photorealistic football match sports photography, ${promptKeywords}, dramatic stadium floodlights, cinematic broadcast angle, high action depth of field, 8k quality`);
+      return `https://image.pollinations.ai/prompt/${cleanPrompt}?width=640&height=880&nologo=true&seed=${Math.floor(Math.random() * 99999)}`;
+    }
+
+    // AUTOMATIC GOOGLE GEMINI AI MEDIA NEWS ENGINE
+    async function triggerAiNewsGeneration() {
+      const results = state.results || [];
+      const standings = calculateStandingsForComp('league');
+      const seasonLimit = state.matchesPerTeam || 10;
+
+      let lastMatch = null;
+      let homeTeam = null;
+      let awayTeam = null;
+      let homeMgr = null;
+      let awayMgr = null;
+
+      if (results.length > 0) {
+        lastMatch = results[results.length - 1];
+        homeTeam = getTeam(lastMatch.homeId);
+        awayTeam = getTeam(lastMatch.awayId);
+        homeMgr = getManagerForTeam(lastMatch.homeId);
+        awayMgr = getManagerForTeam(lastMatch.awayId);
+      }
+
+      if (!GEMINI_API_KEY) {
+        console.log("No Gemini API key detected in Firebase. Falling back to built-in rule engine.");
+        fallbackGenerateFeed(lastMatch, homeTeam, awayTeam, homeMgr, awayMgr, standings, seasonLimit);
+        return;
+      }
+
+      const matchDesc = lastMatch 
+        ? `${homeMgr ? homeMgr.name + "'s " : ""}${homeTeam.name} played against ${awayMgr ? awayMgr.name + "'s " : ""}${awayTeam.name}. Score ended ${homeTeam.name} ${lastMatch.hScore} - ${lastMatch.aScore} ${awayTeam.name}.`
+        : "The league season is kicking off with high expectations.";
+
+      const promptContext = `
+You are the elite sports editor, social media troll master, and television pundit director for an esports football league titled "${state.leagueName}".
+Current Season: ${state.season}.
+Season Target: Each team plays ${seasonLimit} matches total.
+
+Current League Standings:
+${standings.map((s, idx) => `#${idx + 1} ${s.name} (${s.pts} pts, ${s.p}/${seasonLimit} matches played, GD: ${s.gd})`).join('\n')}
+
+Manager Histories:
+${(state.managers || []).map(m => `- ${m.name} managing ${getTeam(m.teamId).name}: ${getManagerHistoryString(m)}`).join('\n')}
+
+Latest Match Event:
+${matchDesc}
+
+TASK:
+Generate a JSON array containing between 3 to 5 realistic, dramatic media items covering the match, future title consequences, manager pressure/trophy droughts, and fan emotions.
+
+Include:
+1. Type "media": Breaking Sky Sports/The Athletic style headline with manager tactics and remaining matches.
+2. Type "fan": Authentic, toxic, funny Twitter/X fan channel meltdown or banter with hashtags (#ManagerOut, #Masterclass, etc.).
+3. Type "legend": Harsh or iconic quote from ONLY retired icons (Zlatan Ibrahimović, Sir Alex Ferguson, Roy Keane, Thierry Henry, or Arsène Wenger) critiquing past trophies and grit.
+4. Type "future": High-stakes breakdown of what happens next week for qualification or relegation.
+
+Return ONLY a valid JSON array of objects. No markdown backticks, no explanations.
+Format:
+[
+  {
+    "type": "media",
+    "author": "SKY SPORTS BREAKING",
+    "text": "...",
+    "imagePrompt": "..."
+  },
+  {
+    "type": "fan",
+    "author": "@FanVoice",
+    "text": "...",
+    "imagePrompt": "..."
+  },
+  {
+    "type": "legend",
+    "author": "Roy Keane",
+    "text": "...",
+    "imagePrompt": "..."
+  },
+  {
+    "type": "future",
+    "author": "TITLE RACE MATH",
+    "text": "...",
+    "imagePrompt": "..."
+  }
+]
+`;
+
+      try {
+        const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: promptContext }] }]
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('Gemini API Error: ' + response.statusText);
+        }
+
+        const resData = await response.json();
+        let rawContent = resData.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        
+        rawContent = rawContent.replace(/```json/gi, '').replace(/```/g, '').trim();
+        const parsedFeed = JSON.parse(rawContent);
+
+        if (Array.isArray(parsedFeed) && parsedFeed.length > 0) {
+          state.aiFeed = parsedFeed.map(item => ({
+            type: item.type || 'media',
+            author: item.author || 'CCNN SPORTSWIRE',
+            text: item.text,
+            imageUrl: createSportsImageUrl(item.imagePrompt || (homeTeam ? homeTeam.name : 'football stadium celebration'))
+          }));
+          saveState();
+        }
+      } catch (err) {
+        console.warn("AI generation failed, applying realistic fallback:", err);
+        fallbackGenerateFeed(lastMatch, homeTeam, awayTeam, homeMgr, awayMgr, standings, seasonLimit);
+      }
+    }
+
+    function fallbackGenerateFeed(lastMatch, homeTeam, awayTeam, homeMgr, awayMgr, standings, seasonLimit) {
+      const leader = standings[0] || { name: 'Sparta FC', pts: 0 };
+      const hName = homeMgr ? `${homeMgr.name}'s ${homeTeam.name}` : (homeTeam ? homeTeam.name : 'Real Madrid');
+      const aName = awayMgr ? `${awayMgr.name}'s ${awayTeam.name}` : (awayTeam ? awayTeam.name : 'Liverpool');
+      const matchesPlayed = (homeTeam && standings.find(t => t.id === homeTeam.id))?.p || 1;
+      const left = Math.max(0, seasonLimit - matchesPlayed);
+
+      const items = [
+        {
+          type: 'media',
+          author: '🚨 SKY SPORTS VERDICT',
+          text: lastMatch 
+            ? `FULL-TIME: ${hName} clash with ${aName} ends ${lastMatch.hScore}-${lastMatch.aScore}. With ${left} matches remaining, the title race is on a knife edge.`
+            : `SEASON OPENER: Managers finalize strategies as the ${seasonLimit}-match campaign kicks off with zero margin for error.`,
+          imageUrl: createSportsImageUrl((homeTeam ? homeTeam.name : 'football') + ' tactical match floodlights')
+        },
+        {
+          type: 'fan',
+          author: '🔥 @TacticsBanter',
+          text: lastMatch 
+            ? `${lastMatch.hScore > lastMatch.aScore ? `${hName} pure cooking today! ${aName} fans crying on the timeline 😭 #Masterclass` : `${aName} stole all 3 points! Sack the manager tonight, I'm tired. #OutNow`}`
+            : `@eSportsUltras: Ready for war! If my manager drops points on matchday 1, don't show your face on Twitter.`,
+          imageUrl: createSportsImageUrl('passionate football fans celebrating flares stadium night')
+        },
+        {
+          type: 'legend',
+          author: 'Roy Keane',
+          text: `Five seasons with zero trophies? At this level, you don't survive without silverware. What I saw today lacked character and fight.`,
+          imageUrl: createSportsImageUrl('dramatic solitary player rain football pitch moody atmosphere')
+        },
+        {
+          type: 'future',
+          author: '📊 TITLE RACE EQUATION',
+          text: `${leader.name} can mathematically seal the championship in the upcoming matchweek if results go their way. ${left} finals left.`,
+          imageUrl: createSportsImageUrl('championship trophy golden confetti stadium celebration')
+        }
+      ];
+
+      state.aiFeed = items;
+      saveState();
+    }
+
+    function handleSocialScroll(e) {
       const viewport = document.getElementById('socialViewport');
       if (!viewport) return;
       const scrollPos = viewport.scrollLeft;
@@ -1959,114 +2302,41 @@
       });
     }
 
-    function generateSocialFeed(standings) {
-      const results = state.results || [];
-      const leader = standings && standings.length > 0 ? standings[0] : null;
-      const second = standings && standings.length > 1 ? standings[1] : null;
-      const seasonTarget = state.matchesPerTeam || 10;
+    function openExpandedFeedModal() {
+      const modal = document.getElementById('expandedNewsModal');
+      const container = document.getElementById('modalFeedScrollContainer');
+      const feed = state.aiFeed || [];
 
-      // 1. PAGE 1: OFFICIAL MEDIA REPORT
-      let mediaHeadline = "";
-      if (results.length > 0) {
-        const lastR = results[results.length - 1];
-        const hTeam = getTeam(lastR.homeId);
-        const aTeam = getTeam(lastR.awayId);
-        const hMgr = getManagerForTeam(lastR.homeId);
-        const aMgr = getManagerForTeam(lastR.awayId);
-
-        const hEntity = hMgr ? (Math.random() > 0.5 ? `${hMgr.name}'s ${hTeam.name}` : hMgr.name) : hTeam.name;
-        const aEntity = aMgr ? (Math.random() > 0.5 ? `${aMgr.name}'s ${aTeam.name}` : aMgr.name) : aTeam.name;
-
-        const homeMatchesPlayed = (standings.find(t => t.id === lastR.homeId) || {}).p || 0;
-        const matchesRemaining = Math.max(0, seasonTarget - homeMatchesPlayed);
-
-        if (leader && second && matchesRemaining <= 2 && matchesRemaining > 0 && (leader.pts - second.pts >= 4)) {
-          const leaderMgr = getManagerForTeam(leader.id);
-          const leaderName = leaderMgr ? `${leaderMgr.name}'s ${leader.name}` : leader.name;
-          mediaHeadline = `"TITLE ON THE BRINK: ${leaderName} can mathematically seal the championship next matchweek with ${matchesRemaining} games remaining!"`;
-        } else if (matchesRemaining === 0) {
-          mediaHeadline = `"FINAL WHISTLE: The ${seasonTarget}-match campaign reaches conclusion. Standings locked as champions prepare to lift silverware."`;
-        } else if (lastR.hScore > lastR.aScore) {
-          mediaHeadline = `"STATEMENT VICTORY: ${hEntity} secure crucial 3 points beating ${aEntity} ${lastR.hScore}-${lastR.aScore}. ${matchesRemaining} games left in the season race."`;
-        } else if (lastR.aScore > lastR.hScore) {
-          mediaHeadline = `"UPSET AWAY: ${aEntity} stun ${hEntity} with a decisive ${lastR.aScore}-${lastR.hScore} win, blowing the top-4 qualification race wide open!"`;
-        } else {
-          mediaHeadline = `"POINTS SHARED: ${hEntity} and ${aEntity} settle for tense ${lastR.hScore}-${lastR.hScore} draw. Neither side takes advantage with ${matchesRemaining} matches to play."`;
-        }
-      } else if (leader) {
-        const lMgr = getManagerForTeam(leader.id);
-        const lName = lMgr ? `${lMgr.name}'s ${leader.name}` : leader.name;
-        mediaHeadline = `"SEASON PREVIEW: All clubs prepare for a grueling ${seasonTarget}-match campaign. ${lName} tipped as early favorites."`;
+      if (feed.length === 0) {
+        container.innerHTML = `<p style="text-align:center; color:var(--muted); padding:30px;">Generating latest match reports...</p>`;
       } else {
-        mediaHeadline = `"The ${seasonTarget}-match championship race begins today with squads finalizing tactical formations."`;
+        container.innerHTML = feed.map(item => {
+          let authorColor = 'var(--accent)';
+          if (item.type === 'fan') authorColor = '#f43f5e';
+          if (item.type === 'legend') authorColor = 'var(--gold)';
+          if (item.type === 'future') authorColor = '#38bdf8';
+
+          return `
+            <div class="modal-feed-card" style="background-image: url('${item.imageUrl}');">
+              <div class="modal-card-content">
+                <div class="modal-card-author" style="color:${authorColor}; text-shadow:0 0 10px ${authorColor};">
+                  ${item.author}
+                </div>
+                <div class="modal-card-body">
+                  ${item.text}
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
       }
 
-      // 2. PAGE 2: FANS TWITTER / X BANTER & MEME TROLLS
-      let fanBanter = "";
-      if (results.length > 0) {
-        const lastR = results[results.length - 1];
-        const hTeam = getTeam(lastR.homeId);
-        const aTeam = getTeam(lastR.awayId);
-        const hMgr = getManagerForTeam(lastR.homeId);
-        const aMgr = getManagerForTeam(lastR.awayId);
+      modal.classList.add('active');
+    }
 
-        const hName = hMgr ? (Math.random() > 0.4 ? hMgr.name : hTeam.name) : hTeam.name;
-        const aName = aMgr ? (Math.random() > 0.4 ? aMgr.name : aTeam.name) : aTeam.name;
-
-        const homeStanding = standings.find(t => t.id === lastR.homeId);
-        const remaining = Math.max(0, seasonTarget - (homeStanding ? homeStanding.p : 0));
-
-        if (lastR.hScore > lastR.aScore) {
-          const diff = lastR.hScore - lastR.aScore;
-          if (diff >= 3) {
-            fanBanter = `@FanZone: "${aName} got completely dismantled ${lastR.hScore}-${lastR.aScore} 💀 Delete club and unplug the router. Season's over with ${remaining} games left! #SackHim"`;
-          } else {
-            fanBanter = `@KopVibe: "${hName} tactical masterclass today! ${aName} fans in pure tears crying about referee decisions 😂 #EzPoints"`;
-          }
-        } else if (lastR.aScore > lastR.hScore) {
-          const diff = lastR.aScore - lastR.hScore;
-          if (diff >= 3) {
-            fanBanter = `@TacticsBanter: "Embarrassing display from ${hName}. Lost ${lastR.hScore}-${lastR.aScore} at home?! The fans outside the arena are demanding resignations right now."`;
-          } else {
-            fanBanter = `@MatchdayTroll: "${aName} stealing all 3 points in the 90th minute! ${hName} fans having a full meltdown on timeline 😭 #Robbery"`;
-          }
-        } else {
-          fanBanter = `@UltrasWeekly: "90 minutes of pure defensive snoozefest between ${hName} and ${aName}. Both managers playing for 0-0. My eyes are bleeding."`;
-        }
-      } else {
-        fanBanter = `@eSportsFan: "New season starting, ${seasonTarget} matches ahead! If my team drops points on matchday 1, I'm logging off Twitter."`;
-      }
-
-      // 3. PAGE 3: RETIRED PLAYERS & RETIRED LEGEND MANAGERS ONLY
-      let legendQuote = "";
-      if (results.length > 0) {
-        const lastR = results[results.length - 1];
-        const winnerTeamId = lastR.hScore > lastR.aScore ? lastR.homeId : (lastR.aScore > lastR.hScore ? lastR.awayId : null);
-        const loserTeamId = lastR.hScore > lastR.aScore ? lastR.awayId : (lastR.aScore > lastR.hScore ? lastR.homeId : null);
-
-        const winnerEntity = winnerTeamId ? getEntityName(winnerTeamId) : "Both teams";
-        const loserEntity = loserTeamId ? getEntityName(loserTeamId) : "neither side";
-
-        const legendPool = [
-          `Zlatan Ibrahimović: "I watched ${winnerEntity} today. Good, but they are lucky Zlatan is retired. If Zlatan played this season, trophy would be mine already."`,
-          `Thierry Henry: "When you look at ${loserEntity}, there is no composure in the final third. You can't blame luck when you make those defensive mistakes."`,
-          `Sir Alex Ferguson: "In a ${seasonTarget}-game league, concentration is everything. What I saw from ${loserEntity} today lacked the grit and character needed to be champions."`,
-          `Roy Keane: "Absolute disgrace from ${loserEntity}. No hunger, no tackles, walking around like it's a friendly. If that were my squad, they'd be running laps until midnight."`,
-          `Arsène Wenger: "Football is about efficiency. ${winnerEntity} respected the game and took their chances with complete tactical maturity."`
-        ];
-
-        legendQuote = legendPool[results.length % legendPool.length];
-      } else {
-        legendQuote = `Sir Alex Ferguson: "A ${seasonTarget}-match season is a marathon, not a sprint. The managers who keep their heads will lift the title."`;
-      }
-
-      const s1 = document.getElementById('feedSlide1');
-      const s2 = document.getElementById('feedSlide2');
-      const s3 = document.getElementById('feedSlide3');
-
-      if (s1) s1.textContent = mediaHeadline;
-      if (s2) s2.textContent = fanBanter;
-      if (s3) s3.textContent = legendQuote;
+    function closeExpandedFeedModal() {
+      const modal = document.getElementById('expandedNewsModal');
+      modal.classList.remove('active');
     }
 
     const trophyViewer = document.getElementById('uclTrophyModel');
@@ -2103,9 +2373,7 @@
     function toggleUclMusic() {
       if (!uclAudio) return;
       if (uclAudio.paused) {
-        uclAudio.play().then(() => {
-          updateMusicButtonUI();
-        }).catch(e => console.log("Play failed:", e));
+        uclAudio.play().then(() => updateMusicButtonUI()).catch(e => console.log(e));
       } else {
         uclAudio.pause();
         updateMusicButtonUI();
@@ -2113,9 +2381,7 @@
     }
 
     if (uclAudio) {
-      uclAudio.addEventListener('ended', () => {
-        updateMusicButtonUI();
-      });
+      uclAudio.addEventListener('ended', updateMusicButtonUI);
     }
 
     function switchAdminSection(sectionKey, btnEl) {
@@ -2142,12 +2408,7 @@
         if (uclMusicBtn) uclMusicBtn.style.display = 'inline-flex';
         if (uclAudio) {
           uclAudio.currentTime = 0;
-          uclAudio.play().then(() => {
-            updateMusicButtonUI();
-          }).catch(e => {
-            console.log("Autoplay blocked:", e);
-            updateMusicButtonUI();
-          });
+          uclAudio.play().then(() => updateMusicButtonUI()).catch(() => updateMusicButtonUI());
         }
       } else {
         if (uclMusicBtn) uclMusicBtn.style.display = 'none';
@@ -2166,10 +2427,7 @@
       const buttons = document.querySelectorAll('.nav-item');
       buttons.forEach(btn => {
         const btnText = btn.querySelector('span').textContent.toLowerCase().trim();
-        if (
-          btnText === tabKey.toLowerCase() ||
-          (tabKey === 'fixtures' && btnText === 'matches')
-        ) {
+        if (btnText === tabKey.toLowerCase() || (tabKey === 'fixtures' && btnText === 'matches')) {
           btn.classList.add('active');
         }
       });
@@ -2196,76 +2454,6 @@
         document.getElementById('sub-fixtures').style.display = 'none';
         document.getElementById('sub-results').style.display = 'block';
       }
-    }
-
-    function getTeam(id) {
-      return state.teams.find(t => t.id === id) || { name: 'Unknown Club', logo: '' };
-    }
-
-    function promptDirectFixtureScore(fixIndex) {
-      if (!isAdminUnlocked) return;
-
-      const f = state.fixtures[fixIndex];
-      if (!f) return;
-
-      const hTeam = getTeam(f.homeId);
-      const aTeam = getTeam(f.awayId);
-
-      const hVal = prompt(`Enter goals scored by ${hTeam.name}:`, "0");
-      if (hVal === null) return;
-
-      const aVal = prompt(`Enter goals scored by ${aTeam.name}:`, "0");
-      if (aVal === null) return;
-
-      const hScore = parseInt(hVal);
-      const aScore = parseInt(aVal);
-
-      if (isNaN(hScore) || isNaN(aScore) || hScore < 0 || aScore < 0) {
-        alert("Please enter valid positive numbers for goals.");
-        return;
-      }
-
-      if (!state.results) state.results = [];
-      state.results.push({
-        id: Date.now().toString(),
-        comp: f.comp,
-        homeId: f.homeId,
-        awayId: f.awayId,
-        hScore: hScore,
-        aScore: aScore,
-        time: f.time
-      });
-
-      state.fixtures.splice(fixIndex, 1);
-      saveState();
-    }
-
-    function promptDirectResultEdit(resIndex) {
-      if (!isAdminUnlocked) return;
-
-      const r = state.results[resIndex];
-      if (!r) return;
-
-      const hTeam = getTeam(r.homeId);
-      const aTeam = getTeam(r.awayId);
-
-      const hVal = prompt(`Edit goals for ${hTeam.name}:`, r.hScore);
-      if (hVal === null) return;
-
-      const aVal = prompt(`Edit goals for ${aTeam.name}:`, r.aScore);
-      if (aVal === null) return;
-
-      const hScore = parseInt(hVal);
-      const aScore = parseInt(aVal);
-
-      if (isNaN(hScore) || isNaN(aScore) || hScore < 0 || aScore < 0) {
-        alert("Please enter valid numbers.");
-        return;
-      }
-
-      r.hScore = hScore;
-      r.aScore = aScore;
-      saveState();
     }
 
     function calculateStandingsForComp(compType, filterTeams = null) {
@@ -2300,16 +2488,13 @@
 
         if (r.hScore > r.aScore) {
           home.w++; home.pts += 3; away.l++;
-          home.form.push('W');
-          away.form.push('L');
+          home.form.push('W'); away.form.push('L');
         } else if (r.hScore < r.aScore) {
           away.w++; away.pts += 3; home.l++;
-          home.form.push('L');
-          away.form.push('W');
+          home.form.push('L'); away.form.push('W');
         } else {
           home.d++; away.d++; home.pts += 1; away.pts += 1;
-          home.form.push('D');
-          away.form.push('D');
+          home.form.push('D'); away.form.push('D');
         }
       });
 
@@ -2395,8 +2580,43 @@
       document.getElementById('homeLastLeagueChamp').textContent = state.lastLeagueChamp || '--';
       document.getElementById('homeLastUclChamp').textContent = state.lastUclChamp || '--';
 
-      generateSocialFeed(leagueTable);
+      // RENDER COMPACT SOCIAL PREVIEWS
+      const feedItems = state.aiFeed && state.aiFeed.length >= 3 ? state.aiFeed : [
+        {
+          author: '🚨 SKY SPORTS NEWS',
+          text: 'Title battle heating up as managers navigate high-pressure fixtures.',
+          imageUrl: createSportsImageUrl('football stadium night floodlights dramatic match')
+        },
+        {
+          author: '🔥 @KopiteVibes',
+          text: 'One more win to guarantee our place! Fans are buzzing. #WeGoAgain',
+          imageUrl: createSportsImageUrl('ecstatic football fans celebrating flares stands')
+        },
+        {
+          author: 'Sir Alex Ferguson',
+          text: 'Concentration in the final weeks separates true champions from pretenders.',
+          imageUrl: createSportsImageUrl('tactical manager dugout rain moody football scene')
+        }
+      ];
 
+      const s1 = document.getElementById('previewSlide1');
+      const s2 = document.getElementById('previewSlide2');
+      const s3 = document.getElementById('previewSlide3');
+
+      if (s1) {
+        s1.style.backgroundImage = `linear-gradient(180deg, rgba(3,7,18,0.2) 0%, rgba(3,7,18,0.9) 85%), url('${feedItems[0].imageUrl}')`;
+        document.getElementById('feedSlide1').textContent = feedItems[0].text;
+      }
+      if (s2) {
+        s2.style.backgroundImage = `linear-gradient(180deg, rgba(3,7,18,0.2) 0%, rgba(3,7,18,0.9) 85%), url('${feedItems[1].imageUrl}')`;
+        document.getElementById('feedSlide2').textContent = feedItems[1].text;
+      }
+      if (s3) {
+        s3.style.backgroundImage = `linear-gradient(180deg, rgba(3,7,18,0.2) 0%, rgba(3,7,18,0.9) 85%), url('${feedItems[2].imageUrl}')`;
+        document.getElementById('feedSlide3').textContent = feedItems[2].text;
+      }
+
+      // Title Predictions Graph
       const predictions = calculateTitleProbabilities(leagueTable);
       const graphContainer = document.getElementById('predictionGraphContainer');
       if (predictions.length > 0) {
@@ -2421,11 +2641,10 @@
         graphContainer.innerHTML = `<div style="color:var(--muted); font-size:12px; margin:auto;">Add teams to generate predictions</div>`;
       }
 
-      // League Table
+      // League Standings Table
       const tbody = document.getElementById('leagueTableBody');
       tbody.innerHTML = leagueTable.map((t, idx) => {
         const isUcl = idx < state.uclSpots;
-
         const last5 = t.form.slice(-5);
         const formHtml = [0, 1, 2, 3, 4].map(i => {
           const outcome = last5[i];
@@ -2487,12 +2706,10 @@
         document.getElementById('semiHomeScore').textContent = state.ucl.semiHScore;
         document.getElementById('semiAwayName').textContent = state.ucl.semiAway;
         document.getElementById('semiAwayScore').textContent = state.ucl.semiAScore;
-
         document.getElementById('finalHomeName').textContent = state.ucl.finalHome;
         document.getElementById('finalHomeScore').textContent = state.ucl.finalHScore;
         document.getElementById('finalAwayName').textContent = state.ucl.finalAway;
         document.getElementById('finalAwayScore').textContent = state.ucl.finalAScore;
-        
         document.getElementById('uclWinnerName').textContent = state.ucl.champion || 'TBD';
       }
 
@@ -2502,7 +2719,6 @@
         const isUcl = f.comp === 'ucl';
         const hTeam = getTeam(f.homeId);
         const aTeam = getTeam(f.awayId);
-        const clickAction = isAdminUnlocked ? `onclick="promptDirectFixtureScore(${i})"` : '';
 
         return `
           <div class="match-date-header">
@@ -2512,12 +2728,12 @@
           <div class="match-glass-card" style="${isUcl ? 'border-color:rgba(59,130,246,0.5);' : ''}">
             <div class="team-row">
               <div class="team-info">${renderTeamBadge(hTeam, isUcl ? 'border-color:var(--ucl-blue);' : '')}<span>${hTeam.name}</span></div>
-              <span class="score-box" ${clickAction}>-</span>
+              <span class="score-box">-</span>
             </div>
             <span class="vs-pill" style="${isUcl ? 'color:var(--ucl-blue); border-color:var(--ucl-blue); background:rgba(59,130,246,0.15);' : ''}">VS</span>
             <div class="team-row">
               <div class="team-info">${renderTeamBadge(aTeam, isUcl ? 'border-color:var(--ucl-blue);' : '')}<span>${aTeam.name}</span></div>
-              <span class="score-box" ${clickAction}>-</span>
+              <span class="score-box">-</span>
             </div>
           </div>
         `;
@@ -2525,11 +2741,10 @@
 
       // RESULTS
       const resContainer = document.getElementById('sub-results');
-      resContainer.innerHTML = (state.results || []).map((r, i) => {
+      resContainer.innerHTML = (state.results || []).map((r) => {
         const isUcl = r.comp === 'ucl';
         const hTeam = getTeam(r.homeId);
         const aTeam = getTeam(r.awayId);
-        const clickAction = isAdminUnlocked ? `onclick="promptDirectResultEdit(${i})"` : '';
 
         return `
           <div class="match-date-header">
@@ -2539,24 +2754,23 @@
           <div class="match-glass-card">
             <div class="team-row">
               <div class="team-info">${renderTeamBadge(hTeam)}<span>${hTeam.name}</span></div>
-              <span class="score-box ${r.hScore > r.aScore ? 'winner' : ''}" ${clickAction}>${r.hScore}</span>
+              <span class="score-box ${r.hScore > r.aScore ? 'winner' : ''}">${r.hScore}</span>
             </div>
             <div class="team-row">
               <div class="team-info">${renderTeamBadge(aTeam)}<span>${aTeam.name}</span></div>
-              <span class="score-box ${r.aScore > r.hScore ? 'winner' : ''}" ${clickAction}>${r.aScore}</span>
+              <span class="score-box ${r.aScore > r.hScore ? 'winner' : ''}">${r.aScore}</span>
             </div>
           </div>
         `;
       }).join('') || '<p style="text-align:center; color:var(--muted); padding:20px;">No results recorded.</p>';
 
-      // RENDER MANAGERS TAB
+      // MANAGERS TAB
       const managersList = document.getElementById('managersListContainer');
       managersList.innerHTML = (state.managers || []).map((mgr) => {
         const mgrTeam = getTeam(mgr.teamId);
         const trophies = mgr.trophies || { ucl: 0, league: 0 };
 
         let trophiesHtml = '';
-
         if (trophies.ucl && trophies.ucl > 0) {
           trophiesHtml += `
             <div class="trophy-display-unit">
@@ -2565,7 +2779,6 @@
             </div>
           `;
         }
-
         if (trophies.league && trophies.league > 0) {
           trophiesHtml += `
             <div class="trophy-display-unit">
@@ -2574,7 +2787,6 @@
             </div>
           `;
         }
-
         if (!trophiesHtml) {
           trophiesHtml = `<span class="empty-showcase-text">No Trophies Won Yet</span>`;
         }
@@ -2609,7 +2821,7 @@
         `;
       }).join('') || '<p style="text-align:center; color:var(--muted); padding:20px;">No managers added yet.</p>';
 
-      // Populate Admin Form Elements
+      // ADMIN FORMS SETUP
       const teamOptions = state.teams.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
       document.getElementById('fixtureHomeTeam').innerHTML = teamOptions;
       document.getElementById('fixtureAwayTeam').innerHTML = teamOptions;
@@ -2624,6 +2836,10 @@
       document.getElementById('adminMatchesPerTeamInput').value = state.matchesPerTeam || 10;
       document.getElementById('adminLastLeagueChampInput').value = state.lastLeagueChamp;
       document.getElementById('adminLastUclChampInput').value = state.lastUclChamp;
+
+      if (state.geminiKey) {
+        document.getElementById('adminGeminiKeyInput').value = state.geminiKey;
+      }
 
       const mgrSelect = document.getElementById('adminSelectManagerToEdit');
       mgrSelect.innerHTML = (state.managers || []).map((m, idx) => `<option value="${idx}">${m.name} (${getTeam(m.teamId).name})</option>`).join('');
@@ -2667,10 +2883,8 @@
       document.getElementById('adminManagerNameInput').value = mgr.name || '';
       document.getElementById('adminManagerPlaystyleInput').value = mgr.playstyle || '';
       document.getElementById('adminManagerTeamSelect').value = mgr.teamId || '';
-
-      const trophies = mgr.trophies || { ucl: 0, league: 0 };
-      document.getElementById('adminManagerUclCount').value = trophies.ucl || 0;
-      document.getElementById('adminManagerLeagueCount').value = trophies.league || 0;
+      document.getElementById('adminManagerUclCount').value = mgr.trophies?.ucl || 0;
+      document.getElementById('adminManagerLeagueCount').value = mgr.trophies?.league || 0;
     }
 
     function saveSelectedManager() {
@@ -2693,17 +2907,14 @@
     function addNewManagerPrompt() {
       const name = prompt("Enter New Manager Name:");
       if (!name) return;
-      const playstyle = prompt("Enter Manager Playstyle (e.g. Possession Game, Quick Counter):") || "Quick Counter";
+      const playstyle = prompt("Enter Manager Playstyle (e.g. Possession, Quick Counter):") || "Quick Counter";
       
       const newMgr = {
         id: Date.now().toString(),
         name: name.trim(),
         playstyle: playstyle.trim(),
         teamId: state.teams[0] ? state.teams[0].id : '',
-        trophies: {
-          ucl: 0,
-          league: 0
-        }
+        trophies: { ucl: 0, league: 0 }
       };
 
       if (!state.managers) state.managers = [];
@@ -2715,7 +2926,6 @@
     function deleteSelectedManager() {
       const idx = parseInt(document.getElementById('adminSelectManagerToEdit').value);
       if (isNaN(idx) || !state.managers || !state.managers[idx]) return;
-
       if (!confirm(`Delete manager ${state.managers[idx].name}?`)) return;
       state.managers.splice(idx, 1);
       saveState();
@@ -2753,6 +2963,15 @@
       alert('Past champions updated live!');
     }
 
+    function saveGeminiApiKey() {
+      const keyVal = document.getElementById('adminGeminiKeyInput').value.trim();
+      if (!keyVal) return alert('Please paste your Google Gemini API key.');
+      state.geminiKey = keyVal;
+      GEMINI_API_KEY = keyVal;
+      saveState();
+      alert('Gemini key securely saved to your private Firebase!');
+    }
+
     function loadLogoForSelectedTeam() {
       const selId = document.getElementById('adminEditLogoTeamSelect').value;
       const team = state.teams.find(t => t.id === selId);
@@ -2765,7 +2984,6 @@
       const selId = document.getElementById('adminEditLogoTeamSelect').value;
       const team = state.teams.find(t => t.id === selId);
       if (!team) return;
-
       team.logo = document.getElementById('adminEditTeamLogoInput').value.trim();
       saveState();
       alert(`Logo updated live for ${team.name}!`);
@@ -2797,7 +3015,6 @@
     function deleteSelectedTeam() {
       const teamId = document.getElementById('adminDeleteTeamSelect').value;
       if (!teamId) return alert('No team selected.');
-
       const teamObj = state.teams.find(t => t.id === teamId);
       if (!confirm(`Delete ${teamObj.name}?`)) return;
 
@@ -2823,7 +3040,7 @@
       alert('Fixture scheduled live!');
     }
 
-    function submitMatchScore(index) {
+    async function submitMatchScore(index) {
       const hs = document.getElementById('hScore_' + index).value;
       const as = document.getElementById('aScore_' + index).value;
       if (hs === '' || as === '') return alert('Enter valid scores.');
@@ -2842,7 +3059,10 @@
 
       state.fixtures.splice(index, 1);
       saveState();
-      alert('Result submitted and synced!');
+      alert('Result submitted! Generating realistic AI news and images...');
+
+      // TRIGGER AUTOMATED GEMINI + POLLINATIONS AI WORKFLOW LIVE
+      await triggerAiNewsGeneration();
     }
 
     function updateUclKnockouts() {
@@ -2893,6 +3113,7 @@
       if (!confirm('Are you sure you want to reset match results and scores to 0?')) return;
       state.results = [];
       state.fixtures = [];
+      state.aiFeed = [];
       saveState();
       alert('League reset live!');
     }
