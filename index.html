@@ -349,7 +349,7 @@
       margin-top: 4px;
     }
 
-    /* SMALL PREVIEW COLUMN - CLEAN GLASS DESIGN WITHOUT BACKGROUND IMAGES */
+    /* SMALL PREVIEW COLUMN - WITH MATCHING AI BACKGROUND IMAGES */
     .social-media-card {
       border-radius: 20px !important;
       padding: 0 !important;
@@ -359,7 +359,6 @@
       overflow: hidden;
       border: 1px solid var(--glass-border) !important;
       cursor: pointer;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%) !important;
     }
 
     .social-carousel-viewport {
@@ -381,7 +380,9 @@
       width: 100%;
       height: 100%;
       scroll-snap-align: start;
-      background: transparent !important;
+      background-position: center center;
+      background-size: cover;
+      background-repeat: no-repeat;
       position: relative;
       display: flex;
       flex-direction: column;
@@ -398,11 +399,12 @@
       text-transform: uppercase;
       letter-spacing: 0.8px;
       color: #fff;
-      background: rgba(0, 0, 0, 0.35);
-      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.3);
       padding: 3px 8px;
       border-radius: 12px;
       backdrop-filter: blur(10px);
+      z-index: 5;
     }
 
     .feed-tag {
@@ -424,7 +426,7 @@
       line-height: 1.38;
       font-weight: 700;
       color: #ffffff;
-      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
       display: -webkit-box;
       -webkit-line-clamp: 5;
       -webkit-box-orient: vertical;
@@ -1459,7 +1461,7 @@
           </div>
         </div>
 
-        <!-- SMALL COLUMN PREVIEW CARD (NO AI IMAGE BACKGROUND, TAP TO OPEN 50% MODAL FOR SPECIFIC CATEGORY) -->
+        <!-- SMALL PREVIEW COLUMN - WITH RESTORED AI BACKGROUND IMAGES -->
         <div class="social-media-card" onclick="openCurrentSlideCategory()">
           <span class="tap-expand-hint">Tap to expand ↗</span>
           <div class="social-carousel-viewport" id="socialViewport" onscroll="handleSocialScroll(event)">
@@ -1748,7 +1750,7 @@
 
       <!-- 2. TEAMS SECTION -->
       <div id="admin-sec-teams" class="admin-section-pane">
-        <div class="admin-pane-title">🛡️️ Club & Team Management</div>
+        <div class="admin-pane-title">🛡️ Club & Team Management</div>
 
         <div class="form-group">
           <label>Add New Club</label>
@@ -1906,12 +1908,12 @@
       <div class="modal-header-strip">
         <div class="modal-title-wrap">
           <span class="modal-title-tag">CCNN SPORTSWIRE</span>
-          <span class="modal-title-main" id="modalCategoryTitle">Media Timeline</span>
+          <span class="modal-title-main" id="modalCategoryTitle">Official Media & News</span>
         </div>
         <button class="modal-close-btn" onclick="closeExpandedFeedModal()">✕</button>
       </div>
       <div class="modal-scrollable-feed" id="modalFeedScrollContainer">
-        <!-- Filtered AI Generated Stories Streamed Here -->
+        <!-- Filtered Category Stories (Only News OR Only Social OR Only Legends) -->
       </div>
     </div>
   </div>
@@ -2171,10 +2173,10 @@ Latest Match Event:
 ${matchDesc}
 
 TASK:
-Generate a JSON array of 6 to 9 realistic items divided equally across:
-1. "category": "news" (Official breaking sports journalism, press reactions, tactical math).
-2. "category": "social" (Twitter/X fan channel tweets, trolls, fan meltdowns with hashtags like #ManagerOut or #Masterclass).
-3. "category": "legend" (Hard-hitting pundit quotes from ONLY retired icons like Zlatan Ibrahimović, Sir Alex Ferguson, Roy Keane, Thierry Henry, Arsène Wenger).
+Generate a JSON array of 9 to 12 realistic items divided equally across 3 distinct categories:
+1. "category": "news" (Official breaking sports journalism, manager press conference quotes, tactical math, and title race pressure. 3 to 4 items).
+2. "category": "social" (Twitter/X fan channel tweets, trolls, fan meltdowns with hashtags like #ManagerOut or #Masterclass. 3 to 4 items).
+3. "category": "legend" (Hard-hitting pundit quotes from ONLY retired icons like Zlatan Ibrahimović, Sir Alex Ferguson, Roy Keane, Thierry Henry, Arsène Wenger. 3 to 4 items).
 
 Format:
 [
@@ -2250,7 +2252,7 @@ Return ONLY raw valid JSON array. No markdown backticks.
           text: lastMatch 
             ? `FULL-TIME: ${hName} clash with ${aName} ends ${lastMatch.hScore}-${lastMatch.aScore}. With ${left} matches remaining, the title race is on a knife edge.`
             : `SEASON OPENER: Managers finalize strategies as the ${seasonLimit}-match campaign kicks off with zero margin for error.`,
-          imageUrl: createSportsImageUrl('football tactical match floodlights dramatic stadium')
+          imageUrl: createSportsImageUrl((homeTeam ? homeTeam.name : 'football') + ' tactical match floodlights dramatic stadium')
         },
         {
           category: 'news',
@@ -2263,6 +2265,12 @@ Return ONLY raw valid JSON array. No markdown backticks.
           author: '📊 TITLE RACE EQUATION',
           text: `${leader.name} can mathematically seal the championship in the upcoming matchweek if results go their way. ${left} finals left.`,
           imageUrl: createSportsImageUrl('championship trophy golden confetti stadium celebration')
+        },
+        {
+          category: 'news',
+          author: '🎙️ POST-MATCH PRESS',
+          text: `Manager speaks out in heated press conference: "We didn't take our chances early on, but nobody writes us off with points still on the board."`,
+          imageUrl: createSportsImageUrl('football press conference microphones manager serious')
         },
 
         // Category: social
@@ -2286,6 +2294,12 @@ Return ONLY raw valid JSON array. No markdown backticks.
           text: `Best performance of the season hands down. Unbelievable mentality from the boys! 3 crucial points in the bag. #Cooking`,
           imageUrl: createSportsImageUrl('ecstatic football fans celebrating flares stands')
         },
+        {
+          category: 'social',
+          author: '💀 @TrollFootball',
+          text: `Bro really thought he was prime Mourinho with that park-the-bus tactic. Conceded 2 in 5 minutes! Pack your bags! 😂`,
+          imageUrl: createSportsImageUrl('football fans laughing stadium meme atmosphere')
+        },
 
         // Category: legend
         {
@@ -2305,6 +2319,12 @@ Return ONLY raw valid JSON array. No markdown backticks.
           author: 'Sir Alex Ferguson',
           text: `When you enter the final matches of a campaign, you don't play pretty football—you find a way to win. Some managers panic under pressure.`,
           imageUrl: createSportsImageUrl('veteran football manager pitch sideline serious focus')
+        },
+        {
+          category: 'legend',
+          author: 'Thierry Henry',
+          text: `You have to look at the defensive line on set pieces. That isn't bad luck—that's complete lack of focus at the highest level.`,
+          imageUrl: createSportsImageUrl('football analyst tv studio pundits discussing tactics')
         }
       ];
 
@@ -2643,19 +2663,37 @@ Return ONLY raw valid JSON array. No markdown backticks.
       document.getElementById('homeLastLeagueChamp').textContent = state.lastLeagueChamp || '--';
       document.getElementById('homeLastUclChamp').textContent = state.lastUclChamp || '--';
 
-      // RENDER COMPACT PREVIEW SLIDES (TEXT ONLY, NO BACKGROUND IMAGES)
+      // RENDER COMPACT PREVIEW SLIDES WITH DYNAMIC AI IMAGES AND TEXT
       const feed = state.aiFeed || [];
-      const newsItem = feed.find(i => i.category === 'news') || { text: 'Title battle heating up as managers navigate high-pressure fixtures.' };
-      const socialItem = feed.find(i => i.category === 'social') || { text: 'One more win to guarantee our place! Fans are buzzing. #WeGoAgain' };
-      const legendItem = feed.find(i => i.category === 'legend') || { text: 'Concentration in the final weeks separates true champions from pretenders.' };
+      const newsItem = feed.find(i => i.category === 'news') || {
+        text: 'Title battle heating up as managers navigate high-pressure fixtures.',
+        imageUrl: createSportsImageUrl('football stadium night floodlights dramatic match')
+      };
+      const socialItem = feed.find(i => i.category === 'social') || {
+        text: 'One more win to guarantee our place! Fans are buzzing. #WeGoAgain',
+        imageUrl: createSportsImageUrl('ecstatic football fans celebrating flares stands')
+      };
+      const legendItem = feed.find(i => i.category === 'legend') || {
+        text: 'Concentration in the final weeks separates true champions from pretenders.',
+        imageUrl: createSportsImageUrl('tactical manager dugout rain moody football scene')
+      };
 
-      const f0 = document.getElementById('feedSlide0');
-      const f1 = document.getElementById('feedSlide1');
-      const f2 = document.getElementById('feedSlide2');
+      const s0 = document.getElementById('previewSlide0');
+      const s1 = document.getElementById('previewSlide1');
+      const s2 = document.getElementById('previewSlide2');
 
-      if (f0) f0.textContent = newsItem.text;
-      if (f1) f1.textContent = socialItem.text;
-      if (f2) f2.textContent = legendItem.text;
+      if (s0) {
+        s0.style.backgroundImage = `linear-gradient(180deg, rgba(3,7,18,0.2) 0%, rgba(3,7,18,0.9) 85%), url('${newsItem.imageUrl}')`;
+        document.getElementById('feedSlide0').textContent = newsItem.text;
+      }
+      if (s1) {
+        s1.style.backgroundImage = `linear-gradient(180deg, rgba(3,7,18,0.2) 0%, rgba(3,7,18,0.9) 85%), url('${socialItem.imageUrl}')`;
+        document.getElementById('feedSlide1').textContent = socialItem.text;
+      }
+      if (s2) {
+        s2.style.backgroundImage = `linear-gradient(180deg, rgba(3,7,18,0.2) 0%, rgba(3,7,18,0.9) 85%), url('${legendItem.imageUrl}')`;
+        document.getElementById('feedSlide2').textContent = legendItem.text;
+      }
 
       // Title Predictions Graph
       const predictions = calculateTitleProbabilities(leagueTable);
