@@ -349,7 +349,7 @@
       margin-top: 4px;
     }
 
-    /* SMALL PREVIEW COLUMN - WITH MATCHING AI BACKGROUND IMAGES */
+    /* SMALL PREVIEW COLUMN CARD */
     .social-media-card {
       border-radius: 20px !important;
       padding: 0 !important;
@@ -388,6 +388,17 @@
       flex-direction: column;
       justify-content: flex-end;
       padding: 14px 14px 34px 14px;
+    }
+
+    /* The original distinct atmospheric backgrounds for the small column */
+    #previewSlide0 {
+      background: linear-gradient(180deg, rgba(3,7,18,0.2) 0%, rgba(3,7,18,0.92) 80%), url('news-bg.jpg') center/cover no-repeat, #0f172a;
+    }
+    #previewSlide1 {
+      background: linear-gradient(180deg, rgba(3,7,18,0.2) 0%, rgba(3,7,18,0.92) 80%), url('fans-bg.jpg') center/cover no-repeat, #1e1b4b;
+    }
+    #previewSlide2 {
+      background: linear-gradient(180deg, rgba(3,7,18,0.2) 0%, rgba(3,7,18,0.92) 80%), url('legends-bg.jpg') center/cover no-repeat, #172554;
     }
 
     .tap-expand-hint {
@@ -1461,7 +1472,7 @@
           </div>
         </div>
 
-        <!-- SMALL PREVIEW COLUMN - WITH RESTORED AI BACKGROUND IMAGES -->
+        <!-- SMALL PREVIEW COLUMN - RESTORED ORIGINAL BACKGROUNDS -->
         <div class="social-media-card" onclick="openCurrentSlideCategory()">
           <span class="tap-expand-hint">Tap to expand ↗</span>
           <div class="social-carousel-viewport" id="socialViewport" onscroll="handleSocialScroll(event)">
@@ -1693,7 +1704,7 @@
       <!-- SEPARATE TABS WITH DEDICATED AI & NEWS SECTION -->
       <div class="admin-subnav-pills">
         <button class="admin-pill-btn active" onclick="switchAdminSection('managers', this)">🏆 Managers</button>
-        <button class="admin-pill-btn" onclick="switchAdminSection('teams', this)">🛡️ Teams</button>
+        <button class="admin-pill-btn" onclick="switchAdminSection('teams', this)">🛡️️ Teams</button>
         <button class="admin-pill-btn" onclick="switchAdminSection('fixtures', this)">⚽ Fixtures</button>
         <button class="admin-pill-btn" onclick="switchAdminSection('ucl', this)">⭐ UCL Stage</button>
         <button class="admin-pill-btn" onclick="switchAdminSection('league', this)">⚙️ League & Season</button>
@@ -1913,7 +1924,7 @@
         <button class="modal-close-btn" onclick="closeExpandedFeedModal()">✕</button>
       </div>
       <div class="modal-scrollable-feed" id="modalFeedScrollContainer">
-        <!-- Filtered Category Stories (Only News OR Only Social OR Only Legends) -->
+        <!-- Strictly Isolated Category Stories (Only News OR Only Social OR Only Legends) -->
       </div>
     </div>
   </div>
@@ -2122,7 +2133,7 @@
       return `${mgr.name} has won ${total} trophies (${l} Leagues, ${ucl} Champions Leagues). High pedigree with elite expectations.`;
     }
 
-    // POLLINATIONS AI URL-BASED SPORTS IMAGE GENERATOR
+    // POLLINATIONS AI URL-BASED SPORTS IMAGE GENERATOR FOR THE MODAL ITEMS
     function createSportsImageUrl(promptKeywords) {
       const cleanPrompt = encodeURIComponent(`photorealistic football match sports photography, ${promptKeywords}, dramatic stadium floodlights, cinematic broadcast angle, high action depth of field, 8k quality`);
       return `https://image.pollinations.ai/prompt/${cleanPrompt}?width=640&height=880&nologo=true&seed=${Math.floor(Math.random() * 99999)}`;
@@ -2224,7 +2235,7 @@ Return ONLY raw valid JSON array. No markdown backticks.
 
         if (Array.isArray(parsedFeed) && parsedFeed.length > 0) {
           state.aiFeed = parsedFeed.map(item => ({
-            category: item.category || 'news',
+            category: item.category || item.type || 'news',
             author: item.author || 'CCNN SPORTSWIRE',
             text: item.text,
             imageUrl: createSportsImageUrl(item.imagePrompt || (homeTeam ? homeTeam.name : 'football action night stadium'))
@@ -2368,51 +2379,107 @@ Return ONLY raw valid JSON array. No markdown backticks.
       }
     }
 
-    // EXPANDED 50% MODAL WITH DEDICATED CATEGORY FEED & SMOOTH SCROLL
-    function openCategorizedFeedModal(category) {
+    // EXPANDED 50% MODAL WITH STRICT CATEGORY ISOLATION
+    function openCategorizedFeedModal(targetCat) {
       const modal = document.getElementById('expandedNewsModal');
       const container = document.getElementById('modalFeedScrollContainer');
       const titleMain = document.getElementById('modalCategoryTitle');
       const feed = state.aiFeed || [];
 
-      let filteredFeed = [];
-      if (category === 'news') {
+      // STRICT NORMALIZER: Checks both .category and .type so they NEVER mix together
+      function matchesCategory(item, cat) {
+        const itemCat = (item.category || item.type || '').toLowerCase();
+        if (cat === 'news') return itemCat === 'news' || itemCat === 'media' || itemCat === 'future';
+        if (cat === 'social') return itemCat === 'social' || itemCat === 'fan';
+        if (cat === 'legend') return itemCat === 'legend';
+        return false;
+      }
+
+      let filteredFeed = feed.filter(item => matchesCategory(item, targetCat));
+
+      if (targetCat === 'news') {
         titleMain.textContent = "Official Media & News";
-        filteredFeed = feed.filter(item => item.category === 'news');
-      } else if (category === 'social') {
+        if (filteredFeed.length === 0) {
+          filteredFeed = [
+            {
+              author: '🚨 SKY SPORTS VERDICT',
+              text: 'Tactical clash reshapes the table. Title fight heads into decisive remaining weeks.',
+              imageUrl: createSportsImageUrl('football tactical match floodlights dramatic stadium')
+            },
+            {
+              author: '📰 THE ATHLETIC DEBRIEF',
+              text: 'Press conference review: Managers analyze fine margins and remaining season points.',
+              imageUrl: createSportsImageUrl('football press conference microphones manager serious')
+            },
+            {
+              author: '📊 TITLE RACE EQUATION',
+              text: 'Standings calculation shows high pressure at the top with zero room for defensive slip-ups.',
+              imageUrl: createSportsImageUrl('championship trophy golden confetti stadium celebration')
+            }
+          ];
+        }
+      } else if (targetCat === 'social') {
         titleMain.textContent = "Fans X / Social Media Feed";
-        filteredFeed = feed.filter(item => item.category === 'social');
+        if (filteredFeed.length === 0) {
+          filteredFeed = [
+            {
+              author: '🔥 @TacticsBanter',
+              text: 'Unbelievable performance today! Fans dancing in the timeline. #Masterclass #Cooking',
+              imageUrl: createSportsImageUrl('passionate football fans celebrating flares stadium night')
+            },
+            {
+              author: '💬 @KopiteMeltdown',
+              text: 'Did the manager disconnect his controller?! Conceding goals like this is embarrassing! #OutNow',
+              imageUrl: createSportsImageUrl('angry football fans stadium stands shouting')
+            },
+            {
+              author: '⚡ @eSportsUltras',
+              text: 'Another massive 3 points in the bag. Keep doubting our squad! #PureMentality',
+              imageUrl: createSportsImageUrl('ecstatic football fans celebrating flares stands')
+            }
+          ];
+        }
       } else {
         titleMain.textContent = "Legends & Pundits Verdict";
-        filteredFeed = feed.filter(item => item.category === 'legend');
+        if (filteredFeed.length === 0) {
+          filteredFeed = [
+            {
+              author: 'Roy Keane',
+              text: 'Five seasons with zero trophies? At this level, you do not survive without silverware. Show some character!',
+              imageUrl: createSportsImageUrl('dramatic solitary player rain football pitch moody atmosphere')
+            },
+            {
+              author: 'Zlatan Ibrahimović',
+              text: 'They won today? Good for them. But remember, this league only looks competitive because Zlatan is retired.',
+              imageUrl: createSportsImageUrl('legendary football player stadium floodlights')
+            },
+            {
+              author: 'Sir Alex Ferguson',
+              text: 'In the final weeks of a season, you find a way to win. That is what defines true champions.',
+              imageUrl: createSportsImageUrl('veteran football manager pitch sideline serious focus')
+            }
+          ];
+        }
       }
 
-      if (filteredFeed.length === 0) {
-        filteredFeed = feed.length > 0 ? feed : [];
-      }
+      container.innerHTML = filteredFeed.map(item => {
+        let authorColor = 'var(--accent)';
+        if (targetCat === 'social') authorColor = '#f43f5e';
+        if (targetCat === 'legend') authorColor = 'var(--gold)';
 
-      if (filteredFeed.length === 0) {
-        container.innerHTML = `<p style="text-align:center; color:var(--muted); padding:30px; font-size:12px;">Generating real-time reports...</p>`;
-      } else {
-        container.innerHTML = filteredFeed.map(item => {
-          let authorColor = 'var(--accent)';
-          if (item.category === 'social') authorColor = '#f43f5e';
-          if (item.category === 'legend') authorColor = 'var(--gold)';
-
-          return `
-            <div class="modal-feed-card" style="background-image: url('${item.imageUrl}');">
-              <div class="modal-card-content">
-                <div class="modal-card-author" style="color:${authorColor}; text-shadow:0 0 10px ${authorColor};">
-                  ${item.author}
-                </div>
-                <div class="modal-card-body">
-                  ${item.text}
-                </div>
+        return `
+          <div class="modal-feed-card" style="background-image: url('${item.imageUrl || createSportsImageUrl('football stadium action')}');">
+            <div class="modal-card-content">
+              <div class="modal-card-author" style="color:${authorColor}; text-shadow:0 0 10px ${authorColor};">
+                ${item.author || 'VERDICT'}
+              </div>
+              <div class="modal-card-body">
+                ${item.text}
               </div>
             </div>
-          `;
-        }).join('');
-      }
+          </div>
+        `;
+      }).join('');
 
       modal.classList.add('active');
     }
@@ -2663,37 +2730,25 @@ Return ONLY raw valid JSON array. No markdown backticks.
       document.getElementById('homeLastLeagueChamp').textContent = state.lastLeagueChamp || '--';
       document.getElementById('homeLastUclChamp').textContent = state.lastUclChamp || '--';
 
-      // RENDER COMPACT PREVIEW SLIDES WITH DYNAMIC AI IMAGES AND TEXT
+      // RENDER COMPACT PREVIEW SLIDES WITH TEXT ONLY (ORIGINAL BACKGROUNDS PRESERVED)
       const feed = state.aiFeed || [];
-      const newsItem = feed.find(i => i.category === 'news') || {
-        text: 'Title battle heating up as managers navigate high-pressure fixtures.',
-        imageUrl: createSportsImageUrl('football stadium night floodlights dramatic match')
+      const newsItem = feed.find(i => (i.category === 'news' || i.type === 'media' || i.type === 'future')) || {
+        text: 'Title battle heating up as managers navigate high-pressure fixtures.'
       };
-      const socialItem = feed.find(i => i.category === 'social') || {
-        text: 'One more win to guarantee our place! Fans are buzzing. #WeGoAgain',
-        imageUrl: createSportsImageUrl('ecstatic football fans celebrating flares stands')
+      const socialItem = feed.find(i => (i.category === 'social' || i.type === 'fan')) || {
+        text: 'One more win to guarantee our place! Fans are buzzing. #WeGoAgain'
       };
-      const legendItem = feed.find(i => i.category === 'legend') || {
-        text: 'Concentration in the final weeks separates true champions from pretenders.',
-        imageUrl: createSportsImageUrl('tactical manager dugout rain moody football scene')
+      const legendItem = feed.find(i => (i.category === 'legend' || i.type === 'legend')) || {
+        text: 'Concentration in the final weeks separates true champions from pretenders.'
       };
 
-      const s0 = document.getElementById('previewSlide0');
-      const s1 = document.getElementById('previewSlide1');
-      const s2 = document.getElementById('previewSlide2');
+      const f0 = document.getElementById('feedSlide0');
+      const f1 = document.getElementById('feedSlide1');
+      const f2 = document.getElementById('feedSlide2');
 
-      if (s0) {
-        s0.style.backgroundImage = `linear-gradient(180deg, rgba(3,7,18,0.2) 0%, rgba(3,7,18,0.9) 85%), url('${newsItem.imageUrl}')`;
-        document.getElementById('feedSlide0').textContent = newsItem.text;
-      }
-      if (s1) {
-        s1.style.backgroundImage = `linear-gradient(180deg, rgba(3,7,18,0.2) 0%, rgba(3,7,18,0.9) 85%), url('${socialItem.imageUrl}')`;
-        document.getElementById('feedSlide1').textContent = socialItem.text;
-      }
-      if (s2) {
-        s2.style.backgroundImage = `linear-gradient(180deg, rgba(3,7,18,0.2) 0%, rgba(3,7,18,0.9) 85%), url('${legendItem.imageUrl}')`;
-        document.getElementById('feedSlide2').textContent = legendItem.text;
-      }
+      if (f0) f0.textContent = newsItem.text;
+      if (f1) f1.textContent = socialItem.text;
+      if (f2) f2.textContent = legendItem.text;
 
       // Title Predictions Graph
       const predictions = calculateTitleProbabilities(leagueTable);
